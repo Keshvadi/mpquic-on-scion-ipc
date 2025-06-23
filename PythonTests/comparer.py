@@ -15,7 +15,6 @@ HISTORY_SHOWPATHS_DIR = os.path.join(BASE_DIR, "History", "Showpaths")
 COMPARER_DIR = os.path.join(BASE_DIR, "History", "Comparer")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Comparer")
 
-# Ensure directories exist
 os.makedirs(CURRENTLY_DIR, exist_ok=True)
 os.makedirs(COMPARER_DIR, exist_ok=True)
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -32,12 +31,15 @@ def load_json(filepath):
         except json.JSONDecodeError:
             return {}
 
-def extract_fingerprint_map(path_data):
+def extract_valid_paths(path_data):
     if not path_data or "paths" not in path_data:
-        return {}
+        return []
+    return [p for p in path_data["paths"] if p.get("status") != "timeout"]
+
+def extract_fingerprint_map(paths):
     return {
         p["fingerprint"]: p.get("sequence", "unknown_sequence")
-        for p in path_data.get("paths", [])
+        for p in paths
     }
 
 def compare_paths(ia):
@@ -45,35 +47,38 @@ def compare_paths(ia):
     filename_base = normalize_as(ia)
     delta_filename = f"delta_{timestamp}_{filename_base}.json"
 
-    # ➤ Load latest file from Data/Currently/
-    latest_file = os.path.join(CURRENTLY_DIR, f"latest_{filename_base}.json")
+    # ➤ Load latest file from Currently/
+    current_files = [f for f in os.listdir(CURRENTLY_DIR) if f.endswith(f"_{filename_base}.json")]
+    if not current_files:
+        print(f"[ERROR] No current file found for {ia}")
+        return
+    latest_file = os.path.join(CURRENTLY_DIR, current_files[0])
     latest_data = load_json(latest_file)
 
-    # ➤ Find most recent historical file from correct Showpaths folder
+    # ➤ Load history file from Showpaths/AS-X/
     as_folder = AS_FOLDER_MAP.get(ia, "UNKNOWN_AS")
     history_dir = os.path.join(HISTORY_SHOWPATHS_DIR, as_folder)
     os.makedirs(history_dir, exist_ok=True)
 
-    matching_files = [
-        f for f in os.listdir(history_dir)
-        if f.endswith(f"_{filename_base}.json")
-    ]
-    matching_files.sort(reverse=True)
-    history_file = os.path.join(history_dir, matching_files[0]) if matching_files else None
+    history_files = [f for f in os.listdir(history_dir) if f.endswith(f"_{filename_base}.json")]
+    history_file = os.path.join(history_dir, history_files[0]) if history_files else None
     history_data = load_json(history_file) if history_file else {}
 
-    # ➤ Compare fingerprints
-    latest_fps_map = extract_fingerprint_map(latest_data)
-    history_fps_map = extract_fingerprint_map(history_data)
+    # ➤ Extract paths and fingerprint maps (ignoring timeouts)
+    valid_latest_paths = extract_valid_paths(latest_data)
+    valid_history_paths = extract_valid_paths(history_data)
+
+    latest_fps_map = extract_fingerprint_map(valid_latest_paths)
+    history_fps_map = extract_fingerprint_map(valid_history_paths)
 
     latest_fps = set(latest_fps_map.keys())
     history_fps = set(history_fps_map.keys())
 
+    # ➤ Compare sets
     added = sorted(latest_fps - history_fps)
     removed = sorted(history_fps - latest_fps)
 
     changes = []
-
     for fp in added:
         changes.append({
             "fingerprint": fp,
@@ -88,7 +93,7 @@ def compare_paths(ia):
             "change": "removed"
         })
 
-    # ➤ Determine change status
+    # ➤ Change status
     if added or removed:
         change_status = "change_detected"
     elif not latest_fps and not history_fps:
@@ -108,14 +113,14 @@ def compare_paths(ia):
         "changes": changes
     }
 
-    # ➤ Save delta file in Comparer/AS-X/
+    # ➤ Save delta file
     comparer_sub_dir = os.path.join(COMPARER_DIR, as_folder)
     os.makedirs(comparer_sub_dir, exist_ok=True)
     delta_path = os.path.join(comparer_sub_dir, delta_filename)
     with open(delta_path, "w") as f:
         json.dump(output, f, indent=2)
 
-    # ➤ Append to log
+    # ➤ Logging
     log_file = os.path.join(LOG_DIR, f"log_compare_{filename_base}.txt")
     with open(log_file, "a") as log:
         log.write(f"\n[{timestamp}] Compare run for AS {ia}:\n")
@@ -137,3 +142,4 @@ def compare_paths(ia):
 if __name__ == "__main__":
     for ia in AS_FOLDER_MAP:
         compare_paths(ia)
+
