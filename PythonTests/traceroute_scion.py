@@ -11,7 +11,7 @@ AS_TARGETS = {
 }
 
 # Base directories
-BASE_DIR = "Data"
+BASE_DIR = "../Data"
 BASE_TRACEROUTE_DIR = os.path.join(BASE_DIR, "History", "Traceroute")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Traceroute")
 

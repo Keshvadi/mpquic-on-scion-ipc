@@ -9,7 +9,7 @@ AS_FOLDER_MAP = {
     "19-ffaa:0:1310": "AS-3",
 }
 
-BASE_DIR = "Data"
+BASE_DIR = "../Data"
 CURRENTLY_DIR = os.path.join(BASE_DIR, "Currently")
 HISTORY_SHOWPATHS_DIR = os.path.join(BASE_DIR, "History", "Showpaths")
 COMPARER_DIR = os.path.join(BASE_DIR, "History", "Comparer")

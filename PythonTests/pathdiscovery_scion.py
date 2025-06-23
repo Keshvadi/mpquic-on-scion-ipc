@@ -11,7 +11,7 @@ AS_FOLDER_MAP = {
 }
 
 # Directory structure
-BASE_DIR = "Data"
+BASE_DIR = "../Data"
 HISTORY_BASE = os.path.join(BASE_DIR, "History", "Showpaths")
 CURRENTLY_DIR = os.path.join(BASE_DIR, "Currently")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Showpaths")
