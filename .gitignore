@@ -1,4 +1,5 @@
 # Ignore all .json and .txt files in paths/ and its subdirectories
+*.json
 Data/**/*.json
 Data/**/*.txt
 # But don't ignore directories (needed for Git to track them)
