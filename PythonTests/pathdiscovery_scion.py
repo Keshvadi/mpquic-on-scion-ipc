@@ -36,12 +36,12 @@ def discover_paths(ia):
     os.makedirs(history_dir, exist_ok=True)
 
     history_file = os.path.join(history_dir, f"{timestamp}_{filename_base}.json")
-    latest_file = os.path.join(CURRENTLY_DIR, f"latest_{filename_base}.json")
+    latest_file = os.path.join(CURRENTLY_DIR, f"{timestamp}_{filename_base}.json")
     log_file = os.path.join(LOG_DIR, f"SP_AS_{filename_base}.txt")
 
     # Run scion command
     result = subprocess.run(
-        ["scion", "showpaths", ia, "--format", "json", "-m", "40"],
+        ["scion", "showpaths", ia, "--format", "json", "-m", "40", "-e"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         universal_newlines=True
@@ -66,11 +66,7 @@ def discover_paths(ia):
     with open(latest_file, "w") as f:
         json.dump(json_data, f, indent=2)
 
-    # Save to history/Showpaths/<AS-X>
-    with open(history_file, "w") as f:
-        json.dump(json_data, f, indent=2)
-
-    print(f"[OK] Saved paths to {latest_file} and {history_file}")
+    print(f"[OK] Saved paths to {latest_file}")
     with open(log_file, "a") as f:
         f.write(f"[SUCCESS] at {timestamp} for AS {ia}\n")
 
