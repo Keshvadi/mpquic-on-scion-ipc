@@ -57,7 +57,7 @@ def probe_all_paths(ia, ip_target, as_folder):
     filename_base = normalize_as(ia)
     output_dir = os.path.join(BASE_PROBER_DIR, as_folder)
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, f"{timestamp}_{filename_base}.json")
+    output_path = os.path.join(output_dir, f"prober_{timestamp}_{filename_base}.json")
     log_path = os.path.join(LOG_DIR, f"log_prober_{filename_base}.txt")
 
     path_data = load_current_paths(ia)
@@ -79,8 +79,20 @@ def probe_all_paths(ia, ip_target, as_folder):
         for path in all_paths:
             sequence = path.get("sequence")
             fingerprint = path.get("fingerprint")
+            status = path.get("status")
             if not sequence or not fingerprint:
                 log_file.write("Skipping path with missing sequence or fingerprint.\n")
+                continue
+
+            #new block, test if works
+            if status.lower() == "timeout":
+                log_file.write(f"Skipping timed-out path: {fingerprint} | {sequence}\n")
+                combined_results["probes"].append({
+                    "fingerprint": fingerprint,
+                    "sequence": sequence,
+                    "status": "skipped",
+                    "note": "Skipped probing: path previously timed out"
+                })
                 continue
 
             log_file.write(f"Probing path: {fingerprint} | {sequence}\n")
