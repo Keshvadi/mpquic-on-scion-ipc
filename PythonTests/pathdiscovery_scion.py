@@ -11,7 +11,10 @@ AS_FOLDER_MAP = {
 }
 
 # Directory structure
-BASE_DIR = "../Data"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define the base directory (../Data from the script)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 HISTORY_BASE = os.path.join(BASE_DIR, "History", "Showpaths")
 CURRENTLY_DIR = os.path.join(BASE_DIR, "Currently")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Showpaths")

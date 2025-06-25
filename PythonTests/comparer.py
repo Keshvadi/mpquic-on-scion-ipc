@@ -9,7 +9,10 @@ AS_FOLDER_MAP = {
     "19-ffaa:0:1310": "AS-3",
 }
 
-BASE_DIR = "../Data"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define the base directory (../Data from the script)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 CURRENTLY_DIR = os.path.join(BASE_DIR, "Currently")
 HISTORY_SHOWPATHS_DIR = os.path.join(BASE_DIR, "History", "Showpaths")
 COMPARER_DIR = os.path.join(BASE_DIR, "History", "Comparer")

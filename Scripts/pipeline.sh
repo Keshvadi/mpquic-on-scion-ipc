@@ -1,6 +1,5 @@
 #!/bin/bash
-source /etc/profile
-#set -euo pipefail
+set -euo pipefail
 
 # Set working paths relative to repo root
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"

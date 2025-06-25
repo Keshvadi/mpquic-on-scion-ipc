@@ -22,7 +22,10 @@ BWTEST_SERVERS = {
 }
 
 # Directories
-BASE_DIR = "Data"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define the base directory (../Data from the script)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 RESULT_DIR = os.path.join(BASE_DIR, "History", "Bandwidth")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Bandwidth")
 os.makedirs(LOG_DIR, exist_ok=True)

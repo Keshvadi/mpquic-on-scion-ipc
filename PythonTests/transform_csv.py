@@ -2,7 +2,11 @@ import os
 import json
 import pandas as pd
 
-TRACEROUTE_DIR = "Data/History/Traceroute"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define the base directory (../Data from the script)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
+TRACEROUTE_DIR = os.path.join(BASE_DIR, "History", "Traceroute")
 
 
 def extract_data_from_json(filepath):

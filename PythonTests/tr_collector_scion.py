@@ -10,7 +10,10 @@ AS_TARGETS = {
 }
 
 # Base directories
-BASE_DIR = "Data"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define the base directory (../Data from the script)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 BASE_TRACEROUTE_DIR = os.path.join(BASE_DIR, "History", "Traceroute")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Traceroute")
 
