@@ -22,11 +22,13 @@ These were chosen based on the following criteria:
 All of these machines follow the same setup and are created as vagrant machines attached to their Access Points via VPN to avoid NAT issues. Their geographical diversity allows us to replicate results gathered by related work before us. The instability of some of these ASes allow us to gather more accurate data as opposed to a fully static sandbox environment, while the diversity of ASes should be sufficient, that at least one should always be able to measure.
 Each AS will run a suite of python scripts which will gather data to all 3 other ASes. This is done in the following way:
 
-1. Pathdiscover.py discovers paths to the 3 other ASes. These are saved as timestamped json files for further use by the other scripts, analysis down the line and archival purposes.
-2. Comparer.py Compares the path availability of inter AS paths between two test instances providing us data on Path Churn as well as full connectivity breakdown (observed in ISD 17).
-3. Prober.py will run the adapted “scion ping” command using SCMP to probe path latency as well as packet loss and (if possible) packet sequencing. This data will be saved per path per AS in timestamped json.
-4. Wrapper.py will handle the compilation of data from the previous three sources into a csv for later use and analysis
-5. Custom Cron Job: will run the 4 scripts in a set interval and handle cleanup of the working directories and updates of the Archive directory from which data may be pulled during testing.
+1. pathdiscover_scion.py discovers paths to the 3 other ASes. These are saved as timestamped json files for further use by the other scripts, analysis down the line and archival purposes.
+2. comparer.py Compares the path availability of inter AS paths between two test instances providing us data on Path Churn as well as full connectivity breakdown (observed in ISD 17).
+3. prober_scion.py will run the adapted “scion ping” command using SCMP to probe path latency as well as packet loss and (if possible) packet sequencing. This data will be saved per path per AS in timestamped json.
+4. tr_collector_scion.py runs the adapted “scion traceroute” command using SCMP to probe the AS-level hops (hop count), RTT and path structure. The results are saved per path per AS in timestamped JSON files.
+5. bw_collector_scion.py performs automated bandwidth testing from the local AS to 4 remote ASes over all available SCION paths, using predefined target rates (1–250 Mbps). For each direction (client-to-server and server-to-client), it collects detailed performance metrics including attempted and achieved throughput, packet loss percentage, and interarrival time (min/avg/max/mdev). Results are saved in timestamped JSON files for later analysis and benchmarking.
+6. Wrapper.py will handle the compilation of data from the previous three sources into a csv for later use and analysis
+7. Custom Cron Job: will run the 4 scripts in a set interval and handle cleanup of the working directories and updates of the Archive directory from which data may be pulled during testing.
    
 This approach gives us both a compiled CSV as well as all the raw data at the and. Through the structure of working and archive directories we are also able to access the already collected data at any point without interfering with the ongoing measurements. This may be used for backup needs.
 
@@ -38,6 +40,7 @@ This approach gives us both a compiled CSV as well as all the raw data at the an
 2. Run the command crontab -e and select you text editior
 
 3. Paste the following entry:
+```
 SHELL=/bin/bash
 PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
 # Edit this file to introduce tasks to be run by cron.
@@ -63,4 +66,5 @@ PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
 # 
 # m h  dom mon dow   command
 */5 * * * * /home/vagrant/mpquic-on-scion-ipc/Scripts/pipeline.sh
+```
 

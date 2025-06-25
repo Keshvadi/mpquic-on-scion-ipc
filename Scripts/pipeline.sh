@@ -16,6 +16,11 @@ echo "[$timestamp] Starting pipeline..." >> "$LOG"
 /usr/bin/python3 "$PY_DIR/pathdiscovery_scion.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/comparer.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/prober_scion.py" >> "$LOG"
+/usr/bin/python3 "$PY_DIR/tr_collector_scion.py" >> "$LOG"
+/usr/bin/python3 "$PY_DIR/bw_collector_scion.py" >> "$LOG"
+/usr/bin/python3 "$PY_DIR/transform_csv.py" >> "$LOG"
+
+
 
 # Step 2: Move files from all History/<Tool>/AS-* into Archive
 for tool_dir in "$HISTORY"/*/; do
