@@ -7,9 +7,9 @@ from datetime import datetime
 from math import ceil
 
 # Bandwidth tiers in Mbps
-TARGET_MBPS = [1, 2, 5, 10, 25, 50, 100, 150, 200, 250]
+TARGET_MBPS = [5, 10, 50, 100]
 
-# Test parameters
+# Parameters
 DURATION = 3  # seconds
 PACKET_SIZE = 1000  # bytes
 
@@ -75,7 +75,7 @@ def parse_output(text):
 def run_bwtest(ia, ip, folder, target_mbps):
     timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
     tier_label = f"{target_mbps}Mbps"
-    filename = f"{timestamp}_{tier_label}.json"
+    filename = f"BW_{timestamp}_AS_{normalize_as(ia)}_{tier_label}.json"
     log_filename = f"BW_AS_{normalize_as(ia)}.txt"
     log_path = os.path.join(LOG_DIR, log_filename)
 

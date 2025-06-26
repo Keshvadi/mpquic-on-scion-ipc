@@ -94,7 +94,7 @@ def run_all_traceroutes(ia, ip_target, as_folder):
         # Save hop count into the traceroute JSON
         traceroute_data["hop_count"] = hop_count
 
-        filename = f"{timestamp}_p_{i+1}.json"
+        filename = f"TR_{timestamp}_AS_{normalize_as(ia)}_p_{i+1}.json"
         output_path = os.path.join(output_dir, filename)
         with open(output_path, "w") as f:
             json.dump(traceroute_data, f, indent=2)

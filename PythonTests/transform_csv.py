@@ -1,13 +1,18 @@
 import os
 import json
 import pandas as pd
+from datetime import datetime
 
+# Get the directory where this script is located
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Define the base directory (../Data from the script)
+# Define base and traceroute directories
 BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 TRACEROUTE_DIR = os.path.join(BASE_DIR, "History", "Traceroute")
+CSV_OUTPUT_DIR = os.path.join(TRACEROUTE_DIR, "CSV-Summary")
 
+# Ensure the CSV summary directory exists
+os.makedirs(CSV_OUTPUT_DIR, exist_ok=True)
 
 def extract_data_from_json(filepath):
     with open(filepath, "r") as f:
@@ -51,7 +56,11 @@ for folder in os.listdir(TRACEROUTE_DIR):
 df = pd.DataFrame(records)
 print(df.head())
 
+# Generate a timestamped filename
+timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M")
+csv_filename = f"TR_CSV_{timestamp}.csv"
+csv_output_path = os.path.join(CSV_OUTPUT_DIR, csv_filename)
+
 # Export to CSV
-csv_output_path = os.path.join(TRACEROUTE_DIR, "traceroute_summary.csv")
 df.to_csv(csv_output_path, index=False)
 print(f"[OK] CSV exported to {csv_output_path}")

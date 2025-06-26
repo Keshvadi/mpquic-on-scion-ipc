@@ -1,11 +1,47 @@
-[2025-06-25 21:05:01] Starting pipeline...
-[OK] Saved paths to /home/vagrant/mpquic-on-scion-ipc/Data/Currently/AS-1_2025-06-25T21:05_19-ffaa_0_1301.json
-[OK] Saved paths to /home/vagrant/mpquic-on-scion-ipc/Data/Currently/AS-2_2025-06-25T21:05_19-ffaa_1_11de.json
-[OK] Saved paths to /home/vagrant/mpquic-on-scion-ipc/Data/Currently/AS-3_2025-06-25T21:05_19-ffaa_0_1310.json
-[COMPARE] 19-ffaa:0:1301: change_detected (4 added, 0 removed)
-    ADDED: 6fad71795ced98c7 | 17-ffaa:1:11e4#0,1 17-ffaa:0:1107#621,251 17-ffaa:0:1101#12,6 19-ffaa:0:1301#4,0
-    ADDED: be7974a83621d8ef | 17-ffaa:1:11e4#0,1 17-ffaa:0:1107#621,251 17-ffaa:0:1101#12,5 18-ffaa:0:1201#4,5 19-ffaa:0:1301#3,0
-    ADDED: cc78b2736752b755 | 17-ffaa:1:11e4#0,1 17-ffaa:0:1107#621,251 17-ffaa:0:1101#12,3 20-ffaa:0:1401#2,5 18-ffaa:0:1201#3,5 19-ffaa:0:1301#3,0
-    ADDED: f8dd80f4b9ebe1a3 | 17-ffaa:1:11e4#0,1 17-ffaa:0:1107#621,251 17-ffaa:0:1101#12,1 16-ffaa:0:1001#1,2 19-ffaa:0:1301#1,0
+[2025-06-26 11:45:01] Starting pipeline...
+[OK] Saved paths to /home/scion/Documents/mpquic-on-scion-ipc/Data/Currently/AS-1_2025-06-26T18:45_19-ffaa_0_1301.json
+[OK] Saved paths to /home/scion/Documents/mpquic-on-scion-ipc/Data/Currently/AS-2_2025-06-26T18:45_19-ffaa_1_11de.json
+[OK] Saved paths to /home/scion/Documents/mpquic-on-scion-ipc/Data/Currently/AS-3_2025-06-26T18:45_19-ffaa_0_1310.json
+[COMPARE] 19-ffaa:0:1301: no_change (0 added, 0 removed)
 [COMPARE] 19-ffaa:1:11de: no_paths_present (0 added, 0 removed)
 [COMPARE] 19-ffaa:0:1310: no_paths_present (0 added, 0 removed)
+[DONE] Probing complete for 19-ffaa:0:1301. Results saved to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Prober/AS-1/prober_2025-06-26T18:45_19-ffaa_0_1301.json
+[ERROR] No paths found for 19-ffaa:1:11de. Log created but no json written
+[ERROR] No paths found for 19-ffaa:0:1310. Log created but no json written
+[OK] Traceroute saved to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Traceroute/AS-1/TR_2025-06-26T18:45_AS_17-ffaa_0_1101_p_1.json
+[OK] Traceroute saved to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Traceroute/AS-1/TR_2025-06-26T18:45_AS_17-ffaa_0_1101_p_2.json
+[OK] Traceroute saved to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Traceroute/AS-1/TR_2025-06-26T18:45_AS_17-ffaa_0_1101_p_3.json
+[OK] Traceroute saved to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Traceroute/AS-1/TR_2025-06-26T18:45_AS_17-ffaa_0_1101_p_4.json
+[WARNING] No paths found for 19-ffaa:1:11de
+[WARNING] No paths found for 19-ffaa:0:1310
+[OK] 16-ffaa:0:1001 at 5Mbps
+[OK] 16-ffaa:0:1001 at 10Mbps
+[OK] 16-ffaa:0:1001 at 50Mbps
+[OK] 16-ffaa:0:1001 at 100Mbps
+[NO PATH] 17-ffaa:0:1102 at 5Mbps
+[NO PATH] 17-ffaa:0:1102 at 10Mbps
+[NO PATH] 17-ffaa:0:1102 at 50Mbps
+[NO PATH] 17-ffaa:0:1102 at 100Mbps
+[OK] 19-ffaa:0:1303 at 5Mbps
+[OK] 19-ffaa:0:1303 at 10Mbps
+[OK] 19-ffaa:0:1303 at 50Mbps
+[OK] 19-ffaa:0:1303 at 100Mbps
+[OK] 20-ffaa:0:1401 at 5Mbps
+[OK] 20-ffaa:0:1401 at 10Mbps
+[OK] 20-ffaa:0:1401 at 50Mbps
+[OK] 20-ffaa:0:1401 at 100Mbps
+
+[LOG] Total execution time: 61.42 seconds
+                                             file  ... min_rtt
+0  TR_2025-06-26T18:12_AS_17-ffaa_0_1101_p_1.json  ...   0.123
+1  TR_2025-06-26T18:12_AS_17-ffaa_0_1101_p_4.json  ...   0.133
+2  TR_2025-06-26T18:45_AS_17-ffaa_0_1101_p_1.json  ...   0.133
+3  TR_2025-06-26T18:45_AS_17-ffaa_0_1101_p_2.json  ...   0.141
+4  TR_2025-06-26T18:45_AS_17-ffaa_0_1101_p_3.json  ...   0.109
+
+[5 rows x 8 columns]
+[OK] CSV exported to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Traceroute/CSV-Summary/TR_CSV_2025-06-26_11:46.csv
+Moved AS-1_2025-06-26T18:45_19-ffaa_0_1301.json to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Showpaths/AS-1
+Moved AS-2_2025-06-26T18:45_19-ffaa_1_11de.json to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Showpaths/AS-2
+Moved AS-3_2025-06-26T18:45_19-ffaa_0_1310.json to /home/scion/Documents/mpquic-on-scion-ipc/Data/History/Showpaths/AS-3
+[2025-06-26 11:46:33] Pipeline complete.
