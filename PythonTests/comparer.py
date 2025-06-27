@@ -1,13 +1,9 @@
 import os
 import json
 from datetime import datetime
-
-# AS list and their folder names
-AS_FOLDER_MAP = {
-    "19-ffaa:0:1301": "AS-1",
-    "19-ffaa:1:11de": "AS-2",
-    "19-ffaa:0:1310": "AS-3",
-}
+from config import (
+    AS_FOLDER_MAP
+)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 

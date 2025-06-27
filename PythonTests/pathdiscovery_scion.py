@@ -2,13 +2,9 @@ import os
 import json
 import subprocess
 from datetime import datetime
-
-# Map each AS to its folder
-AS_FOLDER_MAP = {
-    "19-ffaa:0:1301": "AS-1",
-    "19-ffaa:1:11de": "AS-2",
-    "19-ffaa:0:1310": "AS-3",
-}
+from config import (
+    AS_FOLDER_MAP
+)
 
 # Directory structure
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

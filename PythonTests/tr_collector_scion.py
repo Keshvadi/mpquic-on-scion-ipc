@@ -2,12 +2,9 @@ import os
 import json
 import subprocess
 from datetime import datetime
-
-AS_TARGETS = {
-    "17-ffaa:0:1101": ("127.0.0.1", "AS-1"),
-    "19-ffaa:1:11de": ("127.0.0.1", "AS-2"),
-    "19-ffaa:0:1310": ("127.0.0.1", "AS-3"),
-}
+from config import (
+    AS_TARGETS
+)
 
 # Base directories
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

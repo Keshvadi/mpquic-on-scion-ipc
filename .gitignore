@@ -4,3 +4,4 @@ Data/**/*.json
 Data/**/*.txt
 # But don't ignore directories (needed for Git to track them)
 !Data/**/
+__pycache__/

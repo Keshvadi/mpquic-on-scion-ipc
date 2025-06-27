@@ -2,13 +2,9 @@ import os
 import json
 import subprocess
 from datetime import datetime
-
-# Define AS targets and their folder name
-AS_TARGETS = {
-    "19-ffaa:0:1301": ("127.0.0.1", "AS-1"),
-    "19-ffaa:1:11de": ("127.0.0.1", "AS-2"),
-    "19-ffaa:0:1310": ("127.0.0.1", "AS-3"),
-}
+from config import (
+    AS_TARGETS
+)
 
 # Base directories
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -76,7 +72,7 @@ def probe_all_paths(ia, ip_target, as_folder):
         log_file.write(f"\n[{timestamp}] Starting probes for {ia} ({as_folder})\n")
         if not all_paths:
             log_file.write("No paths found in Currently/ directory.\n")
-            print(f"[ERROR] No paths found for {ia}. Log created but no json written")
+            print(f"[WARNING] No paths found for {ia}. Log created but no json written")
             return
 
         for path in all_paths:
