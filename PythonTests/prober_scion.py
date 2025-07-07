@@ -38,7 +38,7 @@ def run_scion_ping(ia, ip_target, sequence):
     """Runs scion ping using a given path sequence"""
     try:
         result = subprocess.run(
-            ["scion", "ping", f"{ia},{ip_target}", "--format", "json", "-c", "5", "--sequence", sequence],
+            ["scion", "ping", f"{ia},{ip_target}", "--format", "json", "-c", "15", "--sequence", sequence],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             universal_newlines=True
