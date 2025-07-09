@@ -16,6 +16,7 @@ echo "[$timestamp] Starting pipeline..." >> "$LOG"
 /usr/bin/python3 "$PY_DIR/pathdiscovery_scion.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/comparer.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/prober_scion.py" >> "$LOG"
+/usr/bin/python3 "$PY_DIR/mp-prober.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/tr_collector_scion.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/bw_collector_scion.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/transform_csv.py" >> "$LOG"
@@ -46,3 +47,4 @@ fi
 
 end_ts=$(date +"%Y-%m-%d %H:%M:%S")
 echo "[$end_ts] Pipeline complete." >> "$LOG"
+echo "" >> "$LOG"
