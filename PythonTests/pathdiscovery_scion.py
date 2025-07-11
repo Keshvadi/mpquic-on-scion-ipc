@@ -51,7 +51,7 @@ def discover_paths(ia):
     if result.returncode != 0:
         print(f"[ERROR] Failed for {ia}: {result.stderr}")
         with open(log_file, "a") as f:
-            f.write(f"[ERROR] {timestanp} - AS {ia} : {result.stderr}\n")
+            f.write(f"[ERROR] {timestamp} - AS {ia} : {result.stderr}\n")
         return
 
     try:
