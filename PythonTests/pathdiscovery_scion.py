@@ -6,6 +6,8 @@ from config import (
     AS_FOLDER_MAP
 )
 
+
+print("-----Starting Pathdiscovery-----")
 # Directory structure
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -34,8 +36,8 @@ def discover_paths(ia):
     history_dir = os.path.join(HISTORY_BASE, as_folder)
     os.makedirs(history_dir, exist_ok=True)
 
-    history_file = os.path.join(history_dir, f"{as_folder}_{timestamp}_{filename_base}.json")
-    latest_file = os.path.join(CURRENTLY_DIR, f"{as_folder}_{timestamp}_{filename_base}.json")
+    history_file = os.path.join(history_dir, f"sp_{as_folder}_{timestamp}_{filename_base}.json")
+    latest_file = os.path.join(CURRENTLY_DIR, f"sp_{as_folder}_{timestamp}_{filename_base}.json")
     log_file = os.path.join(LOG_DIR, f"SP_AS_{filename_base}.log")
 
     # Run scion command
@@ -49,7 +51,7 @@ def discover_paths(ia):
     if result.returncode != 0:
         print(f"[ERROR] Failed for {ia}: {result.stderr}")
         with open(log_file, "a") as f:
-            f.write(f"[ERROR] {timestamp} - AS {ia} : {result.stderr}\n")
+            f.write(f"[ERROR] {timestanp} - AS {ia} : {result.stderr}\n")
         return
 
     try:
@@ -73,3 +75,6 @@ def discover_paths(ia):
 if __name__ == "__main__":
     for ia in AS_FOLDER_MAP:
         discover_paths(ia)
+
+
+print("-----Pathdiscovery Done-----")

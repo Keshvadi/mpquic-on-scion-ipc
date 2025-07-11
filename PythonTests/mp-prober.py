@@ -7,6 +7,8 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from config import AS_TARGETS
 
+print("-----Starting MP-Prober-----")
+
 # Setup directories
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
@@ -76,6 +78,7 @@ def probe_mp_paths(ia, ip_target, as_folder):
         all_paths = [p for p in path_data.get("paths", []) if p.get("status", "").lower() != "timeout"]
 
         if len(all_paths) < 2:
+            print("Not enough paths found for mp probe")
             log_file.write("Not enough usable paths found. Skipping.\n")
             with open(output_path, "w") as f:
                 json.dump({
@@ -113,6 +116,7 @@ def probe_mp_paths(ia, ip_target, as_folder):
                     log_file.write(f"[RESULT] {fingerprint} | {sequence} | duration: {result.get('duration')}s\n")
                     results.append(result)
                 except Exception as e:
+                    printf("[ERROR] Failed to run thread for {sequence}")
                     log_file.write(f"[ERROR] Failed to run thread for {sequence}: {e}\n")
                     results.append({
                         "sequence": sequence,
@@ -136,3 +140,5 @@ def probe_mp_paths(ia, ip_target, as_folder):
 if __name__ == "__main__":
     for ia, (ip, folder) in AS_TARGETS.items():
         probe_mp_paths(ia, ip, folder)
+
+print("-----MP-Probe Done-----")

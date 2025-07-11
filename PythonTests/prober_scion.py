@@ -1,15 +1,15 @@
 import os
 import json
 import subprocess
+import random
 from datetime import datetime
 from config import (
     AS_TARGETS
 )
 
+print("-----Starting Prober-----")
 # Base directories
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Define the base directory (../Data from the script)
 BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 CURRENTLY_DIR = os.path.join(BASE_DIR, "Currently")
 BASE_PROBER_DIR = os.path.join(BASE_DIR, "History", "Prober")
@@ -61,21 +61,27 @@ def probe_all_paths(ia, ip_target, as_folder):
 
     path_data = load_current_paths(ia)
     all_paths = path_data.get("paths", [])
-    combined_results = {
-        "timestamp": timestamp,
-        "ia": ia,
-        "ip": ip_target,
-        "probes": []
-    }
 
     with open(log_path, "a") as log_file:
         log_file.write(f"\n[{timestamp}] Starting probes for {ia} ({as_folder})\n")
+
         if not all_paths:
             log_file.write("No paths found in Currently/ directory.\n")
             print(f"[WARNING] No paths found for {ia}. Log created but no json written")
             return
 
-        for path in all_paths:
+        # Shuffle and select max 15 paths
+        random.shuffle(all_paths)
+        selected_paths = all_paths[:min(15, len(all_paths))]
+
+        combined_results = {
+            "timestamp": timestamp,
+            "ia": ia,
+            "ip": ip_target,
+            "probes": []
+        }
+
+        for path in selected_paths:
             sequence = path.get("sequence")
             fingerprint = path.get("fingerprint")
             status = path.get("status")
@@ -83,7 +89,6 @@ def probe_all_paths(ia, ip_target, as_folder):
                 log_file.write("Skipping path with missing sequence or fingerprint.\n")
                 continue
 
-            #new block, test if works
             if status.lower() == "timeout":
                 log_file.write(f"Skipping timed-out path: {fingerprint} | {sequence}\n")
                 combined_results["probes"].append({
@@ -121,3 +126,4 @@ if __name__ == "__main__":
     for ia, (ip, folder) in AS_TARGETS.items():
         probe_all_paths(ia, ip, folder)
 
+print("-----Prober Done-----")

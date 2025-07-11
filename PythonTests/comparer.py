@@ -5,6 +5,8 @@ from config import (
     AS_FOLDER_MAP
 )
 
+
+print("-----Starting Comparer-----")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Define the base directory (../Data from the script)
@@ -142,3 +144,4 @@ if __name__ == "__main__":
     for ia in AS_FOLDER_MAP:
         compare_paths(ia)
 
+print("-----Comparer Done-----")
