@@ -11,7 +11,7 @@ from config import (
 )
 
 # Bandwidth tiers in Mbps
-TARGET_MBPS = [5, 10, 50, 100]
+TARGET_MBPS = [10, 50, 100]
 
 # Parameters
 DURATION = 3  # seconds
