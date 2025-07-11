@@ -2,11 +2,13 @@ import os
 import subprocess
 import json
 import time
+import random
 from datetime import datetime
 from math import ceil
 from config import (
     BWTEST_SERVERS
 )
+
 # Bandwidth tiers in Mbps
 TARGET_MBPS = [5, 10, 50, 100]
 
@@ -187,6 +189,7 @@ def run_bwtest(ia, ip, target_mbps, fingerprint):
             }
         }
 
+
 if __name__ == "__main__":
     start = time.time()
     timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
@@ -199,7 +202,9 @@ if __name__ == "__main__":
 
         with open(log_path, "a") as log_file:
             log_file.write("==== START BANDWIDTH TESTING ====\n")
+
             paths_info = get_paths_info(ia)
+
             if not paths_info:
                 error_msg = f"[ERROR] {timestamp} - AS {ia}: No paths found or failed to retrieve paths"
                 print(error_msg)
@@ -222,7 +227,11 @@ if __name__ == "__main__":
                     with open(os.path.join(output_dir, filename), "w") as f:
                         json.dump(error_result, f, indent=2)
 
-                continue  # Skip bandwidth testing, next server
+                continue  # Skip bandwidth testing
+
+            # LIMIT TO 10 RANDOM PATHS MAX
+            if len(paths_info) > 10:
+                paths_info = random.sample(paths_info, 10)
 
             for mbps in TARGET_MBPS:
                 all_results = {
@@ -256,7 +265,8 @@ if __name__ == "__main__":
                 filename = f"BW_{timestamp}_AS_{normalize_as(ia)}_{mbps}Mbps.json"
                 with open(os.path.join(output_dir, filename), "w") as f:
                     json.dump(all_results, f, indent=2)
-        log_file.write("==== END BANDWIDTH TESTING ====\n")
+
+            log_file.write("==== END BANDWIDTH TESTING ====\n")
 
     end = time.time()
     elapsed = end - start
@@ -267,4 +277,3 @@ if __name__ == "__main__":
     duration_log = os.path.join(LOG_DIR, "script_duration.log")
     with open(duration_log, "a") as f:
         f.write(f"{datetime.utcnow().strftime('%Y-%m-%dT%H-%M-%S')} - Total execution time: {elapsed:.2f} seconds\n")
-

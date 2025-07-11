@@ -24,10 +24,10 @@ echo "[$timestamp] Starting pipeline..." >> "$LOG"
 /usr/bin/python3 "$PY_DIR/prober_scion.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/mp-prober.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/tr_collector_scion.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/bw_collector_scion.py" >> "$LOG"
+#/usr/bin/python3 "$PY_DIR/bw_collector_scion.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/bw_multipath.py" >> "$LOG"
 /usr/bin/python3 "$PY_DIR/bw_alldiscover_path.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/transform_csv.py" >> "$LOG"
+#/usr/bin/python3 "$PY_DIR/transform_csv.py" >> "$LOG"
 
 # Step 2: Move files from all History/<Tool>/AS-* into Archive/<date>/
 for tool_dir in "$HISTORY"/*/; do

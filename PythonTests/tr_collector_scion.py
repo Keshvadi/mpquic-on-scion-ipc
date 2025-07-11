@@ -1,6 +1,7 @@
 import os
 import json
 import subprocess
+import time
 from datetime import datetime
 from config import (
     AS_TARGETS
@@ -8,22 +9,17 @@ from config import (
 
 # Base directories
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Define the base directory (../Data from the script)
 BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 BASE_TRACEROUTE_DIR = os.path.join(BASE_DIR, "History", "Traceroute")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Traceroute")
-
 os.makedirs(LOG_DIR, exist_ok=True)
 
 def normalize_as(as_str):
     return as_str.replace(":", "_")
 
-# Run scion traceroute on all available paths
-
 def run_all_traceroutes(ia, ip_target, as_folder):
     timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
-    log_filename = f"TR_AS_{normalize_as(ia)}.txt"
+    log_filename = f"TR_AS_{normalize_as(ia)}.log"
     log_path = os.path.join(LOG_DIR, log_filename)
 
     output_dir = os.path.join(BASE_TRACEROUTE_DIR, as_folder)
@@ -40,7 +36,7 @@ def run_all_traceroutes(ia, ip_target, as_folder):
     if showpaths_result.returncode != 0:
         print(f"[ERROR] Failed to get paths for {ia}: {showpaths_result.stderr}")
         with open(log_path, "a") as log_file:
-            log_file.write(f"[ERROR] Failed to get paths for {ia}: {showpaths_result.stderr}\n")
+            log_file.write(f"[ERROR] {timestamp} Failed to get paths for {ia}: {showpaths_result.stderr}\n")
         return
 
     try:
@@ -49,7 +45,7 @@ def run_all_traceroutes(ia, ip_target, as_folder):
     except json.JSONDecodeError:
         print(f"[ERROR] Failed to parse showpaths JSON for {ia}")
         with open(log_path, "a") as log_file:
-            log_file.write(f"[ERROR] Invalid JSON from showpaths for {ia}\n")
+            log_file.write(f"[ERROR] {timestamp} Invalid JSON from showpaths for {ia}\n")
         return
 
     if not paths:
@@ -64,7 +60,6 @@ def run_all_traceroutes(ia, ip_target, as_folder):
         if not sequence:
             continue
 
-        # Get hop count from the sequence string
         hop_count = len(sequence.split())
 
         traceroute_result = subprocess.run(
@@ -77,7 +72,7 @@ def run_all_traceroutes(ia, ip_target, as_folder):
         if traceroute_result.returncode != 0:
             print(f"[ERROR] Traceroute failed on path {i+1} for {ia}: {traceroute_result.stderr}")
             with open(log_path, "a") as log_file:
-                log_file.write(f"[ERROR] Traceroute failed on path {i+1} for {ia}: {traceroute_result.stderr}\n")
+                log_file.write(f"[ERROR] {timestamp} Traceroute failed on path {i+1} for {ia}: {traceroute_result.stderr}\n")
             continue
 
         try:
@@ -85,22 +80,34 @@ def run_all_traceroutes(ia, ip_target, as_folder):
         except json.JSONDecodeError:
             print(f"[ERROR] Failed to parse traceroute JSON for path {i+1} of {ia}")
             with open(log_path, "a") as log_file:
-                log_file.write(f"[ERROR] Invalid traceroute JSON for path {i+1} of {ia}\n")
+                log_file.write(f"[ERROR] {timestamp} Invalid traceroute JSON for path {i+1} of {ia}\n")
             continue
 
-        # Save hop count into the traceroute JSON
         traceroute_data["hop_count"] = hop_count
-
         filename = f"TR_{timestamp}_AS_{normalize_as(ia)}_p_{i+1}.json"
         output_path = os.path.join(output_dir, filename)
         with open(output_path, "w") as f:
             json.dump(traceroute_data, f, indent=2)
 
-        print(f"[OK] Traceroute saved to {output_path}")
+        print(f"[OK] {timestamp} - AS {ia} TR path {i+1} (hops: {hop_count})")
         with open(log_path, "a") as log_file:
-            log_file.write(f"[SUCCESS] Traceroute path {i+1} (hops: {hop_count}) saved for AS {ia} at {timestamp}\n")
+            log_file.write(f"[OK] {timestamp} - AS {ia} TR path {i+1} (hops: {hop_count})\n")
 
 
 if __name__ == "__main__":
+    global_start = time.time()
+    global_timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+    print("==== START TRACEROUTE TESTING ====")
+
     for ia, (ip, folder) in AS_TARGETS.items():
         run_all_traceroutes(ia, ip, folder)
+
+    global_end = time.time()
+    duration = global_end - global_start
+    print("==== END TRACEROUTE TESTING ====")
+    print(f"[LOG] Total execution time: {duration:.2f} seconds")
+
+    # Log script duration
+    duration_log_path = os.path.join(LOG_DIR, "script_duration.log")
+    with open(duration_log_path, "a") as f:
+        f.write(f"{global_timestamp} - Total traceroute script duration: {duration:.2f} seconds\n")
