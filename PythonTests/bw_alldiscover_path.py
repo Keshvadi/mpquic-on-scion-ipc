@@ -10,7 +10,7 @@ from config import (
 )
 
 # Bandwidth tiers in Mbps
-TARGET_MBPS = [5, 10, 50, 100]
+TARGET_MBPS = [10, 50, 100]
 
 # Parameters
 DURATION = 3  # seconds
@@ -229,9 +229,9 @@ if __name__ == "__main__":
 
                 continue  # Skip bandwidth testing
 
-            # LIMIT TO 10 RANDOM PATHS MAX
-            if len(paths_info) > 10:
-                paths_info = random.sample(paths_info, 10)
+            # LIMIT TO 7 RANDOM PATHS MAX
+            if len(paths_info) > 7:
+                paths_info = random.sample(paths_info, 7)
 
             for mbps in TARGET_MBPS:
                 all_results = {
