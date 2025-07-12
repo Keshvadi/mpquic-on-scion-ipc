@@ -36,8 +36,8 @@ def discover_paths(ia):
     history_dir = os.path.join(HISTORY_BASE, as_folder)
     os.makedirs(history_dir, exist_ok=True)
 
-    history_file = os.path.join(history_dir, f"sp_{as_folder}_{timestamp}_{filename_base}.json")
-    latest_file = os.path.join(CURRENTLY_DIR, f"sp_{as_folder}_{timestamp}_{filename_base}.json")
+    history_file = os.path.join(history_dir, f"{as_folder}_{timestamp}_{filename_base}.json")
+    latest_file = os.path.join(CURRENTLY_DIR, f"{as_folder}_{timestamp}_{filename_base}.json")
     log_file = os.path.join(LOG_DIR, f"SP_AS_{filename_base}.log")
 
     # Run scion command
