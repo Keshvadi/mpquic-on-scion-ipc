@@ -229,9 +229,9 @@ if __name__ == "__main__":
 
                 continue  # Skip bandwidth testing
 
-            # LIMIT TO 7 RANDOM PATHS MAX
-            if len(paths_info) > 7:
-                paths_info = random.sample(paths_info, 7)
+            # LIMIT TO 2 RANDOM PATHS MAX
+            if len(paths_info) > 2:
+                paths_info = random.sample(paths_info, 2)
 
             for mbps in TARGET_MBPS:
                 all_results = {
