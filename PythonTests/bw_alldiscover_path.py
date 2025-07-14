@@ -21,6 +21,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
 RESULT_DIR = os.path.join(BASE_DIR, "History", "Bandwidth")
 LOG_DIR = os.path.join(BASE_DIR, "Logs", "Bandwidth")
+SELECTED_PATH_FILE = os.path.join(BASE_DIR, "selected_paths.json")
 os.makedirs(LOG_DIR, exist_ok=True)
 
 
@@ -196,6 +197,8 @@ if __name__ == "__main__":
 
     print("==== START BANDWIDTH TESTING ====")
 
+    all_selected_paths = {}
+
     for ia, (ip, folder) in BWTEST_SERVERS.items():
         log_filename = f"BW_AS_{normalize_as(ia)}.log"
         log_path = os.path.join(LOG_DIR, log_filename)
@@ -227,11 +230,12 @@ if __name__ == "__main__":
                     with open(os.path.join(output_dir, filename), "w") as f:
                         json.dump(error_result, f, indent=2)
 
-                continue  # Skip bandwidth testing
+                continue
 
-            # LIMIT TO 2 RANDOM PATHS MAX
             if len(paths_info) > 2:
                 paths_info = random.sample(paths_info, 2)
+
+            all_selected_paths[ia] = [{"path_index": i, "fingerprint": f, "sequence": s} for i, f, s in paths_info]
 
             for mbps in TARGET_MBPS:
                 all_results = {
@@ -252,11 +256,9 @@ if __name__ == "__main__":
                     }
                     all_results["paths"].append(path_result)
 
-                    if result.get("error_type"):
-                        msg = f"[ERROR] {timestamp} - AS {ia} - {mbps}Mbps - path {path_index}: {result.get('error_type')}"
-                    else:
-                        msg = f"[OK] {timestamp} - AS {ia} - {mbps}Mbps - path {path_index}"
-
+                    msg = f"[ERROR] {timestamp} - AS {ia} - {mbps}Mbps - path {path_index}: {result.get('error_type')}" \
+                        if result.get("error_type") else \
+                        f"[OK] {timestamp} - AS {ia} - {mbps}Mbps - path {path_index}"
                     print(msg)
                     log_file.write(msg + "\n")
 
@@ -267,6 +269,9 @@ if __name__ == "__main__":
                     json.dump(all_results, f, indent=2)
 
             log_file.write("==== END BANDWIDTH TESTING ====\n")
+
+    with open(SELECTED_PATH_FILE, "w") as f:
+        json.dump(all_selected_paths, f, indent=2)
 
     end = time.time()
     elapsed = end - start
