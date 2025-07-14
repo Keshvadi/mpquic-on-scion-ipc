@@ -70,7 +70,7 @@ def run_bwtest(ia, ip, folder, target_mbps):
     timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
     tier_label = f"{target_mbps}Mbps"
     filename = f"BW_{timestamp}_AS_{normalize_as(ia)}_{tier_label}.json"
-    log_filename = f"BW_AS_{normalize_as(ia)}.txt"
+    log_filename = f"BW_AS_{normalize_as(ia)}.log"
     log_path = os.path.join(LOG_DIR, log_filename)
 
     output_dir = os.path.join(RESULT_DIR, folder)
