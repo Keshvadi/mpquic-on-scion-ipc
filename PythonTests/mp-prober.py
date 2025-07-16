@@ -136,7 +136,6 @@ def probe_mp_paths(ia, ip_target, as_folder):
 
     print(f"[DONE] MP probe for {ia} complete. Results at {output_path}")
 
-# Main
 if __name__ == "__main__":
     for ia, (ip, folder) in AS_TARGETS.items():
         probe_mp_paths(ia, ip, folder)

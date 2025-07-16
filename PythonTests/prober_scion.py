@@ -121,7 +121,6 @@ def probe_all_paths(ia, ip_target, as_folder):
 
     print(f"[DONE] Probing complete for {ia}. Results saved to {output_path}")
 
-# Main entry point
 if __name__ == "__main__":
     for ia, (ip, folder) in AS_TARGETS.items():
         probe_all_paths(ia, ip, folder)

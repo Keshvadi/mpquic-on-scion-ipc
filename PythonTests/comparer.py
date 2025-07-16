@@ -48,7 +48,7 @@ def compare_paths(ia):
     filename_base = normalize_as(ia)
     delta_filename = f"delta_{timestamp}_{filename_base}.json"
 
-    # ➤ Load latest file from Currently/
+    #Load latest file from Currently/
     current_files = [f for f in os.listdir(CURRENTLY_DIR) if f.endswith(f"_{filename_base}.json")]
     if not current_files:
         print(f"[ERROR] No current file found for {ia}")
@@ -56,7 +56,7 @@ def compare_paths(ia):
     latest_file = os.path.join(CURRENTLY_DIR, current_files[0])
     latest_data = load_json(latest_file)
 
-    # ➤ Load history file from Showpaths/AS-X/
+    #Load history file from Showpaths/AS-X/
     as_folder = AS_FOLDER_MAP.get(ia, "UNKNOWN_AS")
     history_dir = os.path.join(HISTORY_SHOWPATHS_DIR, as_folder)
     os.makedirs(history_dir, exist_ok=True)
@@ -65,7 +65,7 @@ def compare_paths(ia):
     history_file = os.path.join(history_dir, history_files[0]) if history_files else None
     history_data = load_json(history_file) if history_file else {}
 
-    # ➤ Extract paths and fingerprint maps (ignoring timeouts)
+    #Extract paths and fingerprint maps (ignoring timeouts)
     valid_latest_paths = extract_valid_paths(latest_data)
     valid_history_paths = extract_valid_paths(history_data)
 
@@ -75,7 +75,7 @@ def compare_paths(ia):
     latest_fps = set(latest_fps_map.keys())
     history_fps = set(history_fps_map.keys())
 
-    # ➤ Compare sets
+    #Compare sets
     added = sorted(latest_fps - history_fps)
     removed = sorted(history_fps - latest_fps)
 
@@ -94,7 +94,7 @@ def compare_paths(ia):
             "change": "removed"
         })
 
-    # ➤ Change status
+    #Change status
     if added or removed:
         change_status = "change_detected"
     elif not latest_fps and not history_fps:
@@ -114,14 +114,14 @@ def compare_paths(ia):
         "changes": changes
     }
 
-    # ➤ Save delta file
+    #Save delta file
     comparer_sub_dir = os.path.join(COMPARER_DIR, as_folder)
     os.makedirs(comparer_sub_dir, exist_ok=True)
     delta_path = os.path.join(comparer_sub_dir, delta_filename)
     with open(delta_path, "w") as f:
         json.dump(output, f, indent=2)
 
-    # ➤ Logging
+    #Logging
     log_file = os.path.join(LOG_DIR, f"log_compare_{filename_base}.txt")
     with open(log_file, "a") as log:
         log.write(f"\n[{timestamp}] Compare run for AS {ia}:\n")
@@ -132,14 +132,13 @@ def compare_paths(ia):
             for change in changes:
                 log.write(f"- {change['change'].upper()}: {change['fingerprint']} | {change['sequence']}\n")
 
-    # ➤ Console output
+    #Console output
     print(f"[COMPARE] {ia}: {change_status} ({len(added)} added, {len(removed)} removed)")
     for change in changes:
         print(f"    {change['change'].upper()}: {change['fingerprint']} | {change['sequence']}")
 
     return delta_path
 
-# Main
 if __name__ == "__main__":
     for ia in AS_FOLDER_MAP:
         compare_paths(ia)

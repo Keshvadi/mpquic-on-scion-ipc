@@ -71,7 +71,6 @@ def discover_paths(ia):
     with open(log_file, "a") as f:
         f.write(f"[SUCCESS] {timestamp} - AS {ia}\n")
 
-# Run the script
 if __name__ == "__main__":
     for ia in AS_FOLDER_MAP:
         discover_paths(ia)
