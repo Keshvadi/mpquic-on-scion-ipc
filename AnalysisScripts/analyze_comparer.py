@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from collections import defaultdict
 
-ARCHIVE_DIR = "/home/lars/Desktop/Scion_Project_Canada/GithubProject/mpquic-on-scion-ipc/AnalysisScripts"
+ARCHIVE_DIR = ""
 COMPARER_PREFIX = "delta_"
 
 def extract_path_features(sequence):

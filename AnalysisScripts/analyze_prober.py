@@ -6,7 +6,7 @@ import statistics
 from datetime import datetime
 from collections import defaultdict
 
-ARCHIVE_DIR = "/home/lars/Desktop/Scion_Project_Canada/GithubProject/mpquic-on-scion-ipc/AnalysisScripts"
+ARCHIVE_DIR = ""
 PROBER_PREFIX = "prober_"
 
 def load_prober_data(archive_dir):
