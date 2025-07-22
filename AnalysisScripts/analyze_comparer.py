@@ -2,6 +2,7 @@ import os
 import json
 from datetime import datetime
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 ARCHIVE_DIR = ""
 COMPARER_PREFIX = "delta_"
@@ -108,6 +109,87 @@ def write_output_to_file(output_lines, filename):
         for line in output_lines:
             f.write(line + "\n")
 
+def generate_comparer_plots(data_by_ia):
+    output_dir = "comparer_plots"
+    os.makedirs(output_dir, exist_ok=True)
+    hourly_changes = defaultdict(int)
+    hourly_adds = defaultdict(int)
+    hourly_removes = defaultdict(int)
+    all_lifetimes = []
+
+    for ia, entries in data_by_ia.items():
+        entries_sorted = sorted(entries, key=lambda x: x.get("timestamp", ""))
+        last_seen = {}
+
+        for entry in entries_sorted:
+            ts = None
+            timestamp = entry.get("timestamp")
+            for fmt in ("%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M"):
+                try:
+                    ts = datetime.strptime(timestamp, fmt)
+                    break
+                except:
+                    continue
+            if not ts:
+                continue
+            ts_hour = ts.replace(minute=0, second=0)
+
+            if entry.get("change_status") == "change_detected":
+                hourly_changes[ts_hour] += 1
+
+            for change in entry.get("changes", []):
+                typ = change.get("change")
+                seq = change.get("sequence", "").strip()
+
+                if typ == "added":
+                    hourly_adds[ts_hour] += 1
+                    last_seen[seq] = ts
+                elif typ == "removed":
+                    hourly_removes[ts_hour] += 1
+                    if seq in last_seen:
+                        delta = (ts - last_seen[seq]).total_seconds()
+                        all_lifetimes.append(delta)
+
+    # Plot 1: Total change events per hour
+    hours = sorted(hourly_changes)
+    plt.figure(figsize=(12, 4))
+    plt.plot(hours, [hourly_changes[h] for h in hours], marker='o', label='Total Changes')
+    plt.xlabel("Time (Hourly)")
+    plt.ylabel("Changes")
+    plt.title("Total Path Changes Over Time")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.grid(True)
+    plt.savefig(os.path.join(output_dir, "plot_path_changes_over_time.png"))
+    plt.close()
+
+    # Plot 2: Additions vs Removals
+    hours = sorted(set(hourly_adds) | set(hourly_removes))
+    plt.figure(figsize=(12, 4))
+    plt.plot(hours, [hourly_adds[h] for h in hours], label='Added Paths', marker='o')
+    plt.plot(hours, [hourly_removes[h] for h in hours], label='Removed Paths', marker='x')
+    plt.xlabel("Time (Hourly)")
+    plt.ylabel("Count")
+    plt.title("Added vs Removed Paths Over Time")
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir,"plot_add_remove_over_time.png"))
+    plt.close()
+
+    # Plot 3: Lifetime Histogram
+    if all_lifetimes:
+        plt.figure(figsize=(8, 4))
+        plt.hist(all_lifetimes, bins=20, color='purple')
+        plt.xlabel("Lifetime (seconds)")
+        plt.ylabel("Frequency")
+        plt.title("Path Lifetimes Distribution")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, "plot_path_lifetime_histogram.png"))
+        plt.close()
+
 def main():
     output_file = f"comparer_analysis.txt"
     output_lines = []
@@ -135,6 +217,9 @@ def main():
     log("\nChurn by path length:")
     for length, count in churn_insights["churn_by_path_length"].items():
         log(f"  Length {length}: {count} changes")
+
+    generate_comparer_plots(comparer_data)
+    log("[Saved figures as .png files]")
 
     write_output_to_file(output_lines, output_file)
     log(f"\n[Saved output to {output_file}]")

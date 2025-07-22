@@ -1,6 +1,9 @@
 import os
 import json
 import statistics
+import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
+from datetime import datetime, timedelta
 from datetime import datetime
 from collections import defaultdict
 
@@ -105,6 +108,110 @@ def write_output_to_file(output_lines, filename):
             f.write(line + "\n")
 
 
+def generate_bw_plots(archive_dir):
+    TIME_RESOLUTION = timedelta(hours=1)
+    BW_PREFIX = "BW_"
+
+    def parse_ts(fname):
+        try:
+            ts_part = fname.split("_")[1]
+            return datetime.strptime(ts_part, "%Y-%m-%dT%H:%M")
+        except:
+            return None
+
+    data_per_as = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(list))))
+    # structure: data[ia][mbps][timestamp][direction][metric]
+
+    for fname in os.listdir(archive_dir):
+        if not fname.startswith(BW_PREFIX) or not fname.endswith(".json"):
+            continue
+        ts = parse_ts(fname)
+        if not ts:
+            continue
+
+        ts = ts.replace(minute=0, second=0, microsecond=0)  # round to the hour
+        fpath = os.path.join(archive_dir, fname)
+
+        try:
+            with open(fpath) as f:
+                doc = json.load(f)
+                ia = doc.get("target_server", {}).get("ia") or doc.get("as")
+                mbps = doc.get("target", {}).get("tier_mbps") or doc.get("target_mbps")
+                if not ia or not mbps:
+                    continue
+                paths = doc.get("paths", [doc])
+                for p in paths:
+                    if p.get("result", {}).get("invalid_format"):
+                        continue
+                    for dir_key, dir_label in [("S->C results", "sc"), ("C->S results", "cs")]:
+                        res = p.get("result", {}).get(dir_key)
+                        if not res:
+                            continue
+                        bw = parse_bps_field(res.get("achieved_bps", ""))
+                        loss = res.get("loss_rate", "").strip('%')
+                        try:
+                            loss = float(loss)
+                        except:
+                            loss = None
+                        _, ia_avg, _, ia_mdev = parse_interarrival(res.get("interarrival time min/avg/max/mdev", ""))
+
+                        metrics = {
+                            "bandwidth": bw,
+                            "loss %": loss,
+                            "ia_avg ms": ia_avg,
+                            "ia_mdev ms": ia_mdev
+                        }
+
+                        for key, val in metrics.items():
+                            if val is not None:
+                                data_per_as[ia][mbps][ts][dir_label].append((key, val))
+        except Exception as e:
+            print(f"[WARN] Failed to read {fname}: {e}")
+
+    # ==== PLOTTING ====
+    os.makedirs("bw_plots", exist_ok=True)
+
+    for ia in data_per_as:
+        ia_dir = os.path.join("bw_plots", ia.replace(":", "_"))
+        os.makedirs(ia_dir, exist_ok=True)
+
+        for mbps in data_per_as[ia]:
+            for direction in ["sc", "cs"]:
+                plot_data = defaultdict(list)  # key -> [(ts, val), ...]
+
+                for ts in sorted(data_per_as[ia][mbps]):
+                    items = data_per_as[ia][mbps][ts][direction]
+                    grouped = defaultdict(list)
+                    for k, v in items:
+                        grouped[k].append(v)
+
+                    for k, vlist in grouped.items():
+                        plot_data[k].append((ts, sum(vlist) / len(vlist)))
+
+                # Generate each plot
+                for metric in ["bandwidth", "loss %", "ia_avg ms", "ia_mdev ms"]:
+                    if metric not in plot_data:
+                        continue
+
+                    times, values = zip(*plot_data[metric])
+                    fig, ax = plt.subplots(figsize=(10, 5))
+                    ax.plot(times, values, marker='o', label=metric.upper())
+                    ax.set_title(f"{ia} - {direction.upper()} - {metric} over time @ {mbps}Mbps")
+                    ax.set_xlabel("Time")
+                    ax.set_ylabel(metric)
+                    ax.xaxis.set_major_formatter(DateFormatter("%m-%d %H:%M"))
+                    ax.grid(True)
+                    plt.xticks(rotation=45)
+                    plt.tight_layout()
+                    plt.legend()
+                    plot_path = os.path.join(ia_dir, f"{direction}_{metric}_{mbps}Mbps.png")
+                    plt.savefig(plot_path)
+                    plt.close()
+
+    print("\n[Generated per-AS bandwidth plots in ./bw_plots/]")
+
+
+
 def print_bw_summary(bw_data):
     output_file = f"sp_bw_analysis.txt"
     output_lines = []
@@ -153,6 +260,7 @@ def print_bw_summary(bw_data):
 def main():
     bw_data = load_bw_data(ARCHIVE_DIR)
     print_bw_summary(bw_data)
+    generate_bw_plots(ARCHIVE_DIR)
 
 if __name__ == "__main__":
     main()

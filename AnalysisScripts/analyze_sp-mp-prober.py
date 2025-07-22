@@ -5,6 +5,7 @@ import json
 import statistics
 from datetime import datetime, timedelta
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 ARCHIVE_DIR = ""
 SP_PREFIX = "prober_"
@@ -96,6 +97,40 @@ def summarize_differences(results):
     }
     return summary
 
+def plot_differences(results):
+    output_dir = "sp_mp_prober_plots"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Extract values
+    rtt_diffs = [r["rtt_diff"] for r in results if r["rtt_diff"] is not None]
+    jitter_diffs = [r["jitter_diff"] for r in results if r["jitter_diff"] is not None]
+    loss_diffs = [r["loss_diff"] for r in results if r["loss_diff"] is not None]
+
+    # Boxplot
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.boxplot([rtt_diffs, jitter_diffs, loss_diffs], tick_labels=["RTT", "Jitter", "Loss"], patch_artist=True)
+    ax.set_title("SP - MP Differences (Boxplot)")
+    ax.set_ylabel("Difference (SP - MP)")
+    ax.grid(True)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "sp_mp_diff_boxplot.png"))
+    plt.close()
+
+    # Scatter plot over index (optional, helps see trends)
+    for name, diffs in [("rtt ms", rtt_diffs), ("jitter ms", jitter_diffs), ("loss %", loss_diffs)]:
+        plt.figure(figsize=(8, 4))
+        plt.scatter(range(len(diffs)), diffs, alpha=0.6, marker="o", color="steelblue")
+        plt.axhline(0, linestyle="--", color="red")
+        plt.title(f"{name.upper()} Difference per Matched Path")
+        plt.xlabel("Matched Path Index")
+        plt.ylabel("Difference (SP - MP)")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f"{name}_diff_scatter.png"))
+        plt.close()
+
+    print(f"[Saved SP/MP prober difference plots to ./{output_dir}/]")
+
 
 def main():
     output_file = "sp_mp_prober_comparison.txt"
@@ -126,6 +161,8 @@ def main():
     with open(output_file, "w") as f:
         for line in output_lines:
             f.write(line + "\n")
+
+    plot_differences(comparison_results)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import json
 import statistics
 from datetime import datetime, timedelta
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 ARCHIVE_DIR = ""
 SP_PREFIX = "BW_"
@@ -144,6 +145,56 @@ def summarize_differences(differences):
         summary[key] = round(statistics.mean(values), 3) if values else None
     return summary
 
+def plot_bw_differences(differences):
+    output_dir = "sp_mp_bw_plots"
+    os.makedirs(output_dir, exist_ok=True)
+
+    label_map = {
+        "sc_bw": "S→C Bandwidth (Mbps)",
+        "cs_bw": "C→S Bandwidth (Mbps)",
+        "sc_loss": "S→C Loss (%)",
+        "cs_loss": "C→S Loss (%)",
+        "sc_ia_avg": "S→C Interarrival Avg (ms)",
+        "cs_ia_avg": "C→S Interarrival Avg (ms)",
+        "sc_ia_mdev": "S→C Interarrival Jitter (ms)",
+        "cs_ia_mdev": "C→S Interarrival Jitter (ms)",
+    }
+
+    # Boxplots
+    fig, ax = plt.subplots(figsize=(10, 6))
+    keys = sorted([k for k in differences if differences[k]])
+    values = [differences[k] for k in keys]
+    labels = [label_map.get(k, k) for k in keys]
+
+    ax.boxplot(values, patch_artist=True)
+    ax.set_title("SP - MP Metric Differences (Boxplot)")
+    ax.set_ylabel("Difference (SP minus MP)")
+    ax.set_xticks(range(1, len(labels)+1))
+    ax.set_xticklabels(labels, rotation=45, ha="right")
+    ax.grid(True)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "sp_mp_bw_diff_boxplot.png"))
+    plt.close()
+
+    # Optional: scatter plots for each metric
+    for key in keys:
+        diffs = differences[key]
+        if not diffs:
+            continue
+        plt.figure(figsize=(8, 4))
+        plt.scatter(range(len(diffs)), diffs, color="tab:blue", alpha=0.6)
+        plt.axhline(0, color="red", linestyle="--")
+        plt.title(f"{label_map.get(key, key)} Differences (SP - MP)")
+        plt.xlabel("Matched Path Index")
+        plt.ylabel("Difference")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, f"{key}_diff_scatter.png"))
+        plt.close()
+
+    print(f"[Saved SP/MP bandwidth comparison plots to './{output_dir}/']")
+
+
 def main():
     output_file = "sp_mp_bw_comparison.txt"
     output_lines = []
@@ -174,6 +225,8 @@ def main():
     with open(output_file, "w") as f:
         for line in output_lines:
             f.write(line + "\n")
+
+    plot_bw_differences(diffs)
 
 if __name__ == "__main__":
     main()
