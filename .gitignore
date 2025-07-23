@@ -7,3 +7,6 @@ Data/**/*.txt
 # But don't ignore directories (needed for Git to track them)
 !Data/**/
 __pycache__/
+pandas_converted/
+parsed_output/
+scionpathml.egg-info/

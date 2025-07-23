@@ -157,6 +157,122 @@ def parse_bandwidth(data, src_as):
 
 
 
+def parse_traceroute(data, timestamp):
+    rows = []
+    try:
+        path = data["path"]
+        fingerprint = path.get("fingerprint")
+        hops = data.get("hops", [])
+        hop_count = len(hops)
+
+        sequence_str = path.get("sequence", "")
+        formatted_sequence = format_sequence_with_ifaces(sequence_str)
+
+        sequence_parts = sequence_str.split()
+        src_as = sequence_parts[0].split("#")[0] if sequence_parts else None
+        dst_as = sequence_parts[-1].split("#")[0] if sequence_parts else None
+
+        hop_data = {}
+        total_rtt_sum = 0
+        total_rtt_count = 0
+        for i, hop in enumerate(hops):
+            rtts = hop.get("round_trip_times", [])
+            avg_rtt = np.mean(rtts) if rtts else None
+            total_rtt_sum += sum(rtts)
+            total_rtt_count += len(rtts)
+            hop_data.update({
+                f"hop_{i}_isd_as": hop.get("isd_as"),
+                f"hop_{i}_interface_id": hop.get("interface_id") or hop.get("interface"),
+                f"hop_{i}_rtts_ms": rtts,
+                f"hop_{i}_avg_rtt_ms": avg_rtt
+            })
+
+        global_avg_rtt = total_rtt_sum / total_rtt_count if total_rtt_count > 0 else None
+
+        row = {
+            "timestamp": timestamp,
+            "path_fingerprint": fingerprint,
+            "hop_count (number)": hop_count,
+            "src_as (address)": src_as,
+            "dst_as (address)": dst_as,
+            "sequence (full sequence)": formatted_sequence,
+            "global_rtt_sum (ms)": total_rtt_sum,
+            "global_avg_rtt (ms)": global_avg_rtt,
+            **hop_data
+        }
+        rows.append(row)
+
+    except Exception as e:
+        print(f"⚠️ Erreur parsing traceroute: {e}")
+    return rows
+
+def parse_showpaths(data, timestamp):
+    rows = []
+    src_as = data.get("local_isd_as")
+    dst_as = data.get("destination")
+    for path in data.get("paths", []):
+        latencies = path.get("latency", [])
+        latency_filtered = [l for l in latencies if l >= 0]
+        avg_latency = np.mean(latency_filtered) / 1e6 if latency_filtered else None
+        total_latency = np.sum(latency_filtered) / 1e6 if latency_filtered else None
+
+        sequence_str = path.get("sequence", "")
+        formatted_sequence = format_sequence_with_ifaces(sequence_str)
+
+        sequence_parts = sequence_str.split()
+        src_as_path = sequence_parts[0].split("#")[0] if sequence_parts else src_as
+        dst_as_path = sequence_parts[-1].split("#")[0] if sequence_parts else dst_as
+
+        row = {
+            "timestamp": timestamp,
+            "src_as": src_as_path,
+            "dst_as": dst_as_path,
+            "path_fingerprint": path.get("fingerprint"),
+            "sequence": formatted_sequence,
+            "mtu (bytes)": path.get("mtu"),
+            "path_status (1=alive,0=dead)": 1 if path.get("status") == "alive" else 0,
+            "latency_raw (ns)": latencies,
+            "avg_latency_ms (ms)": avg_latency,
+            "total_latency_ms (ms)": total_latency
+        }
+        rows.append(row)
+    return rows
+
+def parse_path_changes(delta_dir):
+    changes_detected = []
+
+    for root, _, files in os.walk(delta_dir):
+        for file in files:
+            if file.startswith("delta_") and file.endswith(".json"):
+                try:
+                    with open(os.path.join(root, file)) as f:
+                        data = json.load(f)
+
+                    timestamp = data.get("timestamp")
+                    src = data.get("source")
+                    dst = data.get("destination")
+                    change_status = data.get("change_status")
+
+                    if change_status == "change_detected":
+                        for change in data.get("changes", []):
+                            fingerprint = change.get("fingerprint")
+                            sequence_raw = change.get("sequence")
+                            sequence = format_sequence_with_ifaces(sequence_raw) if sequence_raw else None
+                            change_type = change.get("change")
+
+                            changes_detected.append({
+                                "timestamp": timestamp,
+                                "source": src,
+                                "destination": dst,
+                                "change_type": change_type,
+                                "path_fingerprint": fingerprint,
+                                "sequence": sequence
+                            })
+
+                except Exception as e:
+                    print(f"⚠️ Error parsing delta file {file}: {e}")
+
+    return changes_detected
 
 def collect_all_data(base_path):
     all_ping = []
@@ -190,7 +306,14 @@ def collect_all_data(base_path):
                         parsed = parse_bandwidth(data, src_as)
                         all_bandwidth.extend(parsed)
 
- 
+                    elif "hops" in data:
+                        parsed = parse_traceroute(data, file_ts)
+                        all_traceroute.extend(parsed)
+
+                    elif "paths" in data:
+                        parsed = parse_showpaths(data, file_ts)
+                        all_showpaths.extend(parsed)
+
                 except Exception as e:
                     print(f"⚠️ Error parsing file {fpath}: {e}")
 
@@ -217,7 +340,11 @@ def save_dfs(base_path, output_dir="parsed_output"):
         df_sp = pd.DataFrame(showpaths).sort_values("timestamp")
         df_sp.to_csv(os.path.join(output_dir, "showpaths_data.csv"), index=False)
 
+    delta_changes = parse_path_changes(base_path)
+    if delta_changes:
+        df_changes = pd.DataFrame(delta_changes).sort_values("timestamp")
+        df_changes.to_csv(os.path.join(output_dir, "path_changes.csv"), index=False)
 
 if __name__ == "__main__":
-    base_path = "/home/scion/Documents/DataMachine1/Data/Archive"
+    base_path = "/home/scion/Documents/DataMachine1_2/"
     save_dfs(base_path)
