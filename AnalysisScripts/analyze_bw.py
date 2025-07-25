@@ -64,7 +64,7 @@ def load_bw_data(archive_dir):
 
                 bw_data[ia][mbps]["files"] += 1
 
-                paths = doc.get("paths", [doc])
+                paths = doc.get("paths")
 
                 for path_result in paths:
                     result = path_result.get("result", {})
@@ -111,6 +111,7 @@ def write_output_to_file(output_lines, filename):
 def generate_bw_plots(archive_dir):
     TIME_RESOLUTION = timedelta(hours=1)
     BW_PREFIX = "BW_"
+    os.makedirs("bw_plots", exist_ok=True)
 
     def parse_ts(fname):
         try:
@@ -120,7 +121,7 @@ def generate_bw_plots(archive_dir):
             return None
 
     data_per_as = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(list))))
-    # structure: data[ia][mbps][timestamp][direction][metric]
+    # structure: data[ia][mbps][timestamp][direction][(metric, value)]
 
     for fname in os.listdir(archive_dir):
         if not fname.startswith(BW_PREFIX) or not fname.endswith(".json"):
@@ -128,8 +129,7 @@ def generate_bw_plots(archive_dir):
         ts = parse_ts(fname)
         if not ts:
             continue
-
-        ts = ts.replace(minute=0, second=0, microsecond=0)  # round to the hour
+        ts = ts.replace(minute=0, second=0, microsecond=0)  # round to hour
         fpath = os.path.join(archive_dir, fname)
 
         try:
@@ -156,10 +156,10 @@ def generate_bw_plots(archive_dir):
                         _, ia_avg, _, ia_mdev = parse_interarrival(res.get("interarrival time min/avg/max/mdev", ""))
 
                         metrics = {
-                            "bandwidth": bw,
-                            "loss %": loss,
-                            "ia_avg ms": ia_avg,
-                            "ia_mdev ms": ia_mdev
+                            "bandwidth (mbps)": bw,
+                            "loss (%)": loss,
+                            "ia_avg (ms)": ia_avg,
+                            "ia_mdev (ms)": ia_mdev
                         }
 
                         for key, val in metrics.items():
@@ -168,48 +168,97 @@ def generate_bw_plots(archive_dir):
         except Exception as e:
             print(f"[WARN] Failed to read {fname}: {e}")
 
-    # ==== PLOTTING ====
-    os.makedirs("bw_plots", exist_ok=True)
+    def average_per_hour(metric_data):
+        out = defaultdict(list)
+        for ts in sorted(metric_data):
+            grouped = defaultdict(list)
+            for metric, val in metric_data[ts]:
+                grouped[metric].append(val)
+            for metric, vals in grouped.items():
+                out[metric].append((ts, sum(vals) / len(vals)))
+        return out
 
+    # 1. Per-AS, show all tiers in one plot per metric
     for ia in data_per_as:
         ia_dir = os.path.join("bw_plots", ia.replace(":", "_"))
         os.makedirs(ia_dir, exist_ok=True)
 
-        for mbps in data_per_as[ia]:
-            for direction in ["sc", "cs"]:
-                plot_data = defaultdict(list)  # key -> [(ts, val), ...]
-
-                for ts in sorted(data_per_as[ia][mbps]):
-                    items = data_per_as[ia][mbps][ts][direction]
-                    grouped = defaultdict(list)
-                    for k, v in items:
-                        grouped[k].append(v)
-
-                    for k, vlist in grouped.items():
-                        plot_data[k].append((ts, sum(vlist) / len(vlist)))
-
-                # Generate each plot
-                for metric in ["bandwidth", "loss %", "ia_avg ms", "ia_mdev ms"]:
-                    if metric not in plot_data:
+        for direction in ["sc", "cs"]:
+            for metric in ["bandwidth (mbps)", "loss (%)", "ia_avg (m)s", "ia_mdev (ms)"]:
+                plt.figure(figsize=(12, 5))
+                found = False
+                for mbps in sorted(data_per_as[ia]):
+                    hourly_data = defaultdict(list)
+                    for ts in sorted(data_per_as[ia][mbps]):
+                        entries = data_per_as[ia][mbps][ts][direction]
+                        for m, v in entries:
+                            if m == metric:
+                                hourly_data[ts].append(v)
+                    if not hourly_data:
                         continue
+                    avg_data = [(ts, sum(vs)/len(vs)) for ts, vs in sorted(hourly_data.items()) if vs]
+                    if not avg_data:
+                        continue
+                    times, values = zip(*avg_data)
+                    plt.plot(times, values, marker='o', label=f"{mbps} Mbps")
+                    found = True
 
-                    times, values = zip(*plot_data[metric])
-                    fig, ax = plt.subplots(figsize=(10, 5))
-                    ax.plot(times, values, marker='o', label=metric.upper())
-                    ax.set_title(f"{ia} - {direction.upper()} - {metric} over time @ {mbps}Mbps")
-                    ax.set_xlabel("Time")
-                    ax.set_ylabel(metric)
-                    ax.xaxis.set_major_formatter(DateFormatter("%m-%d %H:%M"))
-                    ax.grid(True)
+                if found:
+                    plt.title(f"{ia} [{direction.upper()}] - {metric.upper()} across tiers")
+                    plt.xlabel("Time")
+                    plt.ylabel(metric)
+                    plt.legend(title="Tier")
+                    plt.grid(True)
+                    plt.gca().xaxis.set_major_formatter(DateFormatter("%m-%d\n%H:%M"))
                     plt.xticks(rotation=45)
                     plt.tight_layout()
-                    plt.legend()
-                    plot_path = os.path.join(ia_dir, f"{direction}_{metric}_{mbps}Mbps.png")
-                    plt.savefig(plot_path)
-                    plt.close()
+                    fname = f"{direction}_{metric.replace(' ', '_')}_all_tiers.png"
+                    plt.savefig(os.path.join(ia_dir, fname))
+                    print(f"[Saved] {ia} multi-tier → {fname}")
+                plt.close()
 
-    print("\n[Generated per-AS bandwidth plots in ./bw_plots/]")
+    # 2. For each tier, show all ASes in one graph
+    tier_data = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(list))))
+    # tier_data[tier][direction][metric][ia] = [(ts, val)]
 
+    for ia in data_per_as:
+        for mbps in data_per_as[ia]:
+            for ts in data_per_as[ia][mbps]:
+                for direction in data_per_as[ia][mbps][ts]:
+                    for metric, value in data_per_as[ia][mbps][ts][direction]:
+                        tier_data[mbps][direction][metric][ia].append((ts, value))
+
+    for mbps in tier_data:
+        for direction in ["sc", "cs"]:
+            for metric in ["bandwidth (mbps)", "loss (%)", "ia_avg (m)s", "ia_mdev (ms)"]:
+                plt.figure(figsize=(12, 5))
+                found = False
+                for ia in tier_data[mbps][direction][metric]:
+                    data = tier_data[mbps][direction][metric][ia]
+                    hourly = defaultdict(list)
+                    for ts, val in data:
+                        ts = ts.replace(minute=0, second=0, microsecond=0)
+                        hourly[ts].append(val)
+                    avg_data = [(ts, sum(vals)/len(vals)) for ts, vals in sorted(hourly.items()) if vals]
+                    if not avg_data:
+                        continue
+                    times, values = zip(*avg_data)
+                    plt.plot(times, values, marker='o', label=ia)
+                    found = True
+
+                if found:
+                    plt.title(f"{metric.upper()} Comparison @ {mbps} Mbps ({direction.upper()})")
+                    plt.xlabel("Time")
+                    plt.ylabel(metric)
+                    plt.legend(title="IA")
+                    plt.grid(True)
+                    plt.gca().xaxis.set_major_formatter(DateFormatter("%m-%d\n%H:%M"))
+                    plt.xticks(rotation=45)
+                    plt.tight_layout()
+                    fname = f"tier_{mbps}_{direction}_{metric.replace(' ', '_')}_per_IA.png"
+                    plt.savefig(os.path.join("bw_plots", fname))
+                    print(f"[Saved] Cross-AS tier plot → {fname}")
+                plt.close()
 
 
 def print_bw_summary(bw_data):

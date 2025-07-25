@@ -6,7 +6,7 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-ARCHIVE_DIR = ""
+ARCHIVE_DIR = "/home/lars/Desktop/Scion_Project_Canada/NewTestData/biggertest"
 TR_PREFIX = "TR_"
 
 def parse_filename_timestamp(fname):

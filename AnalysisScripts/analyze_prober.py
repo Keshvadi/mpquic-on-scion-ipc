@@ -148,18 +148,29 @@ def generate_prober_plots(prober_data_by_time):
             buckets[bucket_time].append(v)
         return sorted((bt, sum(vs)/len(vs)) for bt, vs in buckets.items() if vs)
 
-    # Group by IA and plot each IA individually
+    all_metrics = {
+        "rtt": {},
+        "loss": {},
+        "mdev": {},
+        "seq_issue_ratio": {}
+    }
+
+    # Plot per-AS and store for combined plotting
     for ia, time_data in prober_data_by_time.items():
         rtt_series = time_data.get("rtt", [])
         loss_series = time_data.get("loss", [])
         mdev_series = time_data.get("mdev", [])
         seq_issue_series = time_data.get("seq_issue_ratio", [])
 
-        # Aggregate hourly averages
         rtt_avg = hourly_average(rtt_series)
         loss_avg = hourly_average(loss_series)
         mdev_avg = hourly_average(mdev_series)
         seq_issue_avg = hourly_average(seq_issue_series)
+
+        all_metrics["rtt"][ia] = rtt_avg
+        all_metrics["loss"][ia] = loss_avg
+        all_metrics["mdev"][ia] = mdev_avg
+        all_metrics["seq_issue_ratio"][ia] = seq_issue_avg
 
         def plot_metric(series, ylabel, title, filename):
             if not series:
@@ -183,6 +194,37 @@ def generate_prober_plots(prober_data_by_time):
         plot_metric(loss_avg, "Avg Loss (%)", f"{ia} - Packet Loss Over Time", f"{ia}_loss_plot.png")
         plot_metric(mdev_avg, "Avg Jitter (mdev, ms)", f"{ia} - Path Jitter Over Time", f"{ia}_jitter_plot.png")
         plot_metric(seq_issue_avg, "Seq Issue Ratio", f"{ia} - Seq Issues Over Time", f"{ia}_seq_plot.png")
+
+    # Plot shared graphs: one for each metric, with both ASes on the same graph
+    def plot_combined(metric_key, ylabel, title, filename):
+        plt.figure(figsize=(12, 4))
+        valid = False
+        for ia, series in all_metrics[metric_key].items():
+            if not series:
+                continue
+            times, values = zip(*series)
+            plt.plot(times, values, marker='o', linestyle='-', label=ia)
+            valid = True
+        if not valid:
+            print(f"[INFO] Skipping combined plot {title}, no data.")
+            plt.close()
+            return
+        plt.title(title)
+        plt.xlabel("Time")
+        plt.ylabel(ylabel)
+        plt.legend(title="IA")
+        plt.grid(True)
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d\n%H:%M'))
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, filename))
+        plt.close()
+        print(f"[Saved combined plot to {output_dir}/{filename}]")
+
+    plot_combined("rtt", "Avg RTT (ms)", "RTT Comparison Between ASes", "combined_rtt_plot.png")
+    plot_combined("loss", "Avg Loss (%)", "Loss Comparison Between ASes", "combined_loss_plot.png")
+    plot_combined("mdev", "Avg Jitter (mdev, ms)", "Jitter Comparison Between ASes", "combined_jitter_plot.png")
+    plot_combined("seq_issue_ratio", "Seq Issue Ratio", "Seq Issues Comparison Between ASes", "combined_seq_plot.png")
 
 
 if __name__ == "__main__":

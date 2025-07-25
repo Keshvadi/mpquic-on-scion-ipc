@@ -108,7 +108,7 @@ def plot_differences(results):
 
     # Boxplot
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.boxplot([rtt_diffs, jitter_diffs, loss_diffs], tick_labels=["RTT", "Jitter", "Loss"], patch_artist=True)
+    ax.boxplot([rtt_diffs, jitter_diffs, loss_diffs], tick_labels=["RTT (ms)", "Jitter (ms)", "Loss (%)"], patch_artist=True)
     ax.set_title("SP - MP Differences (Boxplot)")
     ax.set_ylabel("Difference (SP - MP)")
     ax.grid(True)
@@ -117,13 +117,13 @@ def plot_differences(results):
     plt.close()
 
     # Scatter plot over index (optional, helps see trends)
-    for name, diffs in [("rtt ms", rtt_diffs), ("jitter ms", jitter_diffs), ("loss %", loss_diffs)]:
+    for name, diffs in [("rtt (ms)", rtt_diffs), ("jitter (ms)", jitter_diffs), ("loss (%)", loss_diffs)]:
         plt.figure(figsize=(8, 4))
         plt.scatter(range(len(diffs)), diffs, alpha=0.6, marker="o", color="steelblue")
         plt.axhline(0, linestyle="--", color="red")
         plt.title(f"{name.upper()} Difference per Matched Path")
         plt.xlabel("Matched Path Index")
-        plt.ylabel("Difference (SP - MP)")
+        plt.ylabel(f"Difference (SP - MP) {name}") # was changed
         plt.grid(True)
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, f"{name}_diff_scatter.png"))

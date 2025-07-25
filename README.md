@@ -27,12 +27,16 @@ Each AS will run a suite of python scripts which will gather data to all 3 other
 3. prober_scion.py will run the adapted “scion ping” command using SCMP to probe path latency as well as packet loss and (if possible) packet sequencing. This data will be saved per path per AS in timestamped json.
 4. tr_collector_scion.py runs the adapted “scion traceroute” command using SCMP to probe the AS-level hops (hop count), RTT and path structure. The results are saved per path per AS in timestamped JSON files.
 5. bw_collector_scion.py performs automated bandwidth testing from the local AS to 4 remote ASes over all available SCION paths, using predefined target rates (1–250 Mbps). For each direction (client-to-server and server-to-client), it collects detailed performance metrics including attempted and achieved throughput, packet loss percentage, and interarrival time (min/avg/max/mdev). Results are saved in timestamped JSON files for later analysis and benchmarking.
-6. Wrapper.py will handle the compilation of data from the previous three sources into a csv for later use and analysis
-7. Custom Cron Job: will run the 4 scripts in a set interval and handle cleanup of the working directories and updates of the Archive directory from which data may be pulled during testing.
+6. bw_alldiscover_path.py works like bw_collector_scion.py but iterates over a set number of available paths
+7. bw_multipath.py runs two simultanious subprocesses over the same paths used in bw_alldiscover_path.py allowing us to compare single path and this simple multipath approach in terms of latency, loss etc.
+8. mp-prober.py works like prober_scion.py and tests three random paths simultaniously allowing us to compare single path to multipath.
+9. Custom Cron Job: will run the 4 scripts in a set interval and handle cleanup of the working directories and updates of the Archive directory from which data may be pulled during testing.
    
 This approach gives us both a compiled CSV as well as all the raw data at the and. Through the structure of working and archive directories we are also able to access the already collected data at any point without interfering with the ongoing measurements. This may be used for backup needs.
 
-
+For the analysis we provide one script each to compile and calculate the gathered statistics as well as to create representative graphs.
+These scripts are found in the AnalysisScripts directory. By simply changing the variable for the directory it can be run on any subset of data. Resulting graphs are output into subdirs while raw numbers are printed to the CLI and written to files.
+These scripts can be easily adapted to calculate other statistics or create other graphs, depending on what is most relevant to the research being conducted.
 
 ## Cron Job Setup
 1. To create the cronjob. Make sure that the repo is at /home/vagrant.
@@ -69,3 +73,4 @@ PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
 ```
 
 Change number of bandwith tests at this time : Mon Jul 14 17:24:14 UTC 2025 on Scion Machine
+Data as of Wednesday Jul 16 is fully operational and will be used for our final analysis
