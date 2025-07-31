@@ -116,7 +116,7 @@ def probe_mp_paths(ia, ip_target, as_folder):
                     log_file.write(f"[RESULT] {fingerprint} | {sequence} | duration: {result.get('duration')}s\n")
                     results.append(result)
                 except Exception as e:
-                    printf("[ERROR] Failed to run thread for {sequence}")
+                    print("[ERROR] Failed to run thread for {sequence}")
                     log_file.write(f"[ERROR] Failed to run thread for {sequence}: {e}\n")
                     results.append({
                         "sequence": sequence,

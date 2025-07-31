@@ -1,9 +1,8 @@
-#!/bin/bash
 set -euo pipefail
 
 # Set working paths relative to repo root
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
-PY_DIR="$REPO_ROOT/PythonTests"
+PY_DIR="$REPO_ROOT/collector"
 DATA_DIR="$REPO_ROOT/Data"
 CURRENTLY="$DATA_DIR/Currently"
 HISTORY="$DATA_DIR/History"
@@ -18,16 +17,96 @@ mkdir -p "$ARCHIVE_DAY_DIR"
 
 echo "[$timestamp] Starting pipeline..." >> "$LOG"
 
-# Step 1: Run scripts, add more here in correct order
-/usr/bin/python3 "$PY_DIR/pathdiscovery_scion.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/comparer.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/prober_scion.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/mp-prober.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/tr_collector_scion.py" >> "$LOG"
-#/usr/bin/python3 "$PY_DIR/bw_collector_scion.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/bw_alldiscover_path.py" >> "$LOG"
-/usr/bin/python3 "$PY_DIR/bw_multipath.py" >> "$LOG"
-#/usr/bin/python3 "$PY_DIR/transform_csv.py" >> "$LOG"
+# Function to check if a command is enabled
+is_command_enabled() {
+    local cmd_name="$1"
+    python3 -c "
+import sys
+sys.path.append('$PY_DIR')
+try:
+    import config
+    enabled = config.PIPELINE_COMMANDS.get('$cmd_name', {}).get('enabled', True)  # Default True for backward compatibility
+    sys.exit(0 if enabled else 1)
+except:
+    sys.exit(0)  # If no config, run everything (backward compatibility)
+    "
+}
+
+# Function to get script name for a command
+get_script_name() {
+    local cmd_name="$1"
+    local default_script="$2"
+    python3 -c "
+import sys
+sys.path.append('$PY_DIR')
+try:
+    import config
+    script = config.PIPELINE_COMMANDS.get('$cmd_name', {}).get('script', '$default_script')
+    print(script)
+except:
+    print('$default_script')
+    "
+}
+
+
+echo "[$timestamp] Executing enabled commands..." >> "$LOG"
+
+
+if is_command_enabled "pathdiscovery"; then
+    script=$(get_script_name "pathdiscovery" "pathdiscovery_scion.py")
+    echo "[$timestamp] Running pathdiscovery ($script)..." >> "$LOG"
+    /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
+else
+    echo "[$timestamp] Skipping disabled command: pathdiscovery" >> "$LOG"
+fi
+
+if is_command_enabled "comparer"; then
+    script=$(get_script_name "comparer" "comparer.py")
+    echo "[$timestamp] Running comparer ($script)..." >> "$LOG"
+    /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
+else
+    echo "[$timestamp] Skipping disabled command: comparer" >> "$LOG"
+fi
+
+if is_command_enabled "prober"; then
+    script=$(get_script_name "prober" "prober_scion.py")
+    echo "[$timestamp] Running prober ($script)..." >> "$LOG"
+    /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
+else
+    echo "[$timestamp] Skipping disabled command: prober" >> "$LOG"
+fi
+
+if is_command_enabled "mp-prober"; then
+    script=$(get_script_name "mp-prober" "mp-prober.py")
+    echo "[$timestamp] Running mp-prober ($script)..." >> "$LOG"
+    /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
+else
+    echo "[$timestamp] Skipping disabled command: mp-prober" >> "$LOG"
+fi
+
+if is_command_enabled "traceroute"; then
+    scrip# Step 2: Move files from all History/<Tool>/AS-* into Archive/<date>/t=$(get_script_name "traceroute" "tr_collector_scion.py")
+    echo "[$timestamp] Running traceroute ($script)..." >> "$LOG"
+    /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
+else
+    echo "[$timestamp] Skipping disabled command: traceroute" >> "$LOG"
+fi
+
+if is_command_enabled "bandwidth"; then
+    script=$(get_script_name "bandwidth" "bw_alldiscover_path.py")
+    echo "[$timestamp] Running bandwidth ($script)..." >> "$LOG"
+    /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
+else
+    echo "[$timestamp] Skipping disabled command: bandwidth" >> "$LOG"
+fi
+
+if is_command_enabled "multipath-bw"; then
+    script=$(get_script_name "multipath-bw" "bw_multipath.py")
+    echo "[$timestamp] Running multipath-bw ($script)..." >> "$LOG"
+    /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
+else
+    echo "[$timestamp] Skipping disabled command: multipath-bw" >> "$LOG"
+fi
 
 # Step 2: Move files from all History/<Tool>/AS-* into Archive/<date>/
 for tool_dir in "$HISTORY"/*/; do
@@ -54,4 +133,3 @@ fi
 end_ts=$(date +"%Y-%m-%d %H:%M:%S")
 echo "[$end_ts] Pipeline complete." >> "$LOG"
 echo "" >> "$LOG"
-

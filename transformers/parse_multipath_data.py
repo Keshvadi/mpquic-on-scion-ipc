@@ -1,7 +1,7 @@
 import os
 import json
 import pandas as pd
-from PythonTests.parse_data import parse_ping, parse_bandwidth  
+from transformers.parse_data import parse_ping, parse_bandwidth  
 
 def collect_multipath_data(base_path):
     all_ping = []
@@ -30,17 +30,17 @@ def collect_multipath_data(base_path):
 
     return all_ping, all_bandwidth
 
-def save_multipath_data(base_path, output_dir="parsed_output"):
+def save_multipath_data(base_path, output_dir="datasets"):
     os.makedirs(output_dir, exist_ok=True)
     ping_data, bw_data = collect_multipath_data(base_path)
 
     if ping_data:
         df_ping = pd.DataFrame(ping_data).sort_values("timestamp")
-        df_ping.to_csv(os.path.join(output_dir, "multipath_ping.csv"), index=False)
+        df_ping.to_csv(os.path.join(output_dir, "data_PG-MP.csv"), index=False)
 
     if bw_data:
         df_bw = pd.DataFrame(bw_data).sort_values("timestamp")
-        df_bw.to_csv(os.path.join(output_dir, "multipath_bandwidth.csv"), index=False)
+        df_bw.to_csv(os.path.join(output_dir, "data_BW-MP.csv"), index=False)
 
 if __name__ == "__main__":
     base_path = "/home/scion/Documents/DataMachine1_2/"

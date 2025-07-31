@@ -1,5 +1,10 @@
 from setuptools import setup, find_packages
 
+def print_welcome():
+    print("Thank you for installing scionpathml!")
+    print(" Run `scionpathml -h` for usage instructions.")
+
+print_welcome()
 setup(
     name="scionpathml",
     version="0.1",
@@ -7,7 +12,7 @@ setup(
     install_requires=[],
     entry_points={
         "console_scripts": [
-            "SCIONPathML=scionpathml.cli:main",
+            "scionpathml=scionpathml.cli:main",
         ],
     },
     author="Your Name",
