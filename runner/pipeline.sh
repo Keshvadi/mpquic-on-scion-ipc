@@ -53,7 +53,7 @@ echo "[$timestamp] Executing enabled commands..." >> "$LOG"
 
 
 if is_command_enabled "pathdiscovery"; then
-    script=$(get_script_name "pathdiscovery" "pathdiscovery_scion.py")
+    script=$(get_script_name "pathdiscovery" "pathdiscovery.py")
     echo "[$timestamp] Running pathdiscovery ($script)..." >> "$LOG"
     /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
 else
@@ -69,7 +69,7 @@ else
 fi
 
 if is_command_enabled "prober"; then
-    script=$(get_script_name "prober" "prober_scion.py")
+    script=$(get_script_name "prober" "prober.py")
     echo "[$timestamp] Running prober ($script)..." >> "$LOG"
     /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
 else
@@ -85,7 +85,7 @@ else
 fi
 
 if is_command_enabled "traceroute"; then
-    scrip# Step 2: Move files from all History/<Tool>/AS-* into Archive/<date>/t=$(get_script_name "traceroute" "tr_collector_scion.py")
+    scrip# Step 2: Move files from all History/<Tool>/AS-* into Archive/<date>/t=$(get_script_name "traceroute" "traceroute.py")
     echo "[$timestamp] Running traceroute ($script)..." >> "$LOG"
     /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
 else
@@ -93,19 +93,19 @@ else
 fi
 
 if is_command_enabled "bandwidth"; then
-    script=$(get_script_name "bandwidth" "bw_alldiscover_path.py")
+    script=$(get_script_name "bandwidth" "bandwidth.py")
     echo "[$timestamp] Running bandwidth ($script)..." >> "$LOG"
     /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
 else
     echo "[$timestamp] Skipping disabled command: bandwidth" >> "$LOG"
 fi
 
-if is_command_enabled "multipath-bw"; then
-    script=$(get_script_name "multipath-bw" "bw_multipath.py")
-    echo "[$timestamp] Running multipath-bw ($script)..." >> "$LOG"
+if is_command_enabled "mp-bandwidth"; then
+    script=$(get_script_name "mp-bandwidth" "mp-bandwidth.py")
+    echo "[$timestamp] Running mp-bandwidth ($script)..." >> "$LOG"
     /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
 else
-    echo "[$timestamp] Skipping disabled command: multipath-bw" >> "$LOG"
+    echo "[$timestamp] Skipping disabled command: mp-bandwidth" >> "$LOG"
 fi
 
 # Step 2: Move files from all History/<Tool>/AS-* into Archive/<date>/

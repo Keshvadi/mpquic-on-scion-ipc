@@ -26,7 +26,7 @@ BWTEST_SERVERS = {
 PIPELINE_COMMANDS = {
     "pathdiscovery": {
         "enabled": True,
-        "script": "pathdiscovery_scion.py",
+        "script": "pathdiscovery.py",
         "description": "Discover available network paths using SCION",
         "category": "discovery",
         "execution_order": 1
@@ -40,7 +40,7 @@ PIPELINE_COMMANDS = {
     },
     "prober": {
         "enabled": True,
-        "script": "prober_scion.py",
+        "script": "prober.py",
         "description": "Basic network connectivity probing",
         "category": "probing",
         "execution_order": 3
@@ -54,21 +54,21 @@ PIPELINE_COMMANDS = {
     },
     "traceroute": {
         "enabled": True,
-        "script": "tr_collector_scion.py",
+        "script": "traceroute.py",
         "description": "Collect traceroute information",
         "category": "tracing",
         "execution_order": 5
     },
     "bandwidth": {
         "enabled": True,
-        "script": "bw_alldiscover_path.py",
+        "script": "bandwidth.py",
         "description": "Measure bandwidth for all discovered paths",
         "category": "bandwidth",
         "execution_order": 6
     },
-    "multipath-bw": {
+    "mp-bandwidth": {
         "enabled": True,
-        "script": "bw_multipath.py",
+        "script": "mp-bandwidth.py",
         "description": "Multi-path bandwidth measurement",
         "category": "bandwidth",
         "execution_order": 7

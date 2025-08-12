@@ -1,7 +1,7 @@
 import os
 import json
 import pandas as pd
-from transformers.parse_data import parse_ping, parse_bandwidth  
+from transformers.parse_json_to_csv import parse_ping, parse_bandwidth  
 
 def collect_multipath_data(base_path):
     all_ping = []
@@ -30,7 +30,7 @@ def collect_multipath_data(base_path):
 
     return all_ping, all_bandwidth
 
-def save_multipath_data(base_path, output_dir="datasets"):
+def save_multipath_data(base_path, output_dir="./transformers/datasets"):
     os.makedirs(output_dir, exist_ok=True)
     ping_data, bw_data = collect_multipath_data(base_path)
 

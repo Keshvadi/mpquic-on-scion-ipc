@@ -838,7 +838,7 @@ def collect_all_data(base_path):
 
     return all_ping, all_bandwidth, all_traceroute, all_showpaths
 
-def save_dfs(base_path, output_dir="datasets"):
+def save_dfs(base_path, output_dir="./transformers/datasets"):
     os.makedirs(output_dir, exist_ok=True)
 
     ping, bandwidth, traceroute, showpaths = collect_all_data(base_path)

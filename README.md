@@ -24,8 +24,8 @@ Each AS will run a suite of python scripts which will gather data to all 3 other
 
 1. pathdiscover_scion.py discovers paths to the 3 other ASes. These are saved as timestamped json files for further use by the other scripts, analysis down the line and archival purposes.
 2. comparer.py Compares the path availability of inter AS paths between two test instances providing us data on Path Churn as well as full connectivity breakdown (observed in ISD 17).
-3. prober_scion.py will run the adapted “scion ping” command using SCMP to probe path latency as well as packet loss and (if possible) packet sequencing. This data will be saved per path per AS in timestamped json.
-4. tr_collector_scion.py runs the adapted “scion traceroute” command using SCMP to probe the AS-level hops (hop count), RTT and path structure. The results are saved per path per AS in timestamped JSON files.
+3. prober.py will run the adapted “scion ping” command using SCMP to probe path latency as well as packet loss and (if possible) packet sequencing. This data will be saved per path per AS in timestamped json.
+4. traceroute.py runs the adapted “scion traceroute” command using SCMP to probe the AS-level hops (hop count), RTT and path structure. The results are saved per path per AS in timestamped JSON files.
 5. bw_collector_scion.py performs automated bandwidth testing from the local AS to 4 remote ASes over all available SCION paths, using predefined target rates (1–250 Mbps). For each direction (client-to-server and server-to-client), it collects detailed performance metrics including attempted and achieved throughput, packet loss percentage, and interarrival time (min/avg/max/mdev). Results are saved in timestamped JSON files for later analysis and benchmarking.
 6. Wrapper.py will handle the compilation of data from the previous three sources into a csv for later use and analysis
 7. Custom Cron Job: will run the 4 scripts in a set interval and handle cleanup of the working directories and updates of the Archive directory from which data may be pulled during testing.
@@ -68,4 +68,4 @@ PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
 */5 * * * * /home/vagrant/mpquic-on-scion-ipc/Scripts/pipeline.sh
 ```
 
-Change number of bandwith tests at this time : Mon Jul 14 17:24:14 UTC 2025 on Scion Machine
+Change number of bandwidth tests at this time : Mon Jul 14 17:24:14 UTC 2025 on Scion Machine

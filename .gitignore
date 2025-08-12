@@ -7,5 +7,5 @@ Data/**/*.txt
 # But don't ignore directories (needed for Git to track them)
 !Data/**/
 __pycache__/
-datasets/
+/transformers/datasets
 scionpathml.egg-info/
