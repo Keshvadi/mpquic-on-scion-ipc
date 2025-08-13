@@ -21,8 +21,8 @@ pip install -e .
 ## Network Configuration 
 
 ### Configure autonomous systems
-scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS< br / >
-scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n TestServer< br / >
+scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS  
+scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n TestServer  
 
 ### View configuration
 scionpathml show
@@ -30,50 +30,50 @@ scionpathml show
 ## Measurement Control
 
 ### Control measurement pipeline
-scionpathml show-cmds< br / >
-scionpathml enable-cmd -m bandwidth< br / >
-scionpathml disable-category -c tracing< br / >
+scionpathml show-cmds  
+scionpathml enable-cmd -m bandwidth  
+scionpathml disable-category -c tracing  
 
 ### Schedule automated measurements
-scionpathml -f 30  # Run every 30 minutes
+scionpathml -f 30  # Run every 30 minutes  
 
 ## Data Processing
 
 ### Transform JSON measurements to CSV
-scionpathml transform< br / >
-scionpathml transform-data /path/to/measurements< br / >
-scionpathml transform multipath --output-dir /output/< br / >
+scionpathml transform  
+scionpathml transform-data /path/to/measurements  
+scionpathml transform multipath --output-dir /output/  
 
 ## Manage datasets
-scionpathml data-overview< br / >
-scionpathml data-show Archive< br / >
-scionpathml data-show Archive --interractive< br / >
-scionpathml data-move Archive History< br / >
+scionpathml data-overview  
+scionpathml data-show Archive   
+scionpathml data-show Archive --interractive  
+scionpathml data-move Archive History  
 
 ## Monitoring
 
-### View logs and status
-scionpathml logs pipeline< br / >
-scionpathml view-log bandwidth latest< br / >
-scionpathml transform-status< br / >
+## View logs and status
+scionpathml logs pipeline  
+scionpathml view-log bandwidth latest  
+scionpathml transform-status  
 
 ## Measurement Types
 
-Path Discovery: scion showpaths coordination< br / >
-Latency Testing: scion ping with configurable parameters< br / >
-Bandwidth Testing: scion-bwtestclient throughput measurement< br / >
-Path Analysis: scion traceroute hop-by-hop latency< br / >
-Multipath Testing: mp-prober and mp-bandwidth for concurrent measurements< br / >
-Path Comparison: Historical path availability tracking< br / >
+Path Discovery: scion showpaths coordination  
+Latency Testing: scion ping with configurable parameters  
+Bandwidth Testing: scion-bwtestclient throughput measurement  
+Path Analysis: scion traceroute hop-by-hop latency  
+Multipath Testing: mp-prober and mp-bandwidth for concurrent measurements  
+Path Comparison: Historical path availability tracking  
 
 
 ## Data Organization
 
 Data/
-├── Archive/     # Archive measurement data< br / >
-├── Currently/   # Current measurement data< br / >
-├── History/     # Preivous measurement data< br / >
-└── Logs/        # Execution and error logs< br / >
+├── Archive/     # Archive measurement data  
+├── Currently/   # Current measurement data  
+├── History/     # Preivous measurement data  
+└── Logs/        # Execution and error logs  
 
 
 ## License
