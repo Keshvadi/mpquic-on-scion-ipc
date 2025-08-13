@@ -78,3 +78,27 @@ Data/
 
 ## License
 MIT License
+
+
+## CSV to DataFrame Guide
+
+If necessary, you can also convert your CSV file to a DataFrame. Here is some documentation to help you do this:
+
+### Prerequisites
+
+Ensure you have Python and the pandas library installed. You can install pandas via pip if necessary:
+
+```bash
+pip install pandas
+```
+### Example Code
+
+```python
+import pandas as pd
+
+# Load data from CSV into a DataFrame
+df = pd.read_csv('your_file.csv')
+print(df.head())
+```
+
+
