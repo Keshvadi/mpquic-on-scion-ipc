@@ -18,6 +18,7 @@ from config_manager import ConfigManager
 from help_manager import HelpManager
 from transform_commands import TransformCommands
 from data_commands import DataCommands, DataHelpDisplay
+
 def main():
     # MINIMAL FIX: Handle transform-data with path before argparse
     if len(sys.argv) > 1 and sys.argv[1] == 'transform-data':
@@ -61,6 +62,7 @@ def main():
   {Colors.GREEN}scionpathml logs pipeline{Colors.END} (view pipeline.log)
   {Colors.GREEN}scionpathml transform{Colors.END}     (transform Data/Archive to CSV)
   {Colors.GREEN}scionpathml data-overview{Colors.END} (see all your measurement data)
+  {Colors.GREEN}scionpathml data-browse{Colors.END}   (interactive data browser)
   {Colors.GREEN}scionpathml view-log bandwidth{Colors.END} (view first bandwidth file - script_duration.log)
   {Colors.GREEN}scionpathml logs pipeline --all{Colors.END} (view entire pipeline.log)
   {Colors.GREEN}scionpathml -f 40{Colors.END}         (set 40-minute frequency)
@@ -92,6 +94,8 @@ Use {Colors.BOLD}scionpathml help{Colors.END} for comprehensive guide.
 {Colors.CYAN}Data Management:{Colors.END}
   scionpathml data-overview                    # Show overview of all data directories
   scionpathml data-show Archive               # Show Archive directory details
+  scionpathml data-browse                     # Interactive data browser (all directories)
+  scionpathml data-browse Archive             # Interactive browser for Archive
   scionpathml data-search BW_2025             # Search for bandwidth files from 2025
   scionpathml data-move Archive History       # Move Archive files to History
   scionpathml data-move Archive /backup/data  # Move Archive to external backup
@@ -146,6 +150,7 @@ Use {Colors.BOLD}scionpathml help{Colors.END} for comprehensive guide.
             'transform-help',
             'data-overview', 
             'data-show',
+            'data-browse',    # Add the new browse command
             'data-move', 
             'data-delete', 
             'data-search', 
@@ -168,6 +173,13 @@ Command to execute:
   transform         - Transform data from Data/Archive (default)
   transform-status  - Show transformation status
   transform-help    - Transformation help guide
+  data-overview     - Show overview of all data directories
+  data-show         - Show detailed directory contents
+  data-browse       - Interactive data browser
+  data-move         - Move data between directories
+  data-delete       - Delete data from directories
+  data-search       - Search for files
+  data-help         - Data management help
             """
     )
     
@@ -183,6 +195,7 @@ Command to execute:
     parser.add_argument('file_number', nargs='?', help='File number or "latest"')
     parser.add_argument('--log-dir', type=str, default="Data/Logs/", help='Log directory path')
     parser.add_argument('--all', action='store_true', help='Show entire log file instead of just last lines')
+    parser.add_argument('--interactive', action='store_true', help='Enable interactive mode for data commands')
     parser.add_argument('--output-dir', type=str, help='Custom output directory for CSV files')
     parser.add_argument('--category', type=str, help='Category for data operations (Bandwidth, Traceroute, etc.)')
     parser.add_argument('--no-confirm', action='store_true', help='Skip confirmation prompts')
@@ -336,7 +349,7 @@ Command to execute:
         
     elif args.command == "log-help":
         LogHelpDisplay.show_log_quick_reference()
-
+        
     # Transform management
     elif args.command == "transform":
         # Simple transform command using default Data/Archive path
@@ -352,11 +365,17 @@ Command to execute:
     elif args.command == "transform-help":
         transform_commands.handle_transform_help_command()
         
+    # Data management commands
     elif args.command == "data-overview":
         data_commands.handle_data_overview_command()
 
     elif args.command == "data-show":
-        data_commands.handle_data_show_command(args.log_category)
+        # Handle --interactive flag for data-show
+        data_commands.handle_data_show_command(args.log_category, interactive=args.interactive)
+
+    elif args.command == "data-browse":
+        # New interactive browse command
+        data_commands.handle_data_browse_command(args.log_category)
 
     elif args.command == "data-move":
         source = args.log_category
