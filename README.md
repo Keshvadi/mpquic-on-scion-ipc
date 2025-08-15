@@ -1,13 +1,10 @@
-# mpquic-on-scion-ipc
-Compilation of my Scion Measurements Scripts
-
-
-For use, copy the entire PythonTest dir to the SCION AS from which you wish to measure. Then set up the cron job as described below to run the scripts every 5 Minutes. To extract data use the Archive dir where the archived raw data as well as the continually updated csv will be saved. Please do not try to download the data from the working dir /paths as this may interfere with ongoing measurements.
+# SCION measurement for multipath delevopement
+This project provides measurement scripts, analysis scripts as well as 4 weeks of raw data gathered from the 11th of July to the 11th of august. With the already gathered data or the use of the maesurement and analysis suite in a production environment such as SCIERA, crucial data can be gathered, the insights of which may prove integral in implementing Multipath Protocols such as MPQUIC on SCION.
 
 
 ## Motivation and initial Idea
 
-To gather the needed data, we have set up 4 ASes in the SCIONLab environment. These will run as 4 separate Vagrant machines on a Google cloud host machine. The 4 chosen machines are the following:
+To gather the needed data, we have set up 4 ASes in the SCIONLab environment. These will run as 4 separate oogle Cloud machines. The 4 chosen machines are the following:
 
 - 19-ffaa:1:11de 	Lars Herschbach ScionLab 1 	EU 	Magdeburg AP 	VPN:50000
 - 17-ffaa:1:11e4 	Lars Herschbach ScionLab 2 	Switzerland 	ETHZ-AP 	VPN:50001
@@ -19,7 +16,7 @@ These were chosen based on the following criteria:
 - Accessibility (through the SCIONLab VPN option)
 - Stability (or lack thereof in some cases giving us more representative data)
   
-All of these machines follow the same setup and are created as vagrant machines attached to their Access Points via VPN to avoid NAT issues. Their geographical diversity allows us to replicate results gathered by related work before us. The instability of some of these ASes allow us to gather more accurate data as opposed to a fully static sandbox environment, while the diversity of ASes should be sufficient, that at least one should always be able to measure.
+All of these machines follow the same setup and are created attached to their Access Points via VPN to avoid NAT issues. Their geographical diversity allows us to replicate results gathered by related work before us. The instability of some of these ASes allow us to gather more accurate data as opposed to a fully static sandbox environment, while the diversity of ASes should be sufficient enough, that at least one should always be able to measure.
 Each AS will run a suite of python scripts which will gather data to all 3 other ASes. This is done in the following way:
 
 1. pathdiscover_scion.py discovers paths to the 3 other ASes. These are saved as timestamped json files for further use by the other scripts, analysis down the line and archival purposes.
@@ -37,6 +34,7 @@ This approach gives us both a compiled CSV as well as all the raw data at the an
 For the analysis we provide one script each to compile and calculate the gathered statistics as well as to create representative graphs.
 These scripts are found in the AnalysisScripts directory. By simply changing the variable for the directory it can be run on any subset of data. Resulting graphs are output into subdirs while raw numbers are printed to the CLI and written to files.
 These scripts can be easily adapted to calculate other statistics or create other graphs, depending on what is most relevant to the research being conducted.
+All scripts expect all raw data in one single directory so the data must be moved from the Dated directories where it was saved during measurement to a seperate directory for analysis. 
 
 ## Cron Job Setup
 1. To create the cronjob. Make sure that the repo is at /home/vagrant.
