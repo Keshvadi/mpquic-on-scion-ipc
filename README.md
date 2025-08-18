@@ -17,6 +17,9 @@ These were chosen based on the following criteria:
 - Stability (or lack thereof in some cases giving us more representative data)
   
 All of these machines follow the same setup and are created attached to their Access Points via VPN to avoid NAT issues. Their geographical diversity allows us to replicate results gathered by related work before us. The instability of some of these ASes allow us to gather more accurate data as opposed to a fully static sandbox environment, while the diversity of ASes should be sufficient enough, that at least one should always be able to measure.
+
+After completing the measurement AS-4 in ISD-22 was excluded from the results as it experienced complete unaccesbility throughout the measurement period.
+
 Each AS will run a suite of python scripts which will gather data to all 3 other ASes. This is done in the following way:
 
 1. pathdiscover_scion.py discovers paths to the 3 other ASes. These are saved as timestamped json files for further use by the other scripts, analysis down the line and archival purposes.
@@ -28,13 +31,20 @@ Each AS will run a suite of python scripts which will gather data to all 3 other
 7. bw_multipath.py runs two simultanious subprocesses over the same paths used in bw_alldiscover_path.py allowing us to compare single path and this simple multipath approach in terms of latency, loss etc.
 8. mp-prober.py works like prober_scion.py and tests three random paths simultaniously allowing us to compare single path to multipath.
 9. Custom Cron Job: will run the 4 scripts in a set interval and handle cleanup of the working directories and updates of the Archive directory from which data may be pulled during testing.
+
+Some of these scripts were not used for the 4 weeks testing period as they are deprecated. Used were pathdiscovery, comparer, prober, mp-prober, bw_alldiscover, bw_mltipath and tr_collector.
    
-This approach gives us both a compiled CSV as well as all the raw data at the and. Through the structure of working and archive directories we are also able to access the already collected data at any point without interfering with the ongoing measurements. This may be used for backup needs.
+This approach gives us both a compiled CSV (for some of the scripts) as well as all the raw data at the and. Through the structure of working and archive directories we are also able to access the already collected data at any point without interfering with the ongoing measurements. This may be used for backup needs.
 
 For the analysis we provide one script each to compile and calculate the gathered statistics as well as to create representative graphs.
 These scripts are found in the AnalysisScripts directory. By simply changing the variable for the directory it can be run on any subset of data. Resulting graphs are output into subdirs while raw numbers are printed to the CLI and written to files.
 These scripts can be easily adapted to calculate other statistics or create other graphs, depending on what is most relevant to the research being conducted.
 All scripts expect all raw data in one single directory so the data must be moved from the Dated directories where it was saved during measurement to a seperate directory for analysis. 
+
+
+## Structure of this repo
+
+This Repo contains the structure which would be found after running the measurement suite on a host. This includes the Data directory which is currently empty but would be used for the gathered data. The AnalysisResults directory only serves to present the raw and analyzed data from our testing period, it is not required when running the measurement suite.
 
 ## Cron Job Setup
 1. To create the cronjob. Make sure that the repo is at /home/vagrant.
