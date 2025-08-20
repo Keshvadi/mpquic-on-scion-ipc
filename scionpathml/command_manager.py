@@ -622,7 +622,6 @@ def show_command_help():
     print_example("scionpathml show", "View both scheduling and command status")
     
     print()
-    print_info("🎯 The pipeline will only execute enabled commands in their defined order")
     print_info("📊 Use 'scionpathml show-cmds' anytime to see current configuration")
 
 # Export all functions for CLI integration

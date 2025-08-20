@@ -50,7 +50,6 @@ class CronManager:
             base_path = os.sep.join(parts[:mpquic_index + 1])
             script_path = os.path.join(base_path, "runner", "pipeline.sh")
             if os.path.isfile(script_path):
-                print_info(f"Auto-detected script path: {script_path}")
                 return script_path
                 
         raise EnvironmentError(
@@ -97,6 +96,186 @@ class CronManager:
             print("  • Overlapping executions can produce unreliable results")
             print()
             print_example(f"scionpathml -f {recommended}", "Update to recommended frequency")
+
+    def _check_script_format(self, script_path):
+        """Check if script has proper format and try to fix common issues"""
+        try:
+            with open(script_path, 'rb') as f:
+                first_bytes = f.read(50)
+            
+            # Check for shebang
+            if not first_bytes.startswith(b'#!'):
+                print_warning("Script missing shebang line")
+                print_info("Attempting to fix...")
+                try:
+                    with open(script_path, 'r') as f:
+                        content = f.read()
+                    with open(script_path, 'w') as f:
+                        f.write('#!/bin/bash\n' + content)
+                    print_success("Added #!/bin/bash shebang")
+                except Exception as e:
+                    print_error(f"Could not add shebang: {e}")
+                    return False
+            
+            # Check for Windows line endings
+            if b'\r\n' in first_bytes:
+                print_warning("Script has Windows line endings")
+                print_info("Attempting to convert...")
+                try:
+                    subprocess.run(['dos2unix', script_path], check=True, capture_output=True)
+                    print_success("Converted line endings to Unix format")
+                except subprocess.CalledProcessError:
+                    print_error("dos2unix command failed - you may need to install it")
+                    return False
+                except FileNotFoundError:
+                    print_error("dos2unix not found - trying manual conversion")
+                    try:
+                        with open(script_path, 'rb') as f:
+                            content = f.read()
+                        content = content.replace(b'\r\n', b'\n')
+                        with open(script_path, 'wb') as f:
+                            f.write(content)
+                        print_success("Manually converted line endings")
+                    except Exception as e:
+                        print_error(f"Manual conversion failed: {e}")
+                        return False
+            
+            return True
+            
+        except Exception as e:
+            print_error(f"Could not check script format: {e}")
+            return False
+
+    def run_once(self):
+        """Execute the pipeline script once immediately"""
+        print_header("RUN PIPELINE ONCE")
+        
+        try:
+            full_path = self.get_script_path()
+        except EnvironmentError as e:
+            print_error(str(e))
+            return False
+            
+        if not os.path.isfile(full_path):
+            print_error(f"Script not found at: {full_path}")
+            print_info("Check that the file exists and path is correct")
+            return False
+        
+        if not os.access(full_path, os.X_OK):
+            print_info("Script is not executable, fixing permissions...")
+            try:
+                os.chmod(full_path, 0o755)
+                print_success("Made script executable")
+            except Exception as e:
+                print_error(f"Could not make script executable: {e}")
+                print_info(f"Try: chmod +x {full_path}")
+                return False
+        
+        print_info(f"📍 Script location: {full_path}")
+        print()
+        
+        response = input("Execute pipeline script now? (y/N): ")
+        if response.lower() != 'y':
+            print_info("Execution cancelled")
+            return False
+        
+        print_success("🚀 Starting pipeline execution...")
+        print("=" * 60)
+        
+        # Change to script directory for proper execution context
+        script_dir = os.path.dirname(full_path)
+        original_dir = os.getcwd()
+        
+        try:
+            os.chdir(script_dir)      
+            # Execute the script
+            start_time = subprocess.run(['date'], capture_output=True, text=True).stdout.strip()
+            print_info(f"⏰ Started at: {start_time}")
+            print()
+            
+            # Run with real-time output
+            process = subprocess.Popen(
+                [full_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+                bufsize=1
+            )
+            
+            # Stream output in real-time
+            for line in process.stdout:
+                print(line.rstrip())
+            
+            process.wait()
+            return_code = process.returncode
+            
+            print()
+            print("=" * 60)
+            end_time = subprocess.run(['date'], capture_output=True, text=True).stdout.strip()
+            print_info(f"⏰ Finished at: {end_time}")
+            
+            if return_code == 0:
+                print_success("✅ Pipeline executed successfully!")
+                print()
+                print_info("💡 Next steps:")
+                print_example("scionpathml data-overview", "Check your measurement data")
+                print_example("scionpathml data-browse", "Browse data interactively")
+                print_example("scionpathml logs pipeline", "View pipeline logs")
+                return True
+            else:
+                print_error(f"❌ Pipeline failed with exit code: {return_code}")
+                print()
+                print_info("🔍 Troubleshooting:")
+                print_example("scionpathml logs pipeline --all", "Check pipeline logs for errors")
+                print_example("scionpathml show-cmds", "Verify enabled commands")
+                return False
+                
+        except OSError as e:
+            if e.errno == 8:  # Exec format error
+                print_error("❌ Script format error detected")
+                print_info("Attempting to fix common script issues...")
+                
+                if self._check_script_format(full_path):
+                    print_info("Script format issues fixed, trying again...")
+                    # Try one more time after fixes
+                    try:
+                        process = subprocess.Popen([full_path], stdout=subprocess.PIPE, 
+                                                 stderr=subprocess.STDOUT, universal_newlines=True)
+                        for line in process.stdout:
+                            print(line.rstrip())
+                        process.wait()
+                        if process.returncode == 0:
+                            print_success("✅ Pipeline executed successfully after fixes!")
+                            return True
+                        else:
+                            print_error(f"❌ Still failed with exit code: {process.returncode}")
+                    except Exception as retry_error:
+                        print_error(f"❌ Still failed: {retry_error}")
+                else:
+                    print_error("Could not fix script format issues")
+                    print()
+                    print_info("Manual fixes needed:")
+                    print(f"1. Check first line: should be '#!/bin/bash'")
+                    print(f"2. Convert line endings: dos2unix {full_path}")
+                    print(f"3. Verify file format: file {full_path}")
+                    
+                return False
+            else:
+                print_error(f"❌ Error executing pipeline: {e}")
+                return False
+                
+        except KeyboardInterrupt:
+            print_warning("\n⚠️  Pipeline execution interrupted by user")
+            if process.poll() is None:
+                process.terminate()
+                process.wait()
+            return False
+        except Exception as e:
+            print_error(f"❌ Error executing pipeline: {e}")
+            return False
+        finally:
+            # Always return to original directory
+            os.chdir(original_dir)
 
     def update_cron(self, frequency, path_override=None, config=None):
         """Update cron job with new frequency."""
@@ -173,3 +352,4 @@ class CronManager:
         print("  • You can still run it manually anytime")
         print()
         print_example("scionpathml -f 30", "Restart with 30-minute frequency")
+        print_example("scionpathml run", "Execute pipeline once")

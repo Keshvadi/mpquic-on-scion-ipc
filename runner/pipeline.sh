@@ -1,3 +1,4 @@
+#!/bin/bash
 set -euo pipefail
 
 # Set working paths relative to repo root
@@ -85,7 +86,7 @@ else
 fi
 
 if is_command_enabled "traceroute"; then
-    scrip# Step 2: Move files from all History/<Tool>/AS-* into Archive/<date>/t=$(get_script_name "traceroute" "traceroute.py")
+    scrip=$(get_script_name "traceroute" "traceroute.py")
     echo "[$timestamp] Running traceroute ($script)..." >> "$LOG"
     /usr/bin/python3 "$PY_DIR/$script" >> "$LOG"
 else

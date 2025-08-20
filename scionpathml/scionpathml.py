@@ -57,84 +57,50 @@ def main():
 {Colors.CYAN}Manage AS & Server Configuration + Pipeline Commands + Scheduling + Log Viewing{Colors.END}
 
 {Colors.BOLD}Quick Examples:{Colors.END}
+  {Colors.GREEN}scionpathml run{Colors.END}                 (test pipeline once)
   {Colors.GREEN}scionpathml add-as -a 19-ffaa:1:11de -i 10.0.0.1 -n AS-1{Colors.END}
-  {Colors.GREEN}scionpathml show-cmds{Colors.END}     (view/manage pipeline commands)
-  {Colors.GREEN}scionpathml logs pipeline{Colors.END} (view pipeline.log)
-  {Colors.GREEN}scionpathml transform{Colors.END}     (transform Data/Archive to CSV)
-  {Colors.GREEN}scionpathml data-overview{Colors.END} (see all your measurement data)
-  {Colors.GREEN}scionpathml data-browse{Colors.END}   (interactive data browser)
-  {Colors.GREEN}scionpathml view-log bandwidth{Colors.END} (view first bandwidth file - script_duration.log)
-  {Colors.GREEN}scionpathml logs pipeline --all{Colors.END} (view entire pipeline.log)
-  {Colors.GREEN}scionpathml -f 40{Colors.END}         (set 40-minute frequency)
-  {Colors.GREEN}scionpathml show{Colors.END}          (view full configuration)
+  {Colors.GREEN}scionpathml show-cmds{Colors.END}           (view/manage pipeline commands)
+  {Colors.GREEN}scionpathml data-browse{Colors.END}         (interactive data browser)
+  {Colors.GREEN}scionpathml -f 40{Colors.END}               (set 40-minute frequency)
 
-Use {Colors.BOLD}scionpathml help{Colors.END} for comprehensive guide.
+{Colors.BOLD}Help Commands:{Colors.END}
+  {Colors.GREEN}scionpathml help{Colors.END}                (quick start guide)
+  {Colors.GREEN}scionpathml help-examples{Colors.END}       (examples & workflows)  
+  {Colors.GREEN}scionpathml help-troubleshooting{Colors.END} (when things break)
             """,
         formatter_class=argparse.RawTextHelpFormatter,
         add_help=True,
         epilog=f"""
 {Colors.BOLD}DETAILED EXAMPLES:{Colors.END}
 
-{Colors.CYAN}Managing AS (Autonomous Systems):{Colors.END}
-  scionpathml add-as -a 19-ffaa:1:11de -i 10.0.0.1 -n AS-Production
-  scionpathml up-as -a 19-ffaa:1:11de -i 10.0.0.2 -n AS-Updated  
-  scionpathml rm-as -a 19-ffaa:1:11de
-
-{Colors.CYAN}Managing Servers:{Colors.END}
-  scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n TestServer
-  scionpathml up-server -a 19-ffaa:1:22ef -i 10.0.0.51 -n NewTestServer
-  scionpathml rm-server -a 19-ffaa:1:22ef
-
-{Colors.CYAN}Pipeline Command Management:{Colors.END}
-  scionpathml show-cmds                    # View all commands
-  scionpathml disable-cmd -m bandwidth    # Disable bandwidth tests
-  scionpathml enable-category -c tracing  # Enable all tracing commands
-  scionpathml cmd-help                     # Comprehensive command guide*
+{Colors.CYAN}Pipeline Execution:{Colors.END}
+  scionpathml run                      # Execute pipeline once
+  scionpathml -f 30                    # Schedule to run every 30 minutes
+  scionpathml stop                     # Stop scheduled execution
 
 {Colors.CYAN}Data Management:{Colors.END}
-  scionpathml data-overview                    # Show overview of all data directories
-  scionpathml data-show Archive               # Show Archive directory details
-  scionpathml data-browse                     # Interactive data browser (all directories)
-  scionpathml data-browse Archive             # Interactive browser for Archive
-  scionpathml data-search BW_2025             # Search for bandwidth files from 2025
-  scionpathml data-move Archive History       # Move Archive files to History
-  scionpathml data-move Archive /backup/data  # Move Archive to external backup
-  scionpathml data-delete History --category Prober  # Delete specific measurement type
-  scionpathml data-help                       # Data management help
+  scionpathml data-overview            # Show overview of all data directories
+  scionpathml data-browse              # Interactive data browser (recommended!)
+  scionpathml data-move Archive History # Move Archive files to History
+  scionpathml data-help               # Complete data management guide
 
-{Colors.CYAN}Log Management:{Colors.END}
-  scionpathml logs                         # List all log categories
-  scionpathml logs pipeline               # View pipeline.log (last 30 lines)
-  scionpathml logs pipeline --all         # View entire pipeline.log
-  scionpathml view-log bandwidth          # View FIRST bandwidth file (script_duration.log) - DEFAULT
-  scionpathml view-log bandwidth latest   # View LATEST bandwidth file (highest numbered)
-  scionpathml view-log bandwidth 1        # View bandwidth file #1 (last 50 lines)
-  scionpathml view-log bandwidth 1 --all  # View complete bandwidth file #1
-  scionpathml view-log pipeline --all     # View entire pipeline.log
-  scionpathml log-help                     # Log viewing guide
+{Colors.CYAN}Getting Help:{Colors.END}
+  scionpathml help                    # Quick start guide
+  scionpathml help-examples           # Examples and best practices  
+  scionpathml help-troubleshooting    # When things go wrong
+  scionpathml cmd-help                # Command management guide
+  scionpathml log-help                # Log viewing guide
+  scionpathml data-help               # Data management guide
 
-{Colors.CYAN}Data Transformation:{Colors.END}
-  scionpathml transform                              # Transform from Data/Archive (default)
-  scionpathml transform standard                     # Standard transformation only
-  scionpathml transform multipath                    # Multipath transformation only
-  scionpathml transform-data /custom/path            # Transform from custom path
-  scionpathml transform-status                       # Show transformation status
-  scionpathml transform --output-dir /custom/output  # Custom output directory
-  scionpathml transform-help                         # Transformation help
-
-{Colors.CYAN}Frequency Management:{Colors.END}
-  scionpathml -f 60        # Run every 60 minutes
-  scionpathml stop         # Stop automatic execution
-  scionpathml show         # Check current status
-
-{Colors.YELLOW}💡 TIP: Use 'scionpathml show' to see your complete setup including logs status{Colors.END}
+{Colors.YELLOW}💡 TIP: Start with 'scionpathml help' for the basics{Colors.END}
             """)
 
     parser.add_argument(
         'command',
         nargs='?',
         choices=[
-            'stop', 'show', 'help',
+            'stop', 'show', 'help', 'run',
+            'help-examples', 'help-troubleshooting',  # New help commands
             'add-as', 'add-server',
             'rm-as', 'rm-server', 
             'up-as', 'up-server',
@@ -150,7 +116,7 @@ Use {Colors.BOLD}scionpathml help{Colors.END} for comprehensive guide.
             'transform-help',
             'data-overview', 
             'data-show',
-            'data-browse',    # Add the new browse command
+            'data-browse',    
             'data-move', 
             'data-delete', 
             'data-search', 
@@ -160,7 +126,10 @@ Use {Colors.BOLD}scionpathml help{Colors.END} for comprehensive guide.
 Command to execute:
   show        - Display current configuration and status
   stop        - Stop automatic execution (remove cron job)
-  help        - Show comprehensive help guide
+  run         - Execute pipeline once immediately
+  help        - Quick start guide
+  help-examples         - Examples and best practices
+  help-troubleshooting  - Troubleshooting guide
   add-as      - Add new Autonomous System
   add-server  - Add new bandwidth test server  
   rm-as       - Remove Autonomous System
@@ -169,7 +138,7 @@ Command to execute:
   up-server   - Update existing bandwidth test server
   logs        - View logs (pipeline, bandwidth, traceroute, etc.)
   view-log    - View specific log file
-  log-help    - Quick log reference guide
+  log-help    - Log viewing guide
   transform         - Transform data from Data/Archive (default)
   transform-status  - Show transformation status
   transform-help    - Transformation help guide
@@ -211,9 +180,15 @@ Command to execute:
     # Initialize log commands
     log_commands = LogCommands(args.log_dir)
 
-    # Handle help command
+    # Handle help commands
     if args.command == "help":
         help_manager.show_help()
+        sys.exit(0)
+    elif args.command == "help-examples":
+        help_manager.show_examples_help()
+        sys.exit(0)
+    elif args.command == "help-troubleshooting":
+        help_manager.show_troubleshooting_help()
         sys.exit(0)
 
     # Load configuration for commands that need it
@@ -222,10 +197,14 @@ Command to execute:
         config = load_config()
         if not config and args.command != 'show':
             sys.exit(1)
+    
 
     # Command handlers
     if args.command == "stop":
         cron_manager.stop_cron()
+
+    elif args.command == "run":
+        cron_manager.run_once()
         
     elif args.command == "show":
         config_manager.show_config(cron_manager)
@@ -411,7 +390,8 @@ Command to execute:
         print()
         print_info("🚀 Quick start options:")
         print_example("scionpathml show", "View current configuration")
-        print_example("scionpathml help", "See comprehensive guide") 
+        print_example("scionpathml help", "See quick start guide") 
+        print_example("scionpathml help-examples", "See examples and workflows")
         print_example("scionpathml -h", "View quick command reference")
         print()
         parser.print_help()
@@ -419,3 +399,4 @@ Command to execute:
 
 if __name__ == "__main__":
     main()
+        
