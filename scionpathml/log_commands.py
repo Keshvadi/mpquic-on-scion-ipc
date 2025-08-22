@@ -200,32 +200,6 @@ class LogHelpDisplay:
         print_example("scionpathml view-log bandwidth latest", "View latest file (highest number)")
         print_example("scionpathml view-log bandwidth latest --all", "View complete latest file")
         
-        print_section("💡 COMMON WORKFLOWS")
-        
-        print(f"{Colors.BOLD}Troubleshooting Pipeline Issues:{Colors.END}")
-        print_example("scionpathml logs pipeline", "Check recent pipeline execution")
-        print_example("scionpathml logs pipeline --all", "Review complete pipeline history")
-        
-        print(f"\n{Colors.BOLD}Investigating Measurement Problems:{Colors.END}")
-        print_example("scionpathml logs bandwidth", "List bandwidth log files")
-        print_example("scionpathml view-log bandwidth", "Check first bandwidth file (DEFAULT)")
-        print_example("scionpathml view-log bandwidth latest", "Check latest bandwidth results")
-        print_example("scionpathml view-log traceroute latest --all", "Deep dive into latest traceroute")
-        
-        print(f"\n{Colors.BOLD}Monitoring System Health:{Colors.END}")
-        print_example("scionpathml logs", "Quick overview of all activities")
-        print_example("scionpathml logs prober", "Check network probing results")
-        print_example("scionpathml view-log prober", "Review first probing activity (DEFAULT)")
-        
-        print_section("🎯 TIPS & BEST PRACTICES")
-        print("• Start with overview: scionpathml logs")
-        print("• Use default view first (30-50 lines) for quick checks")  
-        print("• Use --all only when you need complete file analysis")
-        print("• Look for 🔴 red lines (errors) and 🟡 yellow lines (warnings)")
-        print("• Pipeline.log shows overall execution status")
-        print("• Individual category logs show detailed measurement results")
-        print("• For very large files, --all uses pagination (Enter/q/page#)")
-        
         print_section("📋 FILE SELECTION BEHAVIOR")
         print("• No file specified = first file in list - DEFAULT")
         print_example("scionpathml view-log bandwidth", "Shows first bandwidth file (script_duration.log)")
@@ -234,8 +208,3 @@ class LogHelpDisplay:
         print("• 'latest' keyword = highest numbered file")
         print_example("scionpathml view-log bandwidth latest", "Shows highest numbered bandwidth file")
         
-        print_section("🔢 UNDERSTANDING FILE NUMBERING")
-        print("• Files are listed in order: script_duration.log, file_1.log, file_2.log...")
-        print("• First file = script_duration.log or lowest numbered file")
-        print("• Latest = highest numbered file (e.g., if files 1-6 exist, latest = file_6.log)")
-        print("• Default behavior shows first file unless you specify 'latest' or number")

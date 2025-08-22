@@ -24,11 +24,12 @@ pip install -e .
 
 ### Configure autonomous systems and server
 ```bash
-scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS       #Add your AS
-scionpathml up-as -a 19-ffaa:1:11de -i 192.168.1.101 -n UpdatedAS   #Update AS details
-scionpathml rm-as -a 19-ffaa:1:11de                                 #Remove AS
+#AS
+scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS        #Add your AS
+scionpathml up-as -a 19-ffaa:1:11de -i 192.168.1.101 -n UpdatedAS      #Update AS details
+scionpathml rm-as -a 19-ffaa:1:11de                                    #Remove AS
 
-
+#Server
 scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n MyServer      #Add your server
 scionpathml up-server -a 19-ffaa:1:22ef -i 10.0.0.51 -n UpdatedServer  #Update server details
 scionpathml rm-server -a 19-ffaa:1:22ef                                #Remove server
@@ -102,7 +103,7 @@ MIT License
 
 If necessary, you can also convert your CSV file to a DataFrame. Here is some documentation to help you do this:
 
-### Prerequisites
+### Installation of pandas
 
 Ensure you have Python and the pandas library installed. You can install pandas via pip if necessary:
 

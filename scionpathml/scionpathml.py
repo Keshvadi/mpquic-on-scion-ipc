@@ -17,7 +17,8 @@ from cron_manager import CronManager
 from config_manager import ConfigManager
 from help_manager import HelpManager
 from transform_commands import TransformCommands
-from data_commands import DataCommands, DataHelpDisplay
+from data_commands import DataCommands
+from config_help import ConfigHelpManager
 
 def main():
     # MINIMAL FIX: Handle transform-data with path before argparse
@@ -86,6 +87,7 @@ def main():
 
 {Colors.CYAN}Getting Help:{Colors.END}
   scionpathml help                    # Quick start guide
+  scionpathml help-config             # AS and server management
   scionpathml help-examples           # Examples and best practices  
   scionpathml help-troubleshooting    # When things go wrong
   scionpathml cmd-help                # Command management guide
@@ -100,7 +102,7 @@ def main():
         nargs='?',
         choices=[
             'stop', 'show', 'help', 'run',
-            'help-examples', 'help-troubleshooting',  # New help commands
+            'help-examples', 'help-troubleshooting','help-config',
             'add-as', 'add-server',
             'rm-as', 'rm-server', 
             'up-as', 'up-server',
@@ -130,6 +132,7 @@ Command to execute:
   help        - Quick start guide
   help-examples         - Examples and best practices
   help-troubleshooting  - Troubleshooting guide
+  help-config          - AS and server management guide
   add-as      - Add new Autonomous System
   add-server  - Add new bandwidth test server  
   rm-as       - Remove Autonomous System
@@ -189,6 +192,10 @@ Command to execute:
         sys.exit(0)
     elif args.command == "help-troubleshooting":
         help_manager.show_troubleshooting_help()
+        sys.exit(0)
+    
+    elif args.command == "help-config":
+        ConfigHelpManager.show_config_help()
         sys.exit(0)
 
     # Load configuration for commands that need it

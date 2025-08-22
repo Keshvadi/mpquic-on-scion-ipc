@@ -22,14 +22,12 @@ def print_welcome():
         print("   Install with: sudo apt install scion-apps-bwtester")
     
     print("\n🚀 Quick Start:")
-    print("   scionpathml help     # Complete usage guide")
+    print("   scionpathml help     # Quick start")
     print("   scionpathml show     # View current configuration")
-    print("   scionpathml -h       # Quick command reference")
     
     print("\n📋 System Requirements:")
     print("   • SCION infrastructure access")
     print("   • sudo apt install scion-apps-bwtester")
-    print("   • Data/Archive directory for measurements")
     
     print("\n" + "="*60 + "\n")
 
@@ -87,13 +85,7 @@ System Requirements:
 • SCION network infrastructure access
 • SCION bandwidth tester: sudo apt install scion-apps-bwtester
 • Python 3.8+ (tested with 3.10.12)
-• Data/Archive directory structure for measurements
 
-Quick Start:
-    scionpathml help        # Complete usage guide
-    scionpathml show        # View current configuration  
-    scionpathml transform   # Convert measurements to CSV
-    scionpathml logs        # View measurement logs
 
 For detailed documentation and examples, run: scionpathml help
     """,
@@ -104,6 +96,7 @@ For detailed documentation and examples, run: scionpathml help
         "Source": "",
         "Documentation": "",
     },
+
     python_requires=">=3.8",
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -143,12 +136,14 @@ For detailed documentation and examples, run: scionpathml help
     include_package_data=True,
     package_data={
         "scionpathml": [
-            "templates/*.json",
-            "configs/*.conf",
             "README.md",
             "CHANGELOG.md",
+            "LICENSE"
         ],
     },
+
+    data_files=[("runner", ["runner/pipeline.sh"])],
+
     
     zip_safe=False,
 )
@@ -188,7 +183,7 @@ def post_install_check():
     print("1. Ensure SCION infrastructure is accessible")
     print("2. Install missing SCION tools: sudo apt install scion-apps-bwtester")  
     print("3. Create Data/Archive directory structure")
-    print("4. Run: scionpathml help")
+    print("4. Run: scionpathml help, for more help")
 
 if __name__ == "__main__":
     post_install_check()

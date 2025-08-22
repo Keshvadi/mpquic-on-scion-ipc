@@ -2,7 +2,7 @@
 
 All notable changes to SCIONPATHML CLI.
 
-## [Unreleased]
+## [1.0]
 
 ### Added
 - Enhanced error handling for transform commands
@@ -12,25 +12,25 @@ All notable changes to SCIONPATHML CLI.
 - Transform-data argument parsing for absolute paths
 - Special character handling in file paths
 
-## [3.2.0]
+## [0.3]
 
 ### Added
 #### Data Management Commands
 data-overview    # Show all data directories overview
 data-show        # Display specific directory details
+data-browse      #Browse files interactively (recommended)
 data-move        # Move files between directories
 data-delete      # Delete data by category
 data-search      # Search files by pattern
 data-help        # Data management guide
 New Options
---category - Filter by measurement type
---no-confirm - Skip confirmation prompts
+--interactive #Allow interaction with folders and files
 External backup directory support
 Changed
 Restructured CLI command organization
 Enhanced help messages with examples
 Improved error messaging
-[3.1.0]
+[0.2.3]
 Added
 Transform Commands
 transform           # Simple transform from Data/Archive
@@ -44,7 +44,7 @@ Automatic JSON → CSV conversion
 Fixed
 Transform-data path parsing
 Input path validation
-[3.0.0] - BREAKING CHANGES
+[0.2.2] - BREAKING CHANGES
 Added
 Log Management System
 logs          # List and view log types
@@ -58,7 +58,7 @@ Smart line limits (30/50 default)
 Changed
 BREAKING: Complete log system restructure
 Enhanced UI with color coding
-[2.5.0]
+[0.2.1]
 Added
 Pipeline Command Management
 show-cmds           # Display all commands
@@ -72,7 +72,7 @@ cmd-help           # Command reference
 Features
 Command/category name validation
 Enhanced error messages with suggestions
-[2.0.0] - BREAKING CHANGES
+[0.2] - BREAKING CHANGES
 Added
 Core CLI System
 # AS Management
@@ -99,16 +99,16 @@ BREAKING: New argparse-based architecture
 BREAKING: Standardized command format
 Removed
 BREAKING: Legacy CLI interface
-[1.2.0]
+[0.1.2]
 Added
 Help System
-help                # Complete usage guide
--h                  # Quick command reference
+help                  # Quick start
+help-examples         # Examples and workflows
+help-troubleshooting  #When things break
 Features
 Interactive welcome messages
 Contextual usage examples
-Custom path support (-p)
-[1.1.0]
+[0.1.1]
 Added
 Modular Architecture
 CronManager - Scheduling
@@ -120,7 +120,7 @@ LogCommands - Log management
 Features
 CLI utilities with formatting
 Input validation system
-[1.0.0]
+[0.1]
 Added
 Initial SCIONPATHML CLI
 Basic SCION network measurement

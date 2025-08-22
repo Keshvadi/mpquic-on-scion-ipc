@@ -71,7 +71,6 @@ class DataManager:
                 choice = input("Select directory (number/name) or command: ").strip()
                 
                 if choice == '0' or choice.lower() == 'exit':
-                    print_info("👋 Goodbye!")
                     break
                 elif choice.lower() == 'h' or choice.lower() == 'help':
                     self._show_browser_help()
@@ -107,7 +106,6 @@ class DataManager:
                         input("Press Enter to continue...")
                         
             except KeyboardInterrupt:
-                print("\n👋 Goodbye!")
                 break
             except Exception as e:
                 print_error(f"Error: {e}")
@@ -758,6 +756,7 @@ class DataManager:
         print()
         print_info("💡 Usage:")
         print_example("scionpathml data-show Archive", "Show detailed Archive contents")
+        print_example("scionpathml data-show Archive --interactive", "Browse Archive interactively")
         print_example("scionpathml data-browse", "Interactive browser for all directories")
         print_example("scionpathml data-move Archive Currently", "Move Archive to Currently")
         print_example("scionpathml data-move Archive /custom/path", "Move Archive to external path")

@@ -27,11 +27,13 @@ class HelpManager:
         print_example("scionpathml data-browse", "Browse through your measurement data")
         
         print_section("📚 MORE HELP AVAILABLE")
+        print_example("scionpathml help-config", "AS and server management")
         print_example("scionpathml help-examples", "Examples and best practices")
         print_example("scionpathml help-troubleshooting", "When things go wrong")
         print_example("scionpathml cmd-help", "Command management guide")
         print_example("scionpathml data-help", "Data management guide")
         print_example("scionpathml log-help", "Log viewing guide")
+        print_example("scionpathml transform-help", "Data transformation guide")
         print_example("scionpathml show", "Check current status")
         
         print_section("🎯 COMMON FIRST STEPS")
@@ -39,7 +41,6 @@ class HelpManager:
         print_example("scionpathml disable-cmd -m bandwidth", "Turn off heavy bandwidth tests")
         print_example("scionpathml data-overview", "See what data you already have")
         
-        print("\n💡 New to SCIONPATHML? Try running the commands above in order!")
 
     @staticmethod
     def show_examples_help():
@@ -49,13 +50,13 @@ class HelpManager:
         print_section("🎯 COMMON WORKFLOWS")
         
         print(f"{Colors.BOLD}Initial Setup:{Colors.END}")
-        print_example("scionpathml add-as -a 19-ffaa:1:11de -i 10.0.0.1 -n MainAS", "Add your AS")
-        print_example("scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n BandwidthTest", "Add test server")
+        print_example("scionpathml add-as -a 19-ffaa:1:11de -i 10.0.0.1 -n MyAS", "Add your AS")
+        print_example("scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n MyServer", "Add your server")
         print_example("scionpathml show-cmds", "Check what will run")
         print_example("scionpathml run", "Test everything works")
         print_example("scionpathml -f 40", "Schedule regular runs")
         
-        print(f"\n{Colors.BOLD}Daily Data Management:{Colors.END}")
+        print(f"\n{Colors.BOLD}Data Management:{Colors.END}")
         print_example("scionpathml data-overview", "Check what you have")
         print_example("scionpathml data-browse", "Browse files interactively")
         print_example("scionpathml data-move Archive History", "Archive old data")
@@ -81,19 +82,10 @@ class HelpManager:
         print()
         print_example("scionpathml run", "Always test timing manually first")
         
-        print_section("🔧 COMMAND COMBINATIONS")
-        print()
-        print_example("scionpathml data-overview && scionpathml transform", "Quick data check + convert")
-        print_example("scionpathml logs pipeline | tail -20", "Quick log check")
-        print_example("scionpathml disable-all-cmds && scionpathml enable-cmd -m traceroute", "Only traceroute")
-        
         print_section("📊 DATA ORGANIZATION")
         print()
-        print("Weekly cleanup:")
-        print_example("scionpathml data-move Archive History", "Archive old measurements")
+        print_example("scionpathml data-move History Archive", "Archive old measurements")
         print_example("scionpathml data-delete History --category Comparer", "Clean up old comparisons")
-        
-        print("\nMonthly backup:")
         print_example("scionpathml data-move Archive /backup/$(date +%Y-%m)", "Monthly backup")
         print_example("scionpathml transform", "Convert before archiving")
 
@@ -102,31 +94,11 @@ class HelpManager:
         """Show troubleshooting guide"""
         print_header("SCIONPATHML CLI - TROUBLESHOOTING")
         
-        print_section("🚨 PIPELINE NOT RUNNING")
-        print("If 'scionpathml run' doesn't work:")
-        print()
-        print("1. Check the script exists and has the right permissions")
-        print_example("ls -la /path/to/runner/pipeline.sh", "Check file exists and is executable")
-        print_example("chmod +x /path/to/runner/pipeline.sh", "Make it executable")
-        
-        print("\n2. Check for script format issues:")
-        print_example("head -1 /path/to/runner/pipeline.sh", "Should show #!/bin/bash")
-        print_example("file /path/to/runner/pipeline.sh", "Should show 'shell script'")
-        
-        print("\n3. Check logs for details:")
-        print_example("scionpathml logs pipeline --all", "See what's actually failing")
-        
         print_section("🔧 SCRIPT PATH ISSUES")
         print("If you get 'script not found' errors:")
         print_example("export SCRIPT_PATH=/path/to/runner", "Set environment variable")
         print("Or check that you're running from the right directory")
         
-        print_section("📁 CONFIGURATION PROBLEMS")
-        print("If commands fail with config errors:")
-        print("• Make sure you're in the correct directory")
-        print("• Check that ./collector/config.py exists")
-        print("• Verify Python can import the config module")
-        print_example("python3 -c 'import sys; sys.path.append(\"collector\"); import config'", "Test config import")
         
         print_section("📊 NO DATA BEING GENERATED")
         print("If measurements run but create no files:")
@@ -142,29 +114,17 @@ class HelpManager:
         print("• Verify SCION infrastructure is running")
         print("• Check firewall settings")
         
-        print_section("🗂️ DATA MANAGEMENT ISSUES")
+        print_section("🗂️  DATA MANAGEMENT ISSUES")
         print(f"{Colors.BOLD}'No JSON files found':{Colors.END}")
         print("• Check the data path contains .json files")
         print_example("ls -la Data/Archive/", "See what's actually there")
         
-        print(f"\n{Colors.BOLD}Permission denied:{Colors.END}")
-        print("• Check write permissions in destination directory")
-        print_example("chmod 755 Data/Archive/", "Fix permissions")
-        
         print(f"\n{Colors.BOLD}Move/delete fails:{Colors.END}")
         print("• Ensure destination path is accessible")
-        print("• Check disk space")
-        
-        print_section("🖥️ INTERACTIVE BROWSER ISSUES")
-        print("• If screen doesn't clear: Your terminal might not support it (still works)")
-        print("• If navigation seems stuck: Use Ctrl+C to exit and restart")
-        print("• If file viewing fails: Check file permissions and encoding")
-        print("• Use 'h' command for help within the browser")
         
         print_section("📋 LOG ISSUES")
         print("If no log files appear:")
         print("• Check if measurements are actually running")
-        print("• Verify log directory permissions")
         print("• Ensure pipeline has executed at least once")
         print_example("ls -la Data/Logs/", "Check log directory")
         
@@ -176,11 +136,9 @@ class HelpManager:
         print("Always test manually with 'scionpathml run' before scheduling!")
         
         print_section(" GETTING MORE HELP")
-        print("Still stuck? Here's what to check:")
         print_example("scionpathml logs pipeline --all", "Full pipeline log")
         print_example("scionpathml show", "Current configuration")
         print_example("scionpathml data-overview", "What data exists")
-        print("Include this info when asking for help!")
 
     @staticmethod
     def show_welcome():
@@ -214,11 +172,10 @@ class HelpManager:
         
         print_section("📚 HELP & DOCS")
         print_example("scionpathml help", "Quick start guide")
+        print_example("scionpathml help-config", "AS and server management")
         print_example("scionpathml help-examples", "Examples and workflows")
         print_example("scionpathml help-troubleshooting", "When things break")
         print_example("scionpathml cmd-help", "Command management details")
         print_example("scionpathml data-help", "Data management options")
         print_example("scionpathml log-help", "Log viewing guide")
-        print()
-        
-        print_info("💡 New here? Start with 'scionpathml help' for the basics")
+        print_example("scionpathml transform-help", "Data transformation guide")

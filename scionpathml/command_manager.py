@@ -229,11 +229,6 @@ def show_pipeline_commands():
     print_example("scionpathml disable-cmd -m traceroute", "Disable traceroute command")
     print_example("scionpathml enable-category -c bandwidth", "Enable all bandwidth commands")
     print_example("scionpathml disable-category -c probing", "Disable all probing commands")
-    print()
-    print_info("💡 Pro Tips:")
-    print("  • Numbers [1-7] show execution order")
-    print("  • Only enabled commands will run in the pipeline")
-    print("  • Categories help manage related commands together")
 
 def get_available_command_names() -> List[str]:
     """Get list of available command names"""
@@ -598,22 +593,6 @@ def show_command_help():
         line_cats = categories[i:i+3]
         print(f"  • {' • '.join(line_cats)}")
     
-    print_section("💡 BEST PRACTICES")
-    
-    print(f"{Colors.BOLD}Performance Optimization:{Colors.END}")
-    print("  • Bandwidth commands are the most resource-intensive")
-    print("  • Disable unused commands to speed up pipeline execution")
-    print("  • Consider your network capacity when enabling bandwidth tests")
-    
-    print(f"\n{Colors.BOLD}Workflow Planning:{Colors.END}")
-    print("  • Path discovery should run before other commands")
-    print("  • Comparer analyzes results from path discovery")
-    print("  • Bandwidth tests require stable network conditions")  
-    
-    print(f"\n{Colors.BOLD}Troubleshooting:{Colors.END}")
-    print("  • Use 'show-cmds' to verify your configuration")
-    print("  • Check pipeline logs if commands aren't executing")
-    print("  • Ensure required dependencies are available for enabled commands")
     
     print_section("🔄 INTEGRATION WITH SCHEDULING")
     

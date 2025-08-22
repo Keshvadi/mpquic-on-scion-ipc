@@ -3,10 +3,12 @@ import os
 
 # AS list adjust with your own AS
 AS_FOLDER_MAP = {
+    "17-ffaa:0:1108": "MyAS",
 }
 
 # Define AS targets and their folder name with IP address
 AS_TARGETS = {
+    "17-ffaa:0:1108": ("127.0.0.1", "MyAS"),
 }
 
 BWTEST_SERVERS = {

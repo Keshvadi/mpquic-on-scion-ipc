@@ -110,19 +110,6 @@ class TransformCommands:
         print("   📄 data_PG-MP.csv - Multipath ping measurements")
         print("   📄 data_BW-MP.csv - Multipath bandwidth measurements")
         
-        print_section("💡 RECOMMENDED WORKFLOW")
-        print(f"{Colors.BOLD}Daily Processing:{Colors.END}")
-        print_example("scionpathml transform", "Transform today's data (simplest)")
-        print_example("scionpathml transform-status", "Check what was created")
-        
-        print(f"\n{Colors.BOLD}Analysis Projects:{Colors.END}")
-        print_example("scionpathml transform-data /archive/week1 --output-dir /analysis/project1", "Project-specific")
-        
-        print_section("⚠️ TROUBLESHOOTING")
-        print("• If 'No JSON files found': Check that Data/Archive contains .json files")
-        print("• If 'Missing data path': Use 'transform' for default or 'transform-data /path' for custom")
-        print("• If script not found: Ensure scripts are in transformers/ directory")
-        print("• If permission denied: Check write permissions in output directory")
     
     def show_transform_epilog_examples(self):
         """Return transformation examples for CLI epilog"""

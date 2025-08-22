@@ -140,7 +140,6 @@ class ConfigManager:
         print_info("🔄 Quick Actions:")
         print_example("scionpathml stop", "Stop automatic execution")
         print_example("scionpathml show-cmds", "Manage pipeline commands")
-        print_example("scionpathml show", "Refresh this view")
 
     def add_as(self, as_id, ip, name):
         """Add new Autonomous System"""
