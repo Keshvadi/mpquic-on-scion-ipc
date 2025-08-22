@@ -54,16 +54,16 @@ print_welcome()
 
 setup(
     name="scionpathml",
-    version="1.0",
+    version="1.0.1",
     packages=find_packages(),
     install_requires=all_requirements,  # Using the combined requirements here
     entry_points={
         "console_scripts": [
-            "scionpathml=scionpathml:main",
+            "scionpathml=scionpathml.scionpathml:main",
         ],
     },
-    author="SCION PathML Team",
-    author_email="contact@scionpathml.org",
+    author="ScionPathML Team",
+    author_email="skeshvadi@tru.ca",
     description="Advanced CLI tool for SCION network measurement management and data analysis",
     long_description="""
 SCIONPATHML CLI - Advanced SCION Network Measurement Management
@@ -149,7 +149,7 @@ For detailed documentation and examples, run: scionpathml help
 # Additional post-install checks
 def post_install_check():
     """Check system requirements after installation"""
-    print("\n🔍 Post-Installation System Check:")
+    print("\nPost-Installation System Check:")
     
     # Check Python version
     python_version = sys.version_info
