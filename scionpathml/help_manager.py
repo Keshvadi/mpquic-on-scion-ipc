@@ -1,3 +1,4 @@
+#Main help system with guides 
 from cli_utils import *
 
 class HelpManager:

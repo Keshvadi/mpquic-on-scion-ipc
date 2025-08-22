@@ -1,3 +1,4 @@
+# Performs bandwidth measurement tests between SCION servers nodes
 import os
 import subprocess
 import json

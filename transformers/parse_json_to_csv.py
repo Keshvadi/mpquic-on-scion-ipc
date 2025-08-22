@@ -1,3 +1,4 @@
+#Converts standard measurement JSON files to CSV format
 import os
 import json
 import pandas as pd

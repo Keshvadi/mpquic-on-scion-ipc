@@ -1,4 +1,4 @@
-#!/bin/bash
+#Main orchestration script that runs all enabled measurement tools
 set -euo pipefail
 
 # Set working paths relative to repo root

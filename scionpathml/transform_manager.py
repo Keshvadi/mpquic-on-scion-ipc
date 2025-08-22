@@ -1,6 +1,4 @@
-import os
-import sys
-import subprocess
+#Core transformation logic and file processing
 from pathlib import Path
 from cli_utils import print_error, print_success, print_info, print_example, print_header, print_section, Colors
 

@@ -1,3 +1,4 @@
+#Commands for data management (browse, move, delete, search)
 from data_manager import DataManager
 from cli_utils import print_error, print_example, print_header, print_section, print_info, Colors
 import sys

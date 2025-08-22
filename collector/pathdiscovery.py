@@ -1,3 +1,4 @@
+#Discovers available SCION paths between AS nodes
 import os
 import json
 import subprocess

@@ -1,3 +1,4 @@
+#Commands for viewing and managing log files
 from log_manager import SimpleLogManager
 from log_display import LogDisplay, print_error, print_example, print_header, print_section, print_info, Colors
 import sys

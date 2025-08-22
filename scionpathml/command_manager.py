@@ -1,3 +1,4 @@
+#Manages pipeline command enabling/disabling and categories
 """
 Command Management for SCIONPATHML
 Handles enabling/disabling of different pipeline commands

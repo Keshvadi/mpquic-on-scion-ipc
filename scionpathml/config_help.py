@@ -1,3 +1,4 @@
+#Help system for AS and server management commands
 from cli_utils import *
 
 class ConfigHelpManager:

@@ -1,3 +1,5 @@
+#Compares currently and previous network paths and analyzes path differences
+
 import os
 import json
 from datetime import datetime

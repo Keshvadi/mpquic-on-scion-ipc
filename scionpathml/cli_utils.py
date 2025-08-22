@@ -1,3 +1,4 @@
+#Utility functions for command-line interface styling and helpers
 import os
 import subprocess
 import importlib.util

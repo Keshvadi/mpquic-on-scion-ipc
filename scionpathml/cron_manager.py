@@ -1,3 +1,4 @@
+#Manages scheduled execution and cron job operations
 import os
 import subprocess
 from cli_utils import *

@@ -1,3 +1,4 @@
+#Log file management and parsing
 import os
 import re
 import glob

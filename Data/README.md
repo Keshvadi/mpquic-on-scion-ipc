@@ -1,0 +1,1 @@
+Folder containing all data resulting from the execution of collection scripts

@@ -1,0 +1,1 @@
+Folder for the script that automatically executes all active commands for long-term data collection.

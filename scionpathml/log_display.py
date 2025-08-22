@@ -1,3 +1,4 @@
+# Log formatting and display utilities
 import os
 from datetime import datetime
 

@@ -1,3 +1,4 @@
+#Core data management logic and file operations
 import os
 import json
 import shutil

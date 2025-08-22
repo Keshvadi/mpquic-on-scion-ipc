@@ -1,3 +1,4 @@
+# Script for collecting traceroute data between AS nodes
 import os
 import json
 import subprocess

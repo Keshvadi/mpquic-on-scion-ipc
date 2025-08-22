@@ -1,0 +1,1 @@
+Folder containing all Python files required for the proper functioning of the ScionPathML library and all its features.

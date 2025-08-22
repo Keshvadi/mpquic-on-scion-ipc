@@ -1,0 +1,1 @@
+Folder containing all scripts enabling the execution of commands on SCION and data collection.

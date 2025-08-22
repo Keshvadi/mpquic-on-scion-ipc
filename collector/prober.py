@@ -1,3 +1,4 @@
+# Basic network connectivity probing and latency testing between AS nodes
 import os
 import json
 import subprocess

@@ -1,3 +1,4 @@
+#Main CLI entry point and argument parsing
 import argparse
 import sys
 from command_manager import (
