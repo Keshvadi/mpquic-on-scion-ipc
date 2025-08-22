@@ -25,7 +25,7 @@ pip install -e .
 ### Configure autonomous systems and server
 ```bash
 #AS
-scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS         #Add your AS
+scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS          #Add your AS
 scionpathml up-as -a 19-ffaa:1:11de -i 192.168.1.101 -n UpdatedAS      #Update AS details
 scionpathml rm-as -a 19-ffaa:1:11de                                    #Remove AS
 
