@@ -18,45 +18,63 @@ pip install -e .
 - SCION infrastructure access (SCIONLab and active AS)
 - SCION measurement tools for bandwidth: `sudo apt install scion-apps-bwtester`
 
+
+
 ## Network Configuration 
 
-### Configure autonomous systems
-scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS  
-scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n TestServer  
+### Configure autonomous systems and server
+```bash
+scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS       #Add your AS
+scionpathml up-as -a 19-ffaa:1:11de -i 192.168.1.101 -n UpdatedAS   #Update AS details
+scionpathml rm-as -a 19-ffaa:1:11de                                 #Remove AS
 
+
+scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n MyServer      #Add your server
+scionpathml up-server -a 19-ffaa:1:22ef -i 10.0.0.51 -n UpdatedServer  #Update server details
+scionpathml rm-server -a 19-ffaa:1:22ef                                #Remove server
+```
 ### View configuration
-scionpathml show
-
+```bash
+scionpathml show    #See your current configuration
+```
 ## Measurement Control
 
 ### Control measurement pipeline
-scionpathml show-cmds  
-scionpathml enable-cmd -m bandwidth  
-scionpathml disable-category -c tracing  
+```bash
+scionpathml show-cmds                     #Display all commands and their status
+scionpathml enable-cmd -m bandwidth       #Enable bandwidth command
+scionpathml disable-cmd -m bandwidth      #Disable bandwidth command
+scionpathml enable-category -c tracing    #Enable all commands in category tracing
+scionpathml disable-category -c tracing   #Disable all commands in category tracing
+```
+### Schedule automated measurements & One time run
+```bash
+scionpathml -f 30  # Run every 30 minutes
+scionpathml run    # Test run the pipeline right now
 
-### Schedule automated measurements
-scionpathml -f 30  # Run every 30 minutes  
-
+```
 ## Data Processing
 
 ### Transform JSON measurements to CSV
-scionpathml transform  
-scionpathml transform-data /path/to/measurements  
-scionpathml transform multipath --output-dir /output/  
-
+```bash
+scionpathml transform                                 #Convert JSON files to CSV
+scionpathml transform-data /path/to/measurements      #Transform from custom path
+scionpathml transform multipath --output-dir /output/ #Custom output with default data
+```
 ## Manage datasets
-scionpathml data-overview  
-scionpathml data-show Archive   
-scionpathml data-show Archive --interractive  
-scionpathml data-move Archive History  
-
-## Monitoring
-
+```bash
+scionpathml data-overview                       #Check current data status
+scionpathml data-show Archive                   #Show detailed Archive contents
+scionpathml data-show Archive --interractive    #Browse Archive interactively
+scionpathml data-move History Archive           #Move History to Archive
+```
 ## View logs and status
-scionpathml logs pipeline  
-scionpathml view-log bandwidth latest  
-scionpathml transform-status  
+```bash
+scionpathml logs pipeline                 #Last 30 lines of pipeline.log
+scionpathml view-log bandwidth latest     #View latest file (highest number)
+scionpathml view-log bandwidth            #View file 1 (last 50 lines)
 
+```
 ## Measurement Types
 
 Path Discovery: scion showpaths coordination  
