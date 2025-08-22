@@ -27,7 +27,7 @@ def collect_multipath_data(base_path):
                         all_bandwidth.extend(parsed)
 
                 except Exception as e:
-                    print(f"⚠️ Error parsing file {fpath}: {e}")
+                    print(f"Error parsing file {fpath}: {e}")
 
     return all_ping, all_bandwidth
 
@@ -43,6 +43,4 @@ def save_multipath_data(base_path, output_dir="./transformers/datasets"):
         df_bw = pd.DataFrame(bw_data).sort_values("timestamp")
         df_bw.to_csv(os.path.join(output_dir, "data_BW-MP.csv"), index=False)
 
-if __name__ == "__main__":
-    base_path = "/home/scion/Documents/DataMachine1_2/"
-    save_multipath_data(base_path)
+

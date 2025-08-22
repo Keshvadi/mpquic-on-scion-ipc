@@ -40,12 +40,12 @@ class DataManager:
     
     def interactive_main_browser(self):
         """Interactive browser for all main directories"""
-        print_header("📂 INTERACTIVE DATA BROWSER")
+        print_header("INTERACTIVE DATA BROWSER")
         
         while True:
             # Clear screen for better UX
             os.system('clear' if os.name == 'posix' else 'cls')
-            print_header("📂 INTERACTIVE DATA BROWSER")
+            print_header("INTERACTIVE DATA BROWSER")
             
             # Show available directories
             paths_info = self.get_data_paths_info()
@@ -54,11 +54,11 @@ class DataManager:
             valid_dirs = []
             for i, (path_name, info) in enumerate(paths_info.items(), 1):
                 if info['exists']:
-                    status = "✅" if info['total_files'] > 0 else "📁"
+                    status = "[OK]" if info['total_files'] > 0 else "[EMPTY]"
                     print(f"{i}. {status} {path_name:<12} ({info['total_files']} files, {info['size_mb']:.1f} MB)")
                     valid_dirs.append((path_name, info))
                 else:
-                    print(f"{i}. ❌ {path_name:<12} (not found)")
+                    print(f"{i}. [FAIL] {path_name:<12} (not found)")
                     valid_dirs.append((path_name, None))
             
             print()
@@ -130,7 +130,7 @@ class DataManager:
         
         while True:
             os.system('clear' if os.name == 'posix' else 'cls')  # Clear screen
-            print_header(f"📂 BROWSING: {current_path}")
+            print_header(f"BROWSING: {current_path}")
             
             if not current_path.exists():
                 print_error(f"Directory does not exist: {current_path}")
@@ -155,9 +155,9 @@ class DataManager:
                 continue
             
             # Show navigation info
-            print_info(f"📍 Current: {current_path.absolute()}")
+            print_info(f"Current: {current_path.absolute()}")
             if navigation_stack:
-                print_info(f"🔙 Parent: {navigation_stack[-1] if navigation_stack else 'Root'}")
+                print_info(f"Parent: {navigation_stack[-1] if navigation_stack else 'Root'}")
             print()
             
             items = []
@@ -166,21 +166,21 @@ class DataManager:
             # Show parent directory option if we can go back
             if navigation_stack:
                 item_count += 1
-                print(f"{item_count}. 🔙 .. (Parent directory)")
+                print(f"{item_count}. (Parent directory)")
                 items.append(("parent", navigation_stack[-1]))
             
             # Show subdirectories
             if subdirs:
-                print_section(f"📁 Subdirectories ({len(subdirs)})")
+                print_section(f" Subdirectories ({len(subdirs)})")
                 for subdir in sorted(subdirs):
                     item_count += 1
                     subdir_files = list(subdir.glob("*.json"))
-                    print(f"{item_count}. 📁 {subdir.name} ({len(subdir_files)} JSON files)")
+                    print(f"{item_count}. Subdirectorie {subdir.name} ({len(subdir_files)} JSON files)")
                     items.append(("directory", subdir))
             
             # Show JSON files with pagination
             if json_files:
-                print_section(f"📄 JSON Files ({len(json_files)})")
+                print_section(f"JSON Files ({len(json_files)})")
                 
                 # Group files by category
                 file_groups = {}
@@ -201,13 +201,13 @@ class DataManager:
                     category_files = sorted(file_groups[category], 
                                           key=lambda x: x.stat().st_mtime, reverse=True)
                     
-                    print(f"\n   📊 {category} ({len(category_files)} files):")
+                    print(f"\n   [CATEGORY] {category} ({len(category_files)} files):")
                     
                     for json_file in category_files[:min(5, max_files_to_show - files_shown)]:
                         item_count += 1
                         file_size = json_file.stat().st_size / 1024  # KB
                         modified = datetime.fromtimestamp(json_file.stat().st_mtime)
-                        print(f"{item_count}. 📄 {json_file.name}")
+                        print(f"{item_count}. [FILE] {json_file.name}")
                         print(f"      ({file_size:.1f} KB, {modified.strftime('%Y-%m-%d %H:%M')})")
                         items.append(("file", json_file))
                         files_shown += 1
@@ -221,7 +221,7 @@ class DataManager:
                             print(f"      ... and {remaining} more {category} files")
                 
                 if len(json_files) > max_files_to_show:
-                    print(f"\n   📄 ... and {len(json_files) - files_shown} more files")
+                    print(f"\n   File ... and {len(json_files) - files_shown} more files")
                     print("       Use 'l' to list all files or 's' to search")
             
             # Show commands
@@ -286,7 +286,7 @@ class DataManager:
     def _show_file_details(self, file_path):
         """Show detailed information about a specific file"""
         os.system('clear' if os.name == 'posix' else 'cls')
-        print_header(f"📄 FILE DETAILS: {file_path.name}")
+        print_header(f"FILE DETAILS: {file_path.name}")
         
         try:
             stat = file_path.stat()
@@ -294,11 +294,11 @@ class DataManager:
             modified = datetime.fromtimestamp(stat.st_mtime)
             created = datetime.fromtimestamp(stat.st_ctime)
             
-            print_info(f"📂 Path: {file_path.absolute()}")
-            print_info(f"📊 Category: {self.identify_file_category(file_path.name)}")
-            print_info(f"📏 Size: {file_size:,} bytes ({file_size/1024:.1f} KB)")
-            print_info(f"📅 Modified: {modified.strftime('%Y-%m-%d %H:%M:%S')}")
-            print_info(f"📅 Created: {created.strftime('%Y-%m-%d %H:%M:%S')}")
+            print_info(f"Path: {file_path.absolute()}")
+            print_info(f"Category: {self.identify_file_category(file_path.name)}")
+            print_info(f"Size: {file_size:,} bytes ({file_size/1024:.1f} KB)")
+            print_info(f"Modified: {modified.strftime('%Y-%m-%d %H:%M:%S')}")
+            print_info(f"Created: {created.strftime('%Y-%m-%d %H:%M:%S')}")
             print()
             
             while True:
@@ -348,7 +348,7 @@ class DataManager:
             except json.JSONDecodeError:
                 lines = content.split('\n')
             
-            print_header(f"📄 CONTENT: {file_path.name}")
+            print_header(f"CONTENT: {file_path.name}")
             
             if max_lines and len(lines) > max_lines:
                 print_info(f"Showing first {max_lines} lines of {len(lines)} total lines")
@@ -380,15 +380,15 @@ class DataManager:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
-            print_header(f"📊 JSON STRUCTURE: {file_path.name}")
+            print_header(f"JSON STRUCTURE: {file_path.name}")
             
             def analyze_structure(obj, indent=0):
                 prefix = "  " * indent
                 
                 if isinstance(obj, dict):
-                    print(f"{prefix}📦 Object ({len(obj)} keys):")
+                    print(f"{prefix} Object ({len(obj)} keys):")
                     for key, value in obj.items():
-                        print(f"{prefix}  🔑 {key}: {type(value).__name__}", end="")
+                        print(f"{prefix}  [KEY] {key}: {type(value).__name__}", end="")
                         if isinstance(value, (list, dict)):
                             if isinstance(value, list) and value:
                                 print(f" (length: {len(value)})")
@@ -407,13 +407,13 @@ class DataManager:
                                 print(f" ({value})")
                 
                 elif isinstance(obj, list):
-                    print(f"{prefix}📋 Array (length: {len(obj)})")
+                    print(f"{prefix}Array (length: {len(obj)})")
                     if obj and indent < 2:
                         print(f"{prefix}  Sample item:")
                         analyze_structure(obj[0], indent + 2)
                 
                 else:
-                    print(f"{prefix}📄 {type(obj).__name__}: {obj}")
+                    print(f"{prefix}[DATA] {type(obj).__name__}: {obj}")
             
             analyze_structure(data)
             
@@ -440,7 +440,7 @@ class DataManager:
                     matches.append((i, line.strip()))
             
             os.system('clear' if os.name == 'posix' else 'cls')
-            print_header(f"🔍 SEARCH RESULTS in {file_path.name}")
+            print_header(f"SEARCH RESULTS in {file_path.name}")
             
             if matches:
                 print_success(f"Found {len(matches)} matches for '{search_term}':")
@@ -504,7 +504,7 @@ class DataManager:
             
             while True:
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print_header(f"📋 ALL FILES IN {directory_path.name}")
+                print_header(f"ALL FILES IN {directory_path.name}")
                 
                 start_idx = current_page * page_size
                 end_idx = min(start_idx + page_size, len(json_files))
@@ -519,8 +519,8 @@ class DataManager:
                     modified = datetime.fromtimestamp(stat.st_mtime)
                     category = self.identify_file_category(json_file.name)
                     
-                    print(f"{i:3d}. 📄 {json_file.name}")
-                    print(f"     📊 {category} | {size_kb:.1f} KB | {modified.strftime('%Y-%m-%d %H:%M')}")
+                    print(f"{i:3d}. [FILE] {json_file.name}")
+                    print(f"     [INFO] {category} | {size_kb:.1f} KB | {modified.strftime('%Y-%m-%d %H:%M')}")
                 
                 print("-" * 80)
                 print("n. Next page | p. Previous page | q. Quit | [number]. View file")
@@ -568,7 +568,7 @@ class DataManager:
                 return
             
             os.system('clear' if os.name == 'posix' else 'cls')
-            print_header(f"🔍 SEARCH RESULTS: {pattern}")
+            print_header(f"SEARCH RESULTS: {pattern}")
             print_success(f"Found {len(matching_files)} files:")
             print()
             
@@ -578,8 +578,8 @@ class DataManager:
                 modified = datetime.fromtimestamp(stat.st_mtime)
                 category = self.identify_file_category(file_path.name)
                 
-                print(f"{i}. 📄 {file_path.name}")
-                print(f"   📊 {category} | {size_kb:.1f} KB | {modified.strftime('%Y-%m-%d %H:%M')}")
+                print(f"{i}. [FILE] {file_path.name}")
+                print(f"   [INFO] {category} | {size_kb:.1f} KB | {modified.strftime('%Y-%m-%d %H:%M')}")
             
             print("\nSelect file number to view details, or press Enter to continue...")
             choice = input("File number: ").strip()
@@ -596,7 +596,7 @@ class DataManager:
     def _show_directory_statistics(self, directory_path):
         """Show detailed statistics about a directory"""
         os.system('clear' if os.name == 'posix' else 'cls')
-        print_header(f"📊 DIRECTORY STATISTICS: {directory_path.name}")
+        print_header(f"DIRECTORY STATISTICS: {directory_path.name}")
         
         try:
             all_files = list(directory_path.rglob("*.json"))
@@ -614,11 +614,11 @@ class DataManager:
             newest_time = datetime.fromtimestamp(newest_file.stat().st_mtime)
             oldest_time = datetime.fromtimestamp(oldest_file.stat().st_mtime)
             
-            print_info(f"📂 Path: {directory_path.absolute()}")
-            print_info(f"📄 Total files: {len(all_files)}")
-            print_info(f"📏 Total size: {total_size:,} bytes ({total_size/1024/1024:.1f} MB)")
-            print_info(f"📅 Newest: {newest_file.name} ({newest_time.strftime('%Y-%m-%d %H:%M')})")
-            print_info(f"📅 Oldest: {oldest_file.name} ({oldest_time.strftime('%Y-%m-%d %H:%M')})")
+            print_info(f"Path: {directory_path.absolute()}")
+            print_info(f"Total files: {len(all_files)}")
+            print_info(f"Total size: {total_size:,} bytes ({total_size/1024/1024:.1f} MB)")
+            print_info(f"Newest: {newest_file.name} ({newest_time.strftime('%Y-%m-%d %H:%M')})")
+            print_info(f"Oldest: {oldest_file.name} ({oldest_time.strftime('%Y-%m-%d %H:%M')})")
             
             # Show breakdown by category
             category_stats = {}
@@ -629,10 +629,10 @@ class DataManager:
                 category_stats[category]['count'] += 1
                 category_stats[category]['size'] += file_path.stat().st_size
             
-            print_section("📊 Breakdown by Category")
+            print_section("Breakdown by Category")
             for category, stats in sorted(category_stats.items()):
                 size_mb = stats['size'] / 1024 / 1024
-                print(f"   📊 {category:<20} {stats['count']:>4} files ({size_mb:>6.1f} MB)")
+                print(f"   [STATS] {category:<20} {stats['count']:>4} files ({size_mb:>6.1f} MB)")
                 
         except Exception as e:
             print_error(f"Error calculating statistics: {e}")
@@ -642,15 +642,15 @@ class DataManager:
     def _show_browser_help(self):
         """Show help for the interactive browser"""
         os.system('clear' if os.name == 'posix' else 'cls')
-        print_header("📚 INTERACTIVE BROWSER HELP")
+        print_header("INTERACTIVE BROWSER HELP")
         
-        print_section("🎯 Navigation")
+        print_section("Navigation")
         print("• Use numbers to select directories or files")
         print("• Use 'b' or 'back' to return to main browser")
         print("• Use '0' or 'exit' to quit")
         print("• Use '..' or parent option to go up one level")
         
-        print_section("🔍 Commands")
+        print_section("Commands")
         print("• l - List all files in current directory (paginated)")
         print("• s - Search for files in current directory")
         print("• i - Show directory information and statistics")
@@ -658,13 +658,13 @@ class DataManager:
         print("• h - Show this help")
         print("• e - Enter external path (main browser only)")
         
-        print_section("📄 File Actions")
+        print_section("File Actions")
         print("• View file content (with line numbers)")
         print("• Analyze JSON structure")
         print("• Search within file content")
         print("• Copy file path to clipboard")
         
-        print_section("💡 Tips")
+        print_section("Tips")
         print("• Files are automatically categorized by naming patterns")
         print("• Use Ctrl+C to quickly exit at any time")
         print("• Large files show only first 50 lines by default")
@@ -744,18 +744,18 @@ class DataManager:
         
         for path_name, info in paths_info.items():
             if info['exists']:
-                status = "✅" if info['total_files'] > 0 else "📁"
+                status = "[OK]" if info['total_files'] > 0 else "[EMPTY]"
                 print(f"{status} {path_name:<12} {info['total_files']:>6} files ({info['size_mb']:>8.1f} MB)")
                 total_files += info['total_files']
                 total_size += info['size_mb']
             else:
-                print(f"❌ {path_name:<12}      0 files (not found)")
+                print(f"[MISSING] {path_name:<12}      0 files (not found)")
         
         print()
-        print_success(f"📊 Total: {total_files} JSON files ({total_size:.1f} MB)")
+        print_success(f"Total: {total_files} JSON files ({total_size:.1f} MB)")
         
         print()
-        print_info("💡 Usage:")
+        print_info("Usage:")
         print_example("scionpathml data-show Archive", "Show detailed Archive contents")
         print_example("scionpathml data-show Archive --interactive", "Browse Archive interactively")
         print_example("scionpathml data-browse", "Interactive browser for all directories")
@@ -778,7 +778,7 @@ class DataManager:
             return False
         
         print_header(f"{directory_name.upper()} DIRECTORY DETAILS")
-        print_info(f"📂 Path: {target_path.absolute()}")
+        print_info(f"Path: {target_path.absolute()}")
         
         # Get all JSON files
         all_files = list(target_path.rglob("*.json"))
@@ -789,7 +789,7 @@ class DataManager:
             return True
         
         # Show files by pattern/category
-        print_section(f"📊 Files by Measurement Type ({len(all_files)} total)")
+        print_section(f"Files by Measurement Type ({len(all_files)} total)")
         
         pattern_groups = {}
         for json_file in all_files:
@@ -805,7 +805,7 @@ class DataManager:
                 latest_file = max(files_list, key=lambda x: x.stat().st_mtime)
                 latest_time = datetime.fromtimestamp(latest_file.stat().st_mtime)
                 
-                print(f"   📊 {category:<20} {len(files_list):>4} files ({total_size:>8.1f} KB) - Latest: {latest_time.strftime('%Y-%m-%d %H:%M')}")
+                print(f"  Category {category:<20} {len(files_list):>4} files ({total_size:>8.1f} KB) - Latest: {latest_time.strftime('%Y-%m-%d %H:%M')}")
                 
                 # Show sample files
                 if len(files_list) <= 3:
@@ -813,7 +813,7 @@ class DataManager:
                         rel_path = file_path.relative_to(target_path)
                         size_kb = file_path.stat().st_size / 1024
                         modified = datetime.fromtimestamp(file_path.stat().st_mtime)
-                        print(f"      📄 {rel_path} ({size_kb:.1f} KB) - {modified.strftime('%Y-%m-%d %H:%M')}")
+                        print(f"      File {rel_path} ({size_kb:.1f} KB) - {modified.strftime('%Y-%m-%d %H:%M')}")
                 else:
                     # Show latest 2 files
                     sorted_files = sorted(files_list, key=lambda x: x.stat().st_mtime, reverse=True)
@@ -821,17 +821,17 @@ class DataManager:
                         rel_path = file_path.relative_to(target_path)
                         size_kb = file_path.stat().st_size / 1024
                         modified = datetime.fromtimestamp(file_path.stat().st_mtime)
-                        print(f"      📄 {rel_path} ({size_kb:.1f} KB) - {modified.strftime('%Y-%m-%d %H:%M')}")
+                        print(f"      File {rel_path} ({size_kb:.1f} KB) - {modified.strftime('%Y-%m-%d %H:%M')}")
                     print(f"      ... and {len(files_list) - 2} more files")
                 print()
         
         # Show directory structure
         subdirs = [d for d in target_path.iterdir() if d.is_dir()]
         if subdirs:
-            print_section("📁 Subdirectories")
+            print_section("Subdirectories")
             for subdir in sorted(subdirs):
                 subdir_files = list(subdir.glob("*.json"))
-                print(f"   📁 {subdir.name:<20} ({len(subdir_files)} files)")
+                print(f"Subdirectories {subdir.name:<20} ({len(subdir_files)} files)")
         
         return True
     
@@ -916,10 +916,10 @@ class DataManager:
                 move_groups[file_category] = []
             move_groups[file_category].append(file_path)
         
-        print_section("📊 Files to Move by Type")
+        print_section("Files to Move by Type")
         for cat, files_list in sorted(move_groups.items()):
             total_size = sum(f.stat().st_size for f in files_list) / 1024  # KB
-            print(f"   📊 {cat:<20} {len(files_list):>4} files ({total_size:>8.1f} KB)")
+            print(f"Move {cat:<20} {len(files_list):>4} files ({total_size:>8.1f} KB)")
         
         # Confirm move
         if confirm:
@@ -966,9 +966,9 @@ class DataManager:
             self._cleanup_empty_directories(source_path)
         
         if moved_count > 0:
-            print_success(f"✅ Successfully moved {moved_count} files to {dest_description}")
+            print_success(f"Successfully moved {moved_count} files to {dest_description}")
         if failed_count > 0:
-            print_error(f"❌ Failed to move {failed_count} files")
+            print_error(f"Failed to move {failed_count} files")
         
         return moved_count > 0
     
@@ -1028,13 +1028,13 @@ class DataManager:
                 delete_groups[file_category] = []
             delete_groups[file_category].append(file_path)
         
-        print_section("📊 Files to Delete by Type")
+        print_section("Files to Delete by Type")
         total_size_mb = 0
         for cat, files_list in sorted(delete_groups.items()):
             total_size = sum(f.stat().st_size for f in files_list)
             total_size_kb = total_size / 1024
             total_size_mb += total_size / 1024 / 1024
-            print(f"   🗑️  {cat:<20} {len(files_list):>4} files ({total_size_kb:>8.1f} KB)")
+            print(f"Remove {cat:<20} {len(files_list):>4} files ({total_size_kb:>8.1f} KB)")
         
         print()
         print_info(f"Total size to delete: {total_size_mb:.1f} MB")
@@ -1042,7 +1042,7 @@ class DataManager:
         # Confirm deletion
         if confirm:
             print()
-            print(f"{Colors.RED}⚠️  WARNING: This action cannot be undone!{Colors.END}")
+            print(f"{Colors.RED}WARNING: This action cannot be undone!{Colors.END}")
             response = input(f"Delete {len(files_to_delete)} files from {directory_name}? (y/N): ")
             if response.lower() != 'y':
                 print_info("Deletion cancelled")
@@ -1064,9 +1064,9 @@ class DataManager:
         self._cleanup_empty_directories(target_path)
         
         if deleted_count > 0:
-            print_success(f"✅ Successfully deleted {deleted_count} files")
+            print_success(f"Successfully deleted {deleted_count} files")
         if failed_count > 0:
-            print_error(f"❌ Failed to delete {failed_count} files")
+            print_error(f"Failed to delete {failed_count} files")
         
         return deleted_count > 0
     
@@ -1094,7 +1094,7 @@ class DataManager:
             search_paths = [self.archive_path, self.currently_path, self.history_path]
             search_desc = "in all directories"
         
-        print_info(f"🔍 Searching for '*{pattern}*' {search_desc}")
+        print_info(f"Searching for '*{pattern}*' {search_desc}")
         
         found_files = []
         for search_path in search_paths:
@@ -1132,12 +1132,12 @@ class DataManager:
         
         for category in sorted(category_groups.keys()):
             files_list = category_groups[category]
-            print_section(f"📊 {category} Files ({len(files_list)})")
+            print_section(f"{category} Files ({len(files_list)})")
             
             for i, file_info in enumerate(files_list[:10]):  # Show first 10 per category
                 mod_time = file_info['modified'].strftime('%Y-%m-%d %H:%M')
                 location = f"[{file_info['search_root']}]" if len(search_paths) > 1 else ""
-                print(f"   📄 {file_info['relative_path']}")
+                print(f"    {file_info['relative_path']}")
                 print(f"      ({file_info['size_kb']:.1f} KB) - {mod_time} {location}")
                 print()
             

@@ -26,10 +26,10 @@ except ImportError:
     CONFIG_FILE = "./collector/config.py"
     
     def print_header(text): print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*60}{Colors.END}\n {text}\n{'='*60}{Colors.END}")
-    def print_success(text): print(f"{Colors.GREEN}✓ {text}{Colors.END}")
-    def print_error(text): print(f"{Colors.RED}✗ {text}{Colors.END}")
-    def print_warning(text): print(f"{Colors.YELLOW}⚠ {text}{Colors.END}")
-    def print_info(text): print(f"{Colors.CYAN}ℹ {text}{Colors.END}")
+    def print_success(text): print(f"{Colors.GREEN}[SUCCESS] {text}{Colors.END}")
+    def print_error(text): print(f"{Colors.RED}[ERROR] {text}{Colors.END}")
+    def print_warning(text): print(f"{Colors.YELLOW}[WARNING] {text}{Colors.END}")
+    def print_info(text): print(f"{Colors.CYAN}[INFO] {text}{Colors.END}")
     def print_section(title): print(f"\n{Colors.BOLD}{Colors.CYAN}{title}{Colors.END}")
     def print_example(command, description): print(f"{Colors.MAGENTA}  Example:{Colors.END} {Colors.BOLD}{command}{Colors.END}\n           {description}")
 
@@ -180,21 +180,11 @@ def show_pipeline_commands():
         categories[category].sort(key=lambda x: x[1].get('execution_order', 999))
     
     # Display by category
-    category_icons = {
-        'discovery': '🔍',
-        'analysis': '📊', 
-        'probing': '🔗',
-        'tracing': '🛤️',
-        'bandwidth': '📶',
-        'other': '⚙️'
-    }
-    
     for category, commands in categories.items():
-        icon = category_icons.get(category, '⚙️')
-        print_section(f"{icon} {category.upper()} COMMANDS")
+        print_section(f"{category.upper()} COMMANDS")
         
         for cmd_name, cmd_config in commands:
-            status = f"{Colors.GREEN}✓ Enabled{Colors.END}" if cmd_config.get('enabled', False) else f"{Colors.RED}✗ Disabled{Colors.END}"
+            status = f"{Colors.GREEN}[ENABLED]{Colors.END}" if cmd_config.get('enabled', False) else f"{Colors.RED}[DISABLED]{Colors.END}"
             order = cmd_config.get('execution_order', '?')
             print(f"  {Colors.BOLD}[{order}] {cmd_name}{Colors.END}")
             print(f"    • Status: {status}")
@@ -206,7 +196,7 @@ def show_pipeline_commands():
     enabled_count = sum(1 for cmd in config.PIPELINE_COMMANDS.values() if cmd.get('enabled', False))
     total_count = len(config.PIPELINE_COMMANDS)
     
-    print_section("📊 EXECUTION SUMMARY")
+    print_section("EXECUTION SUMMARY")
     print(f"  • Enabled commands: {Colors.BOLD}{Colors.GREEN}{enabled_count}{Colors.END}")
     print(f"  • Disabled commands: {Colors.BOLD}{Colors.RED}{total_count - enabled_count}{Colors.END}")
     print(f"  • Total commands: {Colors.BOLD}{total_count}{Colors.END}")
@@ -220,12 +210,12 @@ def show_pipeline_commands():
         ]
         enabled_commands.sort(key=lambda x: x[1])
         
-        print(f"\n  🔄 Execution Order:")
+        print(f"\n  Execution Order:")
         for i, (cmd_name, order) in enumerate(enabled_commands, 1):
             print(f"    {i}. {cmd_name}")
     
     print()
-    print_info("🔧 Command Management:")
+    print_info("Command Management:")
     print_example("scionpathml enable-cmd -m bandwidth", "Enable bandwidth command")
     print_example("scionpathml disable-cmd -m traceroute", "Disable traceroute command")
     print_example("scionpathml enable-category -c bandwidth", "Enable all bandwidth commands")
@@ -423,7 +413,7 @@ def enable_all_commands() -> bool:
     print()
     
     for cmd_name in config.PIPELINE_COMMANDS.keys():
-        print(f"✓ Enabling {cmd_name}")
+        print(f"[ENABLE] {cmd_name}")
         if _silent_update_command(cmd_name, True):
             success_count += 1
     
@@ -441,7 +431,7 @@ def disable_all_commands() -> bool:
     if not config or not hasattr(config, 'PIPELINE_COMMANDS'):
         return False
     
-    print_warning("⚠️  IMPORTANT: This will disable ALL pipeline commands!")
+    print_warning("IMPORTANT: This will disable ALL pipeline commands!")
     print("The pipeline will not execute any measurements until you re-enable commands.")
     print()
     print("Commands that will be disabled:")
@@ -466,13 +456,13 @@ def disable_all_commands() -> bool:
     print_info("Disabling all commands...")
     
     for cmd_name in config.PIPELINE_COMMANDS.keys():
-        print(f"✗ Disabling {cmd_name}")
+        print(f"[DISABLE] {cmd_name}")
         if _silent_update_command(cmd_name, False):
             success_count += 1
     
     print()
     print_success(f"Disabled {success_count}/{total_count} pipeline commands!")
-    print_warning("⚠️  Pipeline is now inactive - remember to enable needed commands")
+    print_warning("Pipeline is now inactive - remember to enable needed commands")
     print()
     print_info("Quick recovery options:")
     print_example("scionpathml enable-all-cmds", "Re-enable all commands")
@@ -510,7 +500,7 @@ def show_command_help():
     """Show comprehensive help for command management"""
     print_header("PIPELINE COMMAND MANAGEMENT - COMPREHENSIVE GUIDE")
     
-    print_section("🎯 WHAT IS COMMAND MANAGEMENT?")
+    print_section("WHAT IS COMMAND MANAGEMENT?")
     print("Command management lets you choose which parts of the SCION measurement")
     print("pipeline should run. Instead of always running all 7 commands, you can:")
     print("  • Enable only the commands you need (e.g., just traceroute)")
@@ -518,7 +508,7 @@ def show_command_help():
     print("  • Create custom measurement workflows")
     print("  • Speed up pipeline execution by skipping unnecessary steps")
     
-    print_section("📋 AVAILABLE COMMANDS")
+    print_section("AVAILABLE COMMANDS")
     
     default_commands = get_default_pipeline_commands()
     categories = {}
@@ -528,18 +518,8 @@ def show_command_help():
             categories[category] = []
         categories[category].append((cmd_name, cmd_config))
     
-    category_icons = {
-        'discovery': '🔍',
-        'analysis': '📊', 
-        'probing': '🔗',
-        'tracing': '🛤️',
-        'bandwidth': '📶',
-        'other': '⚙️'
-    }
-    
     for category, commands in categories.items():
-        icon = category_icons.get(category, '⚙️')
-        print(f"\n{Colors.BOLD}{icon} {category.upper()} COMMANDS:{Colors.END}")
+        print(f"\n{Colors.BOLD}{category.upper()} COMMANDS:{Colors.END}")
         
         for cmd_name, cmd_config in commands:
             print(f"  {Colors.CYAN}{cmd_name}{Colors.END}")
@@ -547,7 +527,7 @@ def show_command_help():
             print(f"    • Purpose: {cmd_config['description']}")
             print(f"    • Execution order: #{cmd_config['execution_order']}")
     
-    print_section("🚀 QUICK START EXAMPLES")
+    print_section("QUICK START EXAMPLES")
     
     print(f"{Colors.BOLD}Scenario 1: Only want traceroute data{Colors.END}")
     print_example("scionpathml disable-all-cmds", "Disable everything first")
@@ -563,7 +543,7 @@ def show_command_help():
     print_example("scionpathml enable-cmd -m pathdiscovery", "Enable path discovery")
     print_example("scionpathml enable-cmd -m comparer", "Enable path comparison")
     
-    print_section("📚 ALL COMMAND MANAGEMENT OPTIONS")
+    print_section("ALL COMMAND MANAGEMENT OPTIONS")
     
     print(f"{Colors.BOLD}View Current Configuration:{Colors.END}")
     print_example("scionpathml show-cmds", "Display all commands and their status")
@@ -580,7 +560,7 @@ def show_command_help():
     print_example("scionpathml enable-all-cmds", "Enable all commands")
     print_example("scionpathml disable-all-cmds", "Disable all commands (with confirmation)")
     
-    print_section("📖 PARAMETER REFERENCE")
+    print_section("PARAMETER REFERENCE")
     
     print(f"{Colors.BOLD}Command Names (-m):{Colors.END}")
     cmd_names = list(default_commands.keys())
@@ -594,15 +574,14 @@ def show_command_help():
         line_cats = categories[i:i+3]
         print(f"  • {' • '.join(line_cats)}")
     
-    
-    print_section("🔄 INTEGRATION WITH SCHEDULING")
+    print_section("INTEGRATION WITH SCHEDULING")
     
     print("Command management works seamlessly with your existing scheduling:")
     print_example("scionpathml -f 30", "Set 30-minute frequency (respects enabled commands)")
     print_example("scionpathml show", "View both scheduling and command status")
     
     print()
-    print_info("📊 Use 'scionpathml show-cmds' anytime to see current configuration")
+    print_info("Use 'scionpathml show-cmds' anytime to see current configuration")
 
 # Export all functions for CLI integration
 __all__ = [

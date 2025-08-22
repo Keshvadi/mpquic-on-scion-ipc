@@ -19,7 +19,7 @@ class DataCommands:
         if not directory_name:
             print_error("Missing directory name")
             print()
-            print_info("💡 Usage:")
+            print_info("Usage:")
             print_example("scionpathml data-show Archive", "Show Archive directory details")
             print_example("scionpathml data-show Currently", "Show Currently directory details")
             print_example("scionpathml data-show History", "Show History directory details")
@@ -47,7 +47,7 @@ class DataCommands:
         if not source_dir or not dest_dir:
             print_error("Missing source or destination directory")
             print()
-            print_info("💡 Usage:")
+            print_info("Usage:")
             print_example("scionpathml data-move Currently Archive ", "Move all Currently files to Archive")
             print_example("scionpathml data-move Archive /backup/data", "Move to external path")
             print_example("scionpathml data-move History Archive --category Bandwidth", "Move only Bandwidth files")
@@ -65,12 +65,12 @@ class DataCommands:
         if not directory_name:
             print_error("Missing directory name")
             print()
-            print_info("💡 Usage:")
+            print_info("Usage:")
             print_example("scionpathml data-delete Archive", "Delete all files in Archive")
             print_example("scionpathml data-delete Currently --category Bandwidth", "Delete only Bandwidth files")
             print_example("scionpathml data-delete History --no-confirm", "Delete without confirmation")
             print()
-            print_info("⚠️  Use with caution - deleted files cannot be recovered!")
+            print_info("Use with caution - deleted files cannot be recovered!")
             return False
         
         return self.manager.delete_data(directory_name, category, confirm=not no_confirm)
@@ -80,7 +80,7 @@ class DataCommands:
         if not pattern:
             print_error("Missing search pattern")
             print()
-            print_info("💡 Usage:")
+            print_info("Usage:")
             print_example("scionpathml data-search BW_2025", "Search for bandwidth files from 2025")
             print_example("scionpathml data-search AS-1 Archive", "Search in Archive for AS-1 files")
             print_example("scionpathml data-search 19-ffaa", "Search for specific AS files")
@@ -97,22 +97,22 @@ class DataCommands:
         """Show data management help"""
         print_header("DATA MANAGEMENT HELP")
         
-        print_section("📂 DATA STRUCTURE & FILE PATTERNS")
+        print_section("DATA STRUCTURE & FILE PATTERNS")
         print("Your measurement data follows these naming patterns:")
-        print("   📊 Showpaths:        AS-1_2025-06-25T22:00_19-ffaa_0_1301.json")
-        print("   📊 Bandwidth:        BW_2025-06-25T22:00_AS_16-ffaa_0_1001_5Mbps.json")
-        print("   📊 Comparer:         delta_2025-06-25T22:00_19-ffaa_0_1301.json")
-        print("   📊 Prober:           prober_2025-06-25T22:00_19-ffaa_0_1301.json")
-        print("   📊 Traceroute:       TR_2025-06-25T22:00_AS_17-ffaa_0_1101_p_3.json")
-        print("   📊 MP-Prober:        mp-prober_2025-06-25T22:00_18-ffaa_1_11e5.json")
-        print("   📊 MP-Bandwidth:     BW-P_2025-06-25T22-00-00_AS_19-ffaa_0_1303_50Mbps.json")
+        print("   • Showpaths:        AS-1_2025-06-25T22:00_19-ffaa_0_1301.json")
+        print("   • Bandwidth:        BW_2025-06-25T22:00_AS_16-ffaa_0_1001_5Mbps.json")
+        print("   • Comparer:         delta_2025-06-25T22:00_19-ffaa_0_1301.json")
+        print("   • Prober:           prober_2025-06-25T22:00_19-ffaa_0_1301.json")
+        print("   • Traceroute:       TR_2025-06-25T22:00_AS_17-ffaa_0_1101_p_3.json")
+        print("   • MP-Prober:        mp-prober_2025-06-25T22:00_18-ffaa_1_11e5.json")
+        print("   • MP-Bandwidth:     BW-P_2025-06-25T22-00-00_AS_19-ffaa_0_1303_50Mbps.json")
         
-        print("\n📁 Directory Structure:")
-        print("   📁 Data/Archive    - Main measurement data storage")
-        print("   📁 Data/Currently  - Current/active measurements")
-        print("   📁 Data/History    - Historical/archived measurements")
+        print("\nDirectory Structure:")
+        print("    Data/Archive    - Main measurement data storage")
+        print("    Data/Currently  - Current/active measurements")
+        print("    Data/History    - Historical/archived measurements")
         
-        print_section("🔍 VIEW COMMANDS")
+        print_section("VIEW COMMANDS")
         print_example("scionpathml data-overview", "Show overview of all directories")
         print_example("scionpathml data-show Archive", "Show detailed Archive contents")
         print_example("scionpathml data-show Archive --interactive", "Browse Archive interactively")
@@ -120,12 +120,12 @@ class DataCommands:
         print_example("scionpathml data-browse", "Interactive browser for all directories")
         print_example("scionpathml data-browse Archive", "Interactive browser for Archive")
         
-        print_section("🔍 SEARCH COMMANDS")
+        print_section("SEARCH COMMANDS")
         print_example("scionpathml data-search BW_2025", "Search for bandwidth files from 2025")
         print_example("scionpathml data-search 19-ffaa Archive", "Search Archive for AS 19-ffaa files")
         print_example("scionpathml data-search prober /backup", "Search in external directory")
         
-        print_section("📦 MOVE COMMANDS")
+        print_section("MOVE COMMANDS")
         print("Internal moves (between Archive/Currently/History):")
         print_example("scionpathml data-move History Archive ", "Move all History files to Archive")
         print_example("scionpathml data-move Currently Archive --category Bandwidth", "Move only Bandwidth files")
@@ -136,12 +136,12 @@ class DataCommands:
         print_example("scionpathml data-move Archive /backup/analysis --category Traceroute", "Export Traceroute for analysis")
         print_example("scionpathml data-move Currently /external/backup --no-confirm", "Move without confirmation")
         
-        print_section("🗑️ DELETE COMMANDS")
+        print_section("DELETE COMMANDS")
         print_example("scionpathml data-delete History", "Delete all files in History (with confirmation)")
         print_example("scionpathml data-delete Archive --category Comparer", "Delete only Comparer files")
         print_example("scionpathml data-delete Currently --no-confirm", "Delete without confirmation")
         
-        print_section("⚠️ SAFETY NOTES")
+        print_section("SAFETY NOTES")
         print("• Move operations preserve directory structure and file patterns")
         print("• Delete operations cannot be undone - use with caution")
         print("• Use --no-confirm flag to skip confirmation prompts")
@@ -150,7 +150,7 @@ class DataCommands:
         print("• External paths can be absolute (/backup/data) or relative (../backups)")
         print("• Empty directories are automatically cleaned up after moves/deletes")
         
-        print_section("📋 FILE CATEGORIES RECOGNIZED")
+        print_section("FILE CATEGORIES RECOGNIZED")
         categories = self.manager.categories
         for i, category in enumerate(categories):
             print(f"   {i+1}. {category}")
@@ -172,7 +172,7 @@ class DataCommands:
     def show_data_no_args_section(self):
         """Return data management section for no-arguments display"""
         return f"""
-    print_section("📂 MANAGE YOUR DATA")
+    print_section("MANAGE YOUR DATA")
     print_example("scionpathml data-overview", "See all your measurement data")
     print_example("scionpathml data-show Archive", "Show Archive directory details")
     print_example("scionpathml data-show Archive --interactive", "Browse Archive interactively")

@@ -55,7 +55,7 @@ def main():
     parser = argparse.ArgumentParser(
         prog="scionpathml",
         description=f"""
-{Colors.BOLD}{Colors.BLUE}🧠 SCIONPATHML CLI{Colors.END}
+{Colors.BOLD}{Colors.BLUE} ScionPahML CLI{Colors.END}
 {Colors.CYAN}Manage AS & Server Configuration + Pipeline Commands + Scheduling + Log Viewing{Colors.END}
 
 {Colors.BOLD}Quick Examples:{Colors.END}
@@ -95,7 +95,7 @@ def main():
   scionpathml log-help                # Log viewing guide
   scionpathml data-help               # Data management guide
 
-{Colors.YELLOW}💡 TIP: Start with 'scionpathml help' for the basics{Colors.END}
+{Colors.YELLOW} Start with 'scionpathml help' for the basics{Colors.END}
             """)
 
     parser.add_argument(
@@ -385,7 +385,7 @@ Command to execute:
         try:
             if cron_manager.update_cron(args.f, args.p, config):
                 print()
-                print_info("🔄 Next steps:")
+                print_info("Next steps:")
                 print_example("scionpathml show", "Check your configuration")
                 print_example("crontab -l", "View all your cron jobs")
         except EnvironmentError as e:
@@ -396,7 +396,7 @@ Command to execute:
         print_header("SCIONPATHML CLI")
         print_error("No valid command or option provided")
         print()
-        print_info("🚀 Quick start options:")
+        print_info("Quick start options:")
         print_example("scionpathml show", "View current configuration")
         print_example("scionpathml help", "See quick start guide") 
         print_example("scionpathml help-examples", "See examples and workflows")

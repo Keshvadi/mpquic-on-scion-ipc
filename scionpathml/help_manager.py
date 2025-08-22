@@ -7,7 +7,7 @@ class HelpManager:
         """Show quick start guide only"""
         print_header("SCIONPATHML CLI - QUICK START GUIDE")
         
-        print_section("🚀 GETTING STARTED")
+        print_section("GETTING STARTED")
         print("Set up for SCIONPATHML:")
         print()
         print("Step 1: Add your AS")
@@ -27,7 +27,7 @@ class HelpManager:
         print("\nStep 5: Check your results")
         print_example("scionpathml data-browse", "Browse through your measurement data")
         
-        print_section("📚 MORE HELP AVAILABLE")
+        print_section("MORE HELP AVAILABLE")
         print_example("scionpathml help-config", "AS and server management")
         print_example("scionpathml help-examples", "Examples and best practices")
         print_example("scionpathml help-troubleshooting", "When things go wrong")
@@ -37,7 +37,7 @@ class HelpManager:
         print_example("scionpathml transform-help", "Data transformation guide")
         print_example("scionpathml show", "Check current status")
         
-        print_section("🎯 COMMON FIRST STEPS")
+        print_section("COMMON FIRST STEPS")
         print_example("scionpathml show-cmds", "See what measurements are enabled")
         print_example("scionpathml disable-cmd -m bandwidth", "Turn off heavy bandwidth tests")
         print_example("scionpathml data-overview", "See what data you already have")
@@ -48,7 +48,7 @@ class HelpManager:
         """Show examples and best practices"""
         print_header("SCIONPATHML CLI - EXAMPLES & BEST PRACTICES")
         
-        print_section("🎯 COMMON WORKFLOWS")
+        print_section("COMMON WORKFLOWS")
         
         print(f"{Colors.BOLD}Initial Setup:{Colors.END}")
         print_example("scionpathml add-as -a 19-ffaa:1:11de -i 10.0.0.1 -n MyAS", "Add your AS")
@@ -75,7 +75,7 @@ class HelpManager:
         print_example("python3 collector/pathdiscovery.py", "Test individual script")
         print_example("scionpathml show", "Verify configuration")
         
-        print_section("⏰ FREQUENCY GUIDELINES")
+        print_section("FREQUENCY GUIDELINES")
         print()
         print("10 minutes per AS")
         print("• 2 AS => Every 20 minutes")
@@ -83,7 +83,7 @@ class HelpManager:
         print()
         print_example("scionpathml run", "Always test timing manually first")
         
-        print_section("📊 DATA ORGANIZATION")
+        print_section("DATA ORGANIZATION")
         print()
         print_example("scionpathml data-move History Archive", "Archive old measurements")
         print_example("scionpathml data-delete History --category Comparer", "Clean up old comparisons")
@@ -95,13 +95,13 @@ class HelpManager:
         """Show troubleshooting guide"""
         print_header("SCIONPATHML CLI - TROUBLESHOOTING")
         
-        print_section("🔧 SCRIPT PATH ISSUES")
+        print_section("SCRIPT PATH ISSUES")
         print("If you get 'script not found' errors:")
         print_example("export SCRIPT_PATH=/path/to/runner", "Set environment variable")
         print("Or check that you're running from the right directory")
         
         
-        print_section("📊 NO DATA BEING GENERATED")
+        print_section("NO DATA BEING GENERATED")
         print("If measurements run but create no files:")
         print()
         print("1. Check enabled commands:")
@@ -115,7 +115,7 @@ class HelpManager:
         print("• Verify SCION infrastructure is running")
         print("• Check firewall settings")
         
-        print_section("🗂️  DATA MANAGEMENT ISSUES")
+        print_section("DATA MANAGEMENT ISSUES")
         print(f"{Colors.BOLD}'No JSON files found':{Colors.END}")
         print("• Check the data path contains .json files")
         print_example("ls -la Data/Archive/", "See what's actually there")
@@ -123,13 +123,13 @@ class HelpManager:
         print(f"\n{Colors.BOLD}Move/delete fails:{Colors.END}")
         print("• Ensure destination path is accessible")
         
-        print_section("📋 LOG ISSUES")
+        print_section("LOG ISSUES")
         print("If no log files appear:")
         print("• Check if measurements are actually running")
         print("• Ensure pipeline has executed at least once")
         print_example("ls -la Data/Logs/", "Check log directory")
         
-        print_section("⏰ CRON/SCHEDULING ISSUES")
+        print_section("CRON/SCHEDULING ISSUES")
         print("If scheduled runs don't work:")
         print_example("systemctl status cron", "Check if cron service is running")
         print_example("crontab -l", "See your current cron jobs")
@@ -147,31 +147,31 @@ class HelpManager:
         print_header("WELCOME TO SCIONPATHML")
         print()
         
-        print_section("🚀 QUICK START")
+        print_section("QUICK START")
         print_example("scionpathml run", "Test run the pipeline right now")
         print_example("scionpathml show", "See your current configuration")
         print_example("scionpathml help", "Quick start guide")
         print()
         
-        print_section("📊 CHECK YOUR DATA")
+        print_section("CHECK YOUR DATA")
         print_example("scionpathml data-overview", "Quick overview of your measurement files")
         print_example("scionpathml data-browse", "Browse files interactively (recommended)")
         print_example("scionpathml logs pipeline", "Check if measurements are running")
         print()
         
-        print_section("🔧 CONFIGURATION")
+        print_section("CONFIGURATION")
         print_example("scionpathml show-cmds", "See what measurements are enabled")
         print_example("scionpathml -f 30", "Schedule to run every 30 minutes")
         print_example("scionpathml add-as -a YOUR_AS -i YOUR_IP -n NAME", "Add an AS to monitor")
         print()
         
-        print_section("📁 DATA MANAGEMENT")
+        print_section("DATA MANAGEMENT")
         print_example("scionpathml transform", "Convert JSON files to CSV")
         print_example("scionpathml data-search BW_2025", "Search for specific files")
         print_example("scionpathml data-move Archive /backup", "Backup your data")
         print()
         
-        print_section("📚 HELP & DOCS")
+        print_section("HELP & DOCS")
         print_example("scionpathml help", "Quick start guide")
         print_example("scionpathml help-config", "AS and server management")
         print_example("scionpathml help-examples", "Examples and workflows")

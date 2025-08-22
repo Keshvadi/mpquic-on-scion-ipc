@@ -50,23 +50,23 @@ class LogDisplay:
         pipeline_info = log_manager.get_pipeline_log_info()
         if pipeline_info:
             modified_str = pipeline_info['modified'].strftime('%Y-%m-%d %H:%M')
-            print_success(f"📄 pipeline.log ({pipeline_info['size_kb']:.1f} KB) - {modified_str}")
+            print_success(f" pipeline.log ({pipeline_info['size_kb']:.1f} KB) - {modified_str}")
         else:
-            print_error("📄 pipeline.log (not found)")
+            print_error(" pipeline.log (not found)")
         
         print()
-        print_section("📁 LOG CATEGORIES")
+        print_section(" LOG CATEGORIES")
         
         category_info = log_manager.get_category_info()
         for category, info in category_info.items():
             if info['exists']:
-                status = "✅" if info['file_count'] > 0 else "📁"
+                status = "[OK]" if info['file_count'] > 0 else "[EMPTY]"
                 print(f"{status} {category:<15} ({info['file_count']} files)")
             else:
-                print(f"❌ {category:<15} (directory not found)")
+                print(f"[MISSING] {category:<15} (directory not found)")
         
         print()
-        print_info("💡 Usage:")
+        print_info(" Usage:")
         print_example("scionpathml logs pipeline", "View pipeline.log (last 30 lines)")
         print_example("scionpathml logs bandwidth", "Browse bandwidth logs")
         print_example("scionpathml logs pipeline --all", "View entire pipeline.log")
@@ -82,7 +82,7 @@ class LogDisplay:
         
         print_header("PIPELINE LOG")
         modified_str = pipeline_info['modified'].strftime('%Y-%m-%d %H:%M')
-        print(f"📄 pipeline.log ({pipeline_info['size_kb']:.1f} KB) - Modified: {modified_str}")
+        print(f" pipeline.log ({pipeline_info['size_kb']:.1f} KB) - Modified: {modified_str}")
         print()
         
         # Read and display content - full file if show_all is True
@@ -102,11 +102,12 @@ class LogDisplay:
                 self._show_with_pagination(content['lines'])
             else:
                 for line_info in content['lines']:
-                    print(f"{line_info['line_number']:>4}: {line_info['emoji']} {line_info['content']}")
+                    status_prefix = f"[{line_info['status']}]" if line_info['status'] != 'NORMAL' else ""
+                    print(f"{line_info['line_number']:>4}: {status_prefix} {line_info['content']}")
             
             if not show_all and content['total_lines'] > 30:
                 print()
-                print_info("💡 View entire file:")
+                print_info(" View entire file:")
                 print_example("scionpathml logs pipeline --all", "View complete pipeline.log")
         else:
             error_msg = content.get('error', 'Unknown error') if content else 'Unknown error'
@@ -129,14 +130,14 @@ class LogDisplay:
             as_info = file_info.get('as_info', '')
             
             # Mark the latest file (highest numbered = last in list)
-            latest_marker = " 🆕 LATEST" if i == len(files) else ""
+            latest_marker = " LATEST" if i == len(files) else ""
             
             print(f"{i:>2}. {file_info['filename']:<35} "
                   f"({file_info['size_kb']:>6.1f} KB) "
                   f"{as_info:<20} {modified_str}{latest_marker}")
         
         print()
-        print_info("💡 View a specific file:")
+        print_info(" View a specific file:")
         print_example(f"scionpathml view-log {category}", f"View first file (#{1}) - DEFAULT")
         print_example(f"scionpathml view-log {category} 1", "View file #1")
         print_example(f"scionpathml view-log {category} {len(files)}", f"View file #{len(files)} (latest)")
@@ -151,7 +152,7 @@ class LogDisplay:
                 print_error("pipeline.log not found")
             else:
                 print_error(f"Could not find file in {category}: {file_selector}")
-                print_info("💡 Available options:")
+                print_info(" Available options:")
                 print_example(f"scionpathml logs {category}", "See numbered file list")
                 print_example(f"scionpathml view-log {category}", "View first file (default)")
                 print_example(f"scionpathml view-log {category} latest", "View latest file")
@@ -177,7 +178,7 @@ class LogDisplay:
                     display_info = " (LATEST FILE)"
         
         print_header(f"VIEWING: {filename}")
-        print(f"📄 {filename} ({size_kb:.1f} KB) - Modified: {modified}{display_info}")
+        print(f" {filename} ({size_kb:.1f} KB) - Modified: {modified}{display_info}")
         print()
         
         # Read content - full file if show_all is True
@@ -197,11 +198,12 @@ class LogDisplay:
                 self._show_with_pagination(content['lines'])
             else:
                 for line_info in content['lines']:
-                    print(f"{line_info['line_number']:>4}: {line_info['emoji']} {line_info['content']}")
+                    status_prefix = f"[{line_info['status']}]" if line_info['status'] != 'NORMAL' else ""
+                    print(f"{line_info['line_number']:>4}: {status_prefix} {line_info['content']}")
             
             if not show_all and content['total_lines'] > 50:
                 print()
-                print_info("💡 View entire file:")
+                print_info("View entire file:")
                 if category.lower() == "pipeline":
                     print_example("scionpathml view-log pipeline --all", "View complete pipeline.log")
                 else:
@@ -224,7 +226,8 @@ class LogDisplay:
             print(f"\n{Colors.CYAN}--- Page {current_page}/{total_pages} ---{Colors.END}")
             
             for line_info in lines[start_idx:end_idx]:
-                print(f"{line_info['line_number']:>4}: {line_info['emoji']} {line_info['content']}")
+                status_prefix = f"[{line_info['status']}]" if line_info['status'] != 'NORMAL' else ""
+                print(f"{line_info['line_number']:>4}: {status_prefix} {line_info['content']}")
             
             if current_page < total_pages:
                 print(f"\n{Colors.YELLOW}Press Enter for next page, 'q' to quit, or page number (1-{total_pages}):{Colors.END}")

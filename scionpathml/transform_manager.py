@@ -54,8 +54,8 @@ class TransformManager:
         output_dir = output_dir or self.default_output_dir
         
         print_header("STANDARD DATA TRANSFORMATION")
-        print_info(f"📂 Data source: {data_path}")
-        print_info(f"📁 Output directory: {output_dir}")
+        print_info(f"Data source: {data_path}")
+        print_info(f"Output directory: {output_dir}")
         print()
         
         # Check if script exists
@@ -77,8 +77,6 @@ class TransformManager:
             return False
         print_success(message)
         
-        print()
-        print_info("🔄 Running standard transformation...")
         
         try:
             # Run the transformation script
@@ -94,7 +92,7 @@ class TransformManager:
             transform_module.save_dfs(data_path, output_dir)
             
             print()
-            print_success("✅ Standard transformation completed!")
+            print_success("Standard transformation completed!")
             self._show_generated_files(output_dir, pattern="data_*.csv", exclude_pattern="*-MP.csv")
             
             return True
@@ -108,8 +106,8 @@ class TransformManager:
         output_dir = output_dir or self.default_output_dir
         
         print_header("MULTIPATH DATA TRANSFORMATION")
-        print_info(f"📂 Data source: {data_path}")
-        print_info(f"📁 Output directory: {output_dir}")
+        print_info(f"Data source: {data_path}")
+        print_info(f"Output directory: {output_dir}")
         print()
         
         # Check if script exists
@@ -130,9 +128,7 @@ class TransformManager:
             print_error(message)
             return False
         print_success(message)
-        
-        print()
-        print_info("🔄 Running multipath transformation...")
+
         
         try:
             # Run the multipath transformation script
@@ -147,7 +143,7 @@ class TransformManager:
             transform_module.save_multipath_data(data_path, output_dir)
             
             print()
-            print_success("✅ Multipath transformation completed!")
+            print_success("Multipath transformation completed!")
             self._show_generated_files(output_dir, pattern="data_*-MP.csv")
             
             return True
@@ -170,15 +166,15 @@ class TransformManager:
         print_header("TRANSFORMATION SUMMARY")
         
         if success_standard and success_multipath:
-            print_success("✅ All transformations completed successfully!")
+            print_success("All transformations completed successfully!")
         elif success_standard:
-            print_success("✅ Standard transformation completed")
-            print_error("❌ Multipath transformation failed")
+            print_success("Standard transformation completed")
+            print_error("Multipath transformation failed")
         elif success_multipath:
-            print_error("❌ Standard transformation failed")
-            print_success("✅ Multipath transformation completed")
+            print_error("Standard transformation failed")
+            print_success("Multipath transformation completed")
         else:
-            print_error("❌ All transformations failed")
+            print_error("All transformations failed")
             return False
         
         # Show summary of all files
@@ -193,11 +189,11 @@ class TransformManager:
         output_path = Path(output_dir)
         
         print_header("TRANSFORMATION STATUS")
-        print_info(f"📂 Output directory: {output_path.absolute()}")
+        print_info(f"Output directory: {output_path.absolute()}")
         
         if not output_path.exists():
             print_error("Output directory does not exist")
-            print_info("💡 Run transformation first:")
+            print_info("Run transformation first:")
             print_example("scionpathml transform-data /path/to/json/files", "Transform data")
             return
         
@@ -205,7 +201,7 @@ class TransformManager:
         csv_files = list(output_path.glob("data_*.csv"))
         if not csv_files:
             print_error("No CSV files found")
-            print_info("💡 Run transformation first:")
+            print_info("Run transformation first:")
             print_example("scionpathml transform-data /path/to/json/files", "Transform data")
             return
         
@@ -217,19 +213,19 @@ class TransformManager:
         multipath_files = [f for f in csv_files if f.name.endswith("-MP.csv")]
         
         if standard_files:
-            print_section("📊 Standard Files")
+            print_section("Standard Files")
             for csv_file in sorted(standard_files):
                 self._show_file_info(csv_file)
         
         if multipath_files:
-            print_section("🔀 Multipath Files")
+            print_section("Multipath Files")
             for csv_file in sorted(multipath_files):
                 self._show_file_info(csv_file)
         
         # Show total size
         total_size = sum(f.stat().st_size for f in csv_files) / 1024  # KB
         print()
-        print_info(f"📁 Total size: {total_size:.1f} KB")
+        print_info(f"Total size: {total_size:.1f} KB")
     
     def _show_generated_files(self, output_dir, pattern, exclude_pattern=None):
         """Show generated files matching pattern"""
@@ -241,7 +237,7 @@ class TransformManager:
             files = [f for f in files if f not in exclude_files]
         
         if files:
-            print_info("📄 Generated files:")
+            print_info("Generated files:")
             for csv_file in sorted(files):
                 self._show_file_info(csv_file, indent="   ")
     
@@ -251,7 +247,7 @@ class TransformManager:
         from datetime import datetime
         modified = datetime.fromtimestamp(file_path.stat().st_mtime)
         mod_time = modified.strftime('%Y-%m-%d %H:%M')
-        print(f"{indent}📄 {file_path.name:<20} ({file_size:>6.1f} KB) - {mod_time}")
+        print(f"{indent} {file_path.name:<20} ({file_size:>6.1f} KB) - {mod_time}")
     
     def _show_transformation_summary(self, output_dir):
         """Show complete transformation summary"""
@@ -261,6 +257,6 @@ class TransformManager:
         if all_files:
             total_size = sum(f.stat().st_size for f in all_files) / 1024  # KB
             print()
-            print_info(f"📊 Total files: {len(all_files)}")
-            print_info(f"📁 Total size: {total_size:.1f} KB")
-            print_info(f"📂 Location: {output_path.absolute()}")
+            print_info(f"Total files: {len(all_files)}")
+            print_info(f"Total size: {total_size:.1f} KB")
+            print_info(f"Location: {output_path.absolute()}")

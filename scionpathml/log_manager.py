@@ -146,23 +146,23 @@ class SimpleLogManager:
             for i, line in enumerate(display_lines, start=start_line):
                 line_content = line.rstrip()
                 
-                # Add emoji based on log level
+                # Determine status based on log level
                 line_upper = line_content.upper()
                 if any(word in line_upper for word in ['ERROR', 'FAILED', 'EXCEPTION', 'CRITICAL']):
-                    emoji = "🔴"
+                    status = "ERROR"
                 elif any(word in line_upper for word in ['WARNING', 'WARN']):
-                    emoji = "🟡"
+                    status = "WARNING"
                 elif any(word in line_upper for word in ['INFO', 'INFORMATION']):
-                    emoji = "🔵"
+                    status = "INFO"
                 elif any(word in line_upper for word in ['DEBUG', 'TRACE']):
-                    emoji = "🟢"
+                    status = "DEBUG"
                 else:
-                    emoji = "⚪"
+                    status = "NORMAL"
                 
                 formatted_lines.append({
                     'line_number': i,
                     'content': line_content,
-                    'emoji': emoji
+                    'status': status
                 })
             
             return {

@@ -4,28 +4,28 @@ import subprocess
 
 def print_welcome():
     print("\n" + "="*60)
-    print("🧠 SCIONPATHML CLI Installation Complete!")
+    print("SCIONPATHML CLI Installation Complete!")
     print("="*60)
-    print("\n✅ Python package installed successfully")
+    print("\n Python package installed successfully")
     
     # Check if scion-apps-bwtester is available
     try:
         result = subprocess.run(['which', 'scion-bwtestclient'], 
                               capture_output=True, text=True)
         if result.returncode == 0:
-            print("✅ SCION bandwidth tester found")
+            print("SCION bandwidth tester found")
         else:
-            print("⚠️  SCION bandwidth tester not found")
+            print("SCION bandwidth tester not found")
             print("   Install with: sudo apt install scion-apps-bwtester")
     except:
-        print("⚠️  Could not check for SCION bandwidth tester")
+        print("Could not check for SCION bandwidth tester")
         print("   Install with: sudo apt install scion-apps-bwtester")
     
-    print("\n🚀 Quick Start:")
+    print("\nQuick Start:")
     print("   scionpathml help     # Quick start")
     print("   scionpathml show     # View current configuration")
     
-    print("\n📋 System Requirements:")
+    print("\nSystem Requirements:")
     print("   • SCION infrastructure access")
     print("   • sudo apt install scion-apps-bwtester")
     
@@ -156,16 +156,16 @@ def post_install_check():
     # Check Python version
     python_version = sys.version_info
     if python_version >= (3, 8):
-        print(f"✅ Python {python_version.major}.{python_version.minor}.{python_version.micro} - Compatible")
+        print(f"Python {python_version.major}.{python_version.minor}.{python_version.micro} - Compatible")
     else:
-        print(f"❌ Python {python_version.major}.{python_version.minor}.{python_version.micro} - Requires 3.8+")
+        print(f"Python {python_version.major}.{python_version.minor}.{python_version.micro} - Requires 3.8+")
     
     # Check pandas installation
     try:
         import pandas as pd
-        print(f"✅ Pandas {pd.__version__} - Installed")
+        print(f"Pandas {pd.__version__} - Installed")
     except ImportError:
-        print("❌ Pandas - Not found (required for data transformation)")
+        print("Pandas - Not found (required for data transformation)")
     
     # Check for SCION tools
     scion_tools = ['scion-bwtestclient', 'scion-bwtestserver', 'scion']
@@ -173,17 +173,11 @@ def post_install_check():
         try:
             result = subprocess.run(['which', tool], capture_output=True, text=True)
             if result.returncode == 0:
-                print(f"✅ {tool} - Found")
+                print(f"{tool} - Found")
             else:
-                print(f"⚠️  {tool} - Not found")
+                print(f" {tool} - Not found")
         except:
-            print(f"⚠️  {tool} - Could not check")
+            print(f"{tool} - Could not check")
     
-    print("\n📝 Next Steps:")
-    print("1. Ensure SCION infrastructure is accessible")
-    print("2. Install missing SCION tools: sudo apt install scion-apps-bwtester")  
-    print("3. Create Data/Archive directory structure")
-    print("4. Run: scionpathml help, for more help")
-
 if __name__ == "__main__":
     post_install_check()

@@ -15,7 +15,7 @@ class ConfigManager:
             return
         
         # Show AS Configuration
-        print_section("🏢 AUTONOMOUS SYSTEMS (AS)")
+        print_section("AUTONOMOUS SYSTEMS (AS)")
         if hasattr(config, 'AS_TARGETS') and config.AS_TARGETS:
             for as_id, (ip, name) in config.AS_TARGETS.items():
                 print(f"  {Colors.BOLD}{as_id}{Colors.END}")
@@ -23,14 +23,14 @@ class ConfigManager:
                 print(f"    • Folder Name: {Colors.CYAN}{name}{Colors.END}")
                 print()
         else:
-            print("  📭 No AS configured yet")
+            print("  No AS configured yet")
             print()
             print_example("scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS", 
                          "Add your first AS")
             print()
         
         # Show Server Configuration  
-        print_section("🖥️  BANDWIDTH TEST SERVERS")
+        print_section("  BANDWIDTH TEST SERVERS")
         if hasattr(config, 'BWTEST_SERVERS') and config.BWTEST_SERVERS:
             for server_id, (ip, name) in config.BWTEST_SERVERS.items():
                 print(f"  {Colors.BOLD}{server_id}{Colors.END}")
@@ -38,28 +38,28 @@ class ConfigManager:
                 print(f"    • Server Name: {Colors.CYAN}{name}{Colors.END}")
                 print()
         else:
-            print("  📭 No servers configured yet")
+            print("  No servers configured yet")
             print()
             print_example("scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n TestServer", 
                          "Add your first server")
             print()
         
         # Show Pipeline Commands Status
-        print_section("⚙️  PIPELINE COMMANDS")
+        print_section(" PIPELINE COMMANDS")
         if hasattr(config, 'PIPELINE_COMMANDS') and config.PIPELINE_COMMANDS:
             # Count enabled/disabled commands
             enabled_cmds = [name for name, cfg in config.PIPELINE_COMMANDS.items() if cfg.get('enabled', True)]
             disabled_cmds = [name for name, cfg in config.PIPELINE_COMMANDS.items() if not cfg.get('enabled', True)]
             total_cmds = len(config.PIPELINE_COMMANDS)
             
-            print(f"  📊 Status Overview:")
+            print(f"  Status Overview:")
             print(f"    • {Colors.GREEN}✓ Enabled: {len(enabled_cmds)}{Colors.END}")
             print(f"    • {Colors.RED}✗ Disabled: {len(disabled_cmds)}{Colors.END}")
             print(f"    • Total: {Colors.BOLD}{total_cmds}{Colors.END}")
             print()
             
             if enabled_cmds:
-                print(f"  {Colors.GREEN}🟢 Active Commands:{Colors.END}")
+                print(f"  {Colors.GREEN}Active Commands:{Colors.END}")
                 # Sort by execution order
                 enabled_with_order = [(name, config.PIPELINE_COMMANDS[name].get('execution_order', 999)) for name in enabled_cmds]
                 enabled_with_order.sort(key=lambda x: x[1])
@@ -70,13 +70,13 @@ class ConfigManager:
             
             if disabled_cmds:
                 print()
-                print(f"  {Colors.RED}🔴 Disabled Commands:{Colors.END}")
+                print(f"  {Colors.RED}Disabled Commands:{Colors.END}")
                 for cmd_name in disabled_cmds:
                     category = config.PIPELINE_COMMANDS[cmd_name].get('category', 'other')
                     print(f"    • {Colors.RED}{cmd_name}{Colors.END} ({category})")
             
             print()
-            print_info("💡 Command Management:")
+            print_info("Command Management:")
             print_example("scionpathml show-cmds", "View detailed command configuration")
             print_example("scionpathml cmd-help", "Learn about command management")
             
@@ -84,13 +84,13 @@ class ConfigManager:
             print(f"  {Colors.YELLOW}⚠ Command configuration not found{Colors.END}")
             print("  All commands will run by default (backward compatibility)")
             print()
-            print_info("🎯 Enable advanced command management:")
+            print_info("Enable advanced command management:")
             print_example("scionpathml show-cmds", "Auto-create command configuration")
             print_example("scionpathml cmd-help", "Learn about selective execution")
             print()
         
         # Show Cron Status
-        print_section("⏰ SCHEDULING STATUS")
+        print_section("SCHEDULING STATUS")
         freq = cron_manager.get_current_cron_frequency()
         if freq is not None:
             print(f"  {Colors.GREEN}✓ Active{Colors.END} - Running every {Colors.BOLD}{freq} minutes{Colors.END}")
@@ -99,22 +99,22 @@ class ConfigManager:
             now = datetime.datetime.now()
             minutes_until_next = freq - (now.minute % freq)
             next_run = now + datetime.timedelta(minutes=minutes_until_next)
-            print(f"  📅 Next execution: ~{Colors.CYAN}{next_run.strftime('%H:%M')}{Colors.END}")
+            print(f"  Next execution: ~{Colors.CYAN}{next_run.strftime('%H:%M')}{Colors.END}")
             
             # Show what will actually run
             if hasattr(config, 'PIPELINE_COMMANDS'):
                 enabled_count = sum(1 for cfg in config.PIPELINE_COMMANDS.values() if cfg.get('enabled', True))
-                print(f"  🔄 Will execute: {Colors.BOLD}{enabled_count} commands{Colors.END}")
+                print(f"Will execute: {Colors.BOLD}{enabled_count} commands{Colors.END}")
             
             # Show recommendation
             unique_ases = set(config.AS_FOLDER_MAP.keys()) | set(config.AS_TARGETS.keys())
             recommended = len(unique_ases) * 10
             if freq == recommended:
-                print(f"  {Colors.GREEN}🎯 Optimal frequency{Colors.END}")
+                print(f"  {Colors.GREEN}Optimal frequency{Colors.END}")
             elif freq < recommended:
                 print(f"  {Colors.YELLOW}⚠ Consider {recommended} minutes for {len(unique_ases)} AS(es){Colors.END}")
             else:
-                print(f"  {Colors.CYAN}📊 Conservative setting (recommended: {recommended} min){Colors.END}")
+                print(f"  {Colors.CYAN}Conservative setting (recommended: {recommended} min){Colors.END}")
         else:
             print(f"  {Colors.RED}✗ Not scheduled{Colors.END}")
             unique_ases = set(config.AS_FOLDER_MAP.keys()) | set(config.AS_TARGETS.keys())
@@ -125,7 +125,7 @@ class ConfigManager:
                              f"Start scheduling for {len(unique_ases)} AS(es)")
         
         # Show summary statistics
-        print_section("📊 SUMMARY")
+        print_section("SUMMARY")
         as_count = len(set(config.AS_FOLDER_MAP.keys()) | set(config.AS_TARGETS.keys()))
         server_count = len(getattr(config, 'BWTEST_SERVERS', {}))
         print(f"  • Total AS: {Colors.BOLD}{as_count}{Colors.END}")
@@ -138,7 +138,7 @@ class ConfigManager:
             print(f"  • Recommended frequency: {Colors.BOLD}{recommended_freq} minutes{Colors.END}")
         
         print()
-        print_info("🔄 Quick Actions:")
+        print_info("Quick Actions:")
         print_example("scionpathml stop", "Stop automatic execution")
         print_example("scionpathml show-cmds", "Manage pipeline commands")
 

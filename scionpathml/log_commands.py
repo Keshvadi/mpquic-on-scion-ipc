@@ -49,7 +49,7 @@ class LogCommands:
     def show_log_help_section(self):
         """Return log help section for main CLI help"""
         return f"""
-    print_section("📋 SIMPLE LOG VIEWING")
+    print_section(" SIMPLE LOG VIEWING")
     
     print(f"{Colors.BOLD}Basic Log Commands:{Colors.END}")
     print_example("scionpathml logs", "Show all available logs")
@@ -82,14 +82,14 @@ class LogCommands:
     print("    - Press Enter: Next page")
     print("    - Type 'q': Quit viewing")
     print("    - Type page number: Jump to specific page")
-    print("  • Log levels are color-coded:")
-    print("    🔴 Errors/Failures  🟡 Warnings  🔵 Info  ⚪ Other")
+    print("  • Log levels are status-coded:")
+    print("    [ERROR] Errors/Failures  [WARNING] Warnings  [INFO] Info  [DEBUG] Debug")
         """
     
     def show_log_parameter_formats(self):
         """Return log parameter formats section"""
         return f"""
-    print_section("📝 LOG PARAMETER FORMATS")
+    print_section("LOG PARAMETER FORMATS")
     
     print(f"{Colors.BOLD}Log Categories:{Colors.END}")
     print("  • pipeline     - Main pipeline execution log (pipeline.log)")
@@ -105,7 +105,7 @@ class LogCommands:
     print("  • No file specified - First file in list - DEFAULT")
     print("  • latest       - Highest numbered file")
     print("  • 1, 2, 3...   - File number from list")
-        print("  • Example: 'scionpathml logs bandwidth' shows numbered list")
+    print("  • Example: 'scionpathml logs bandwidth' shows numbered list")
     
     print(f"\\n{Colors.BOLD}Log Display Options:{Colors.END}")
     print("  • Default      - Shows last 30-50 lines")
@@ -138,11 +138,12 @@ class LogCommands:
     print("  - Only use --all for detailed investigation")
     print("  - Use pagination controls: Enter (next), 'q' (quit), number (jump)")
     
-    print("\\n• Understanding log colors:")
-    print("  🔴 Red: Errors, failures, exceptions - need attention")
-    print("  🟡 Yellow: Warnings - might need attention")  
-    print("  🔵 Blue: Information messages - normal operation")
-    print("  ⚪ White: Other messages - general activity")
+    print("\\n• Understanding log status indicators:")
+    print("  [ERROR] - Errors, failures, exceptions - need attention")
+    print("  [WARNING] - Warnings - might need attention")  
+    print("  [INFO] - Information messages - normal operation")
+    print("  [DEBUG] - Debug messages - detailed activity")
+    print("  (no prefix) - General messages - normal activity")
         """
     
     def show_log_epilog_examples(self):
@@ -166,7 +167,7 @@ class LogCommands:
     def show_log_no_args_section(self):
         """Return log section for no-arguments display"""
         return f"""
-    print_section("📋 VIEW YOUR LOGS")
+    print_section("VIEW YOUR LOGS")
     print_example("scionpathml logs", "See available log categories")
     print_example("scionpathml logs pipeline", "Quick view of pipeline.log")
     print_example("scionpathml logs pipeline --all", "View complete pipeline.log")
@@ -184,7 +185,7 @@ class LogHelpDisplay:
         """Show quick log reference"""
         print_header("LOG VIEWING QUICK REFERENCE")
         
-        print_section("🚀 QUICK START")
+        print_section("QUICK START")
         print("1. See what logs are available:")
         print_example("scionpathml logs", "Overview of all log categories")
         
@@ -201,11 +202,10 @@ class LogHelpDisplay:
         print_example("scionpathml view-log bandwidth latest", "View latest file (highest number)")
         print_example("scionpathml view-log bandwidth latest --all", "View complete latest file")
         
-        print_section("📋 FILE SELECTION BEHAVIOR")
+        print_section("FILE SELECTION BEHAVIOR")
         print("• No file specified = first file in list - DEFAULT")
         print_example("scionpathml view-log bandwidth", "Shows first bandwidth file (script_duration.log)")
         print("• Specific number = that file")
         print_example("scionpathml view-log bandwidth 3", "Shows bandwidth file #3")
         print("• 'latest' keyword = highest numbered file")
         print_example("scionpathml view-log bandwidth latest", "Shows highest numbered bandwidth file")
-        

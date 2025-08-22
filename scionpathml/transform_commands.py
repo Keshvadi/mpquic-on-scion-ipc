@@ -28,7 +28,7 @@ class TransformCommands:
             print_error(f"Invalid transformation type: {transform_type}")
             print_error("Valid types: all, standard, multipath")
             print()
-            print_info("💡 Usage:")
+            print_info("Usage:")
             print_example("scionpathml transform", "Transform all data from Data/Archive")
             print_example("scionpathml transform standard", "Transform standard data only")
             print_example("scionpathml transform multipath", "Transform multipath data only")
@@ -41,13 +41,13 @@ class TransformCommands:
         if not data_path:
             print_error("Missing data path")
             print()
-            print_info("💡 Usage:")
+            print_info("Usage:")
             print_example("scionpathml transform-data /path/to/json/files", "Transform all data")
             print_example("scionpathml transform-data /path/to/json/files standard", "Standard only")
             print_example("scionpathml transform-data /path/to/json/files multipath", "Multipath only")
             print_example("scionpathml transform-data /path/to/json/files --output-dir /custom/output", "Custom output")
             print()
-            print_info("💡 Or use the simple command:")
+            print_info("Or use the simple command:")
             print_example("scionpathml transform", "Transform from default Data/Archive path")
             return False
         
@@ -78,7 +78,7 @@ class TransformCommands:
         """Show transformation help"""
         print_header("DATA TRANSFORMATION HELP")
         
-        print_section("🔄 TRANSFORMATION COMMANDS")
+        print_section("TRANSFORMATION COMMANDS")
         print(f"{Colors.BOLD}Simple Commands (uses Data/Archive):{Colors.END}")
         print_example("scionpathml transform", "Transform all data from Data/Archive")
         print_example("scionpathml transform standard", "Standard transformation only")
@@ -92,24 +92,24 @@ class TransformCommands:
         print(f"\n{Colors.BOLD}Status Commands:{Colors.END}")
         print_example("scionpathml transform-status", "Show transformation status")
         
-        print_section("📂 PATHS")
+        print_section("PATHS")
         print(f"{Colors.BOLD}Default data path:{Colors.END} Data/Archive")
         print(f"{Colors.BOLD}Default output path:{Colors.END} ./transformers/datasets")
         print()
         print_example("scionpathml transform --output-dir /custom/output", "Custom output with default data")
         print_example("scionpathml transform-data /custom/data --output-dir /custom/output", "Both custom")
         
-        print_section("📊 WHAT GETS CREATED")
+        print_section("WHAT GETS CREATED")
         print(f"{Colors.BOLD}Standard transformation creates:{Colors.END}")
-        print("   📄 data_PG.csv - Ping measurements")
-        print("   📄 data_BW.csv - Bandwidth measurements") 
-        print("   📄 data_TR.csv - Traceroute measurements")
-        print("   📄 data_SP.csv - Showpaths measurements")
-        print("   📄 data_CP.csv - Path changes")
+        print("  • data_PG.csv - Ping measurements")
+        print("  • data_BW.csv - Bandwidth measurements") 
+        print("  • data_TR.csv - Traceroute measurements")
+        print("  • data_SP.csv - Showpaths measurements")
+        print("  • data_CP.csv - Path changes")
         
         print(f"\n{Colors.BOLD}Multipath transformation creates:{Colors.END}")
-        print("   📄 data_PG-MP.csv - Multipath ping measurements")
-        print("   📄 data_BW-MP.csv - Multipath bandwidth measurements")
+        print("  • data_PG-MP.csv - Multipath ping measurements")
+        print("  • data_BW-MP.csv - Multipath bandwidth measurements")
         
     
     def show_transform_epilog_examples(self):
@@ -127,48 +127,9 @@ class TransformCommands:
     def show_transform_no_args_section(self):
         """Return transformation section for no-arguments display"""
         return f"""
-    print_section("🔄 TRANSFORM YOUR DATA")
+    print_section("TRANSFORM YOUR DATA")
     print_example("scionpathml transform", "Transform from Data/Archive (simple)")
     print_example("scionpathml transform-status", "Check transformation status")
     print_example("scionpathml transform-help", "Transformation guide")
         """
 
-class TransformHelpDisplay:
-    """Dedicated class for transformation help and documentation"""
-    
-    @staticmethod
-    def show_transform_quick_reference():
-        """Show quick transformation reference"""
-        print_header("TRANSFORMATION QUICK REFERENCE")
-        
-        print_section("🚀 QUICK START")
-        print("1. Transform your measurement data (simplest):")
-        print_example("scionpathml transform", "Uses default Data/Archive path")
-        
-        print("\n2. Check the results:")
-        print_example("scionpathml transform-status", "See generated CSV files")
-        
-        print("\n3. Transform specific types:")
-        print_example("scionpathml transform standard", "Standard data only")
-        print_example("scionpathml transform multipath", "Multipath data only")
-        
-        print("\n4. Custom paths (advanced):")
-        print_example("scionpathml transform-data /custom/path", "Transform from custom location")
-        
-        print_section("💡 COMMON WORKFLOWS")
-        
-        print(f"{Colors.BOLD}Daily Data Processing:{Colors.END}")
-        print_example("scionpathml transform", "Transform from Data/Archive")
-        print_example("scionpathml transform-status", "Check what was created")
-        
-        print(f"\n{Colors.BOLD}Selective Processing:{Colors.END}")
-        print_example("scionpathml transform standard", "Only standard measurements")
-        print_example("scionpathml transform multipath", "Only multipath measurements")
-        
-        print(f"\n{Colors.BOLD}Analysis Projects:{Colors.END}")
-        print_example("scionpathml transform-data /archive/week1 --output-dir /analysis/project1", "Week 1 analysis")
-        
-        print_section("🎯 PATHS & DEFAULTS")
-        print("• Default data source: Data/Archive")
-        print("• Default output: ./transformers/datasets")
-        print("• Use 'transform' for defaults, 'transform-data' for custom paths")

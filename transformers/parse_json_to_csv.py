@@ -41,7 +41,7 @@ def parse_ping(data, src_as):
             "sequence": None,
             "sent (count)": 0,
             "received (count)": 0,
-            "loss_rate (%)": 100.0,  # Complete loss
+            "loss_rate (%)": 100.0, 
             "min_rtt (ms)": np.nan,
             "avg_rtt (ms)": np.nan,
             "max_rtt (ms)": np.nan,
@@ -73,7 +73,7 @@ def parse_ping(data, src_as):
 
         # Determine data quality
         data_quality = "good"
-        if loss_rate and loss_rate > 10:  # >10% loss
+        if loss_rate and loss_rate > 10:  
             data_quality = "degraded"
         elif sent == 0 or received == 0:
             data_quality = "failed"
@@ -149,11 +149,10 @@ def parse_bandwidth(data, src_as):
         except (ValueError, AttributeError):
             return 0.0
 
-    # Check for errors - AMÉLIORATION DE LA DÉTECTION
+    # Check for errors 
     has_error = (
         data.get("error") or 
-        data.get("error_type") or  # Pour détecter error_type: "timeout"
-        # Si on a target/target_server mais pas de paths/result, c'est une erreur
+        data.get("error_type") or  
         ((data.get("target") or data.get("target_server")) and not data.get("paths") and not data.get("result"))
     )
     
@@ -195,7 +194,7 @@ def parse_bandwidth(data, src_as):
             "cs_loss_rate_percent (%)": 100.0,
             "cs_interarrival (ms)": None,
             "avg_bandwidth (Mbps)": 0.0,
-            "available": 0,  # Pas disponible en cas d'erreur
+            "available": 0,  
             "failure_reason": data.get("error") or data.get("error_type") or "no_measurement_data",
             "data_quality": "failed"
         }
@@ -214,12 +213,12 @@ def parse_bandwidth(data, src_as):
 
                 res = path.get("result", {})
                 
-                # VÉRIFICATION CRITIQUE: Si pas de résultats S->C et C->S, c'est failed
+                
                 sc = res.get("S->C results", {})
                 cs = res.get("C->S results", {})
                 
                 if not sc and not cs:
-                    # Pas de données de mesure, traiter comme échec
+                  
                     target = path.get("target", {})
                     row = {
                         "timestamp": timestamp,
@@ -258,7 +257,7 @@ def parse_bandwidth(data, src_as):
                 bw_sc = parse_bps(sc.get("achieved_bps", "0"))
                 bw_cs = parse_bps(cs.get("achieved_bps", "0"))
                 
-                # VÉRIFICATION: Si aucune bande passante mesurée, c'est failed
+               
                 if bw_sc == 0 and bw_cs == 0:
                     data_quality = "failed"
                     available = 0
@@ -310,7 +309,7 @@ def parse_bandwidth(data, src_as):
 
                 rows.append(row)
             except Exception as e:
-                print(f"⚠️ Erreur parsing bandwidth (paths): {e}")
+                print(f" Erreur parsing bandwidth (paths): {e}")
                 continue
 
     elif "result" in data and isinstance(data["result"], dict):
@@ -321,7 +320,7 @@ def parse_bandwidth(data, src_as):
 
         dst_as = data.get("target_server", {}).get("ia") if data.get("target_server") else None
 
-        # VÉRIFICATION: Si pas de résultats, c'est failed
+        
         if not sc and not cs:
             row = {
                 "timestamp": timestamp,
@@ -358,7 +357,6 @@ def parse_bandwidth(data, src_as):
         bw_sc = parse_bps(sc.get("achieved_bps", "0"))
         bw_cs = parse_bps(cs.get("achieved_bps", "0"))
         
-        # VÉRIFICATION: Si aucune bande passante mesurée, c'est failed
         if bw_sc == 0 and bw_cs == 0:
             data_quality = "failed"
             available = 0
@@ -499,7 +497,7 @@ def parse_traceroute(data, timestamp):
         rows.append(row)
 
     except Exception as e:
-        print(f"⚠️ Erreur parsing traceroute: {e}")
+        print(f"Erreur parsing traceroute: {e}")
         # Create failure entry for parsing errors
         row = {
             "timestamp": timestamp,
@@ -641,7 +639,7 @@ def parse_path_changes(delta_dir):
                         })
 
                 except Exception as e:
-                    print(f"⚠️ Error parsing delta file {file}: {e}")
+                    print(f"Error parsing delta file {file}: {e}")
 
     return changes_detected
 
@@ -676,7 +674,7 @@ def fill_missing_measurements(df_showpaths, df_ping, df_traceroute):
         missing_ping_rows = []
         for _, row in ping_missing.iterrows():
             missing_ping_rows.append({
-                "timestamp": row['timestamp'],  # Keep as Timestamp, don't convert to string
+                "timestamp": row['timestamp'],  
                 "src_as": row['src_as'],
                 "dst_as": row['dst_as'],
                 "path_fingerprint": None,
@@ -697,7 +695,7 @@ def fill_missing_measurements(df_showpaths, df_ping, df_traceroute):
         if missing_ping_rows:
             df_missing_ping = pd.DataFrame(missing_ping_rows)
             df_ping = pd.concat([df_ping, df_missing_ping], ignore_index=True)
-            print(f"📝 Added {len(missing_ping_rows)} missing ping measurements")
+            print(f"Added {len(missing_ping_rows)} missing ping measurements")
     else:
         # If no ping data exists, create entries for all expected times
         missing_ping_rows = []
@@ -723,7 +721,7 @@ def fill_missing_measurements(df_showpaths, df_ping, df_traceroute):
         
         if missing_ping_rows:
             df_ping = pd.DataFrame(missing_ping_rows)
-            print(f"📝 Created {len(missing_ping_rows)} missing ping measurements (no ping files found)")
+            print(f"Created {len(missing_ping_rows)} missing ping measurements (no ping files found)")
     
     # Fill missing traceroute measurements
     if not df_traceroute.empty:
@@ -739,7 +737,7 @@ def fill_missing_measurements(df_showpaths, df_ping, df_traceroute):
         missing_tr_rows = []
         for _, row in tr_missing.iterrows():
             missing_tr_rows.append({
-                "timestamp": row['timestamp'],  # Keep as Timestamp, don't convert to string
+                "timestamp": row['timestamp'],  
                 "path_fingerprint": None,
                 "hop_count (number)": 0,
                 "src_as (address)": row['src_as (address)'],
@@ -755,7 +753,7 @@ def fill_missing_measurements(df_showpaths, df_ping, df_traceroute):
         if missing_tr_rows:
             df_missing_tr = pd.DataFrame(missing_tr_rows)
             df_traceroute = pd.concat([df_traceroute, df_missing_tr], ignore_index=True)
-            print(f"📝 Added {len(missing_tr_rows)} missing traceroute measurements")
+            print(f"Added {len(missing_tr_rows)} missing traceroute measurements")
     else:
         # If no traceroute data exists, create entries for all expected times
         missing_tr_rows = []
@@ -776,7 +774,7 @@ def fill_missing_measurements(df_showpaths, df_ping, df_traceroute):
         
         if missing_tr_rows:
             df_traceroute = pd.DataFrame(missing_tr_rows)
-            print(f"📝 Created {len(missing_tr_rows)} missing traceroute measurements (no traceroute files found)")
+            print(f"Created {len(missing_tr_rows)} missing traceroute measurements (no traceroute files found)")
     
     return df_ping, df_traceroute
 
@@ -831,11 +829,11 @@ def collect_all_data(base_path):
 
                     # If none of the above, log unrecognized file
                     else:
-                        print(f"⚠️ Unrecognized file format: {fpath}")
+                        print(f"Unrecognized file format: {fpath}")
                         print(f"   Keys: {list(data.keys())}")
 
                 except Exception as e:
-                    print(f"⚠️ Error parsing file {fpath}: {e}")
+                    print(f"Error parsing file {fpath}: {e}")
 
     return all_ping, all_bandwidth, all_traceroute, all_showpaths
 
@@ -861,12 +859,12 @@ def save_dfs(base_path, output_dir="./transformers/datasets"):
         original_count = len(df_ping) if not df_ping.empty else 0
         total_count = len(df_ping_complete)
         missing_count = total_count - original_count
-        print(f"✅ Saved {total_count} ping entries ({original_count} original + {missing_count} filled missing)")
+        print(f"Saved {total_count} ping entries ({original_count} original + {missing_count} filled missing)")
 
     if not df_bandwidth.empty:
         df_bandwidth = df_bandwidth.sort_values("timestamp")
         df_bandwidth.to_csv(os.path.join(output_dir, "data_BW.csv"), index=False)
-        print(f"✅ Saved {len(df_bandwidth)} bandwidth entries (including {len(df_bandwidth[df_bandwidth['available']==0])} failures)")
+        print(f"Saved {len(df_bandwidth)} bandwidth entries (including {len(df_bandwidth[df_bandwidth['available']==0])} failures)")
 
     if not df_traceroute_complete.empty:
         df_traceroute_complete['timestamp'] = df_traceroute_complete['timestamp'].dt.strftime('%Y-%m-%dT%H:%M:%S')
@@ -875,21 +873,21 @@ def save_dfs(base_path, output_dir="./transformers/datasets"):
         original_count = len(df_traceroute) if not df_traceroute.empty else 0
         total_count = len(df_traceroute_complete)
         missing_count = total_count - original_count
-        print(f"✅ Saved {total_count} traceroute entries ({original_count} original + {missing_count} filled missing)")
+        print(f"Saved {total_count} traceroute entries ({original_count} original + {missing_count} filled missing)")
 
     if not df_showpaths.empty:
         df_showpaths = df_showpaths.sort_values("timestamp")
         df_showpaths.to_csv(os.path.join(output_dir, "data_SP.csv"), index=False)
-        print(f"✅ Saved {len(df_showpaths)} showpaths entries (including {len(df_showpaths[df_showpaths['available']==0])} failures)")
+        print(f"Saved {len(df_showpaths)} showpaths entries (including {len(df_showpaths[df_showpaths['available']==0])} failures)")
 
     delta_changes = parse_path_changes(base_path)
     if delta_changes:
         df_changes = pd.DataFrame(delta_changes).sort_values("timestamp")
         df_changes.to_csv(os.path.join(output_dir, "data_CP.csv"), index=False)
-        print(f"✅ Saved {len(df_changes)} path change entries (including {len(df_changes[df_changes['available']==0])} failures)")
+        print(f"Saved {len(df_changes)} path change entries (including {len(df_changes[df_changes['available']==0])} failures)")
 
     # Print quality statistics
-    print("\n📊 Data Quality Statistics:")
+    print("\nData Quality Statistics:")
     print("-" * 50)
     
     if not df_ping_complete.empty:
@@ -924,7 +922,3 @@ def save_dfs(base_path, output_dir="./transformers/datasets"):
         print(f"\nPath Change Types:")
         for change_type, count in change_types.items():
             print(f"  {change_type}: {count}")
-
-if __name__ == "__main__":
-    base_path = "/home/scion/Documents/DataMachine1_2"
-    save_dfs(base_path)

@@ -7,11 +7,11 @@ class ConfigHelpManager:
         """Show comprehensive AS and server management help"""
         print_header("SCIONPATHML - AS & SERVER MANAGEMENT")
         
-        print_section("🎯 WHAT ARE AS AND SERVERS?")
+        print_section("WHAT ARE AS AND SERVERS?")
         print("• AS (Autonomous Systems) - SCION network nodes you want to monitor and get data from him")
         print("• Servers - Endpoints for bandwidth testing (optional but recommended)")
         
-        print_section("🔧 AS MANAGEMENT")
+        print_section("AS MANAGEMENT")
         
         print(f"{Colors.BOLD}Adding an AS:{Colors.END}")
         print_example("scionpathml add-as -a 19-ffaa:1:11de -i 192.168.1.100 -n MyAS", 
@@ -24,7 +24,7 @@ class ConfigHelpManager:
         print(f"\n{Colors.BOLD}Removing an AS:{Colors.END}")
         print_example("scionpathml rm-as -a 19-ffaa:1:11de", "Remove AS ")
         
-        print_section("🌐 SERVER MANAGEMENT")
+        print_section("SERVER MANAGEMENT")
         
         print(f"{Colors.BOLD}Adding a Server:{Colors.END}")
         print_example("scionpathml add-server -a 19-ffaa:1:22ef -i 10.0.0.50 -n MyServer", 
@@ -37,7 +37,7 @@ class ConfigHelpManager:
         print(f"\n{Colors.BOLD}Removing a Server:{Colors.END}")
         print_example("scionpathml rm-server -a 19-ffaa:1:22ef", "Remove server")
         
-        print_section("📝 PARAMETER REQUIREMENTS")
+        print_section("PARAMETER REQUIREMENTS")
         
         print(f"{Colors.BOLD}AS ID Format (-a):{Colors.END}")
         print("• Pattern: number-ffaa:hex:hex")

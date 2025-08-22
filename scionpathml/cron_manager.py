@@ -55,19 +55,19 @@ class CronManager:
                 
         raise EnvironmentError(
             f"{self.env_var} environment variable is not set and automatic detection failed.\n"
-            f"{Colors.CYAN}💡 Solutions:{Colors.END}\n"
+            f"{Colors.CYAN}Solutions:{Colors.END}\n"
             f"   1. Use -p flag: scionpathml -f 30 -p /path/to/runner\n"
             f"   2. Set environment: export {self.env_var}=/path/to/runner"
         )
 
     def explain_frequency_calculation(self):
         """Explain how frequency calculation works"""
-        print_info("💡 How frequency calculation works:")
+        print_info("How frequency calculation works:")
         print("  • Each AS needs time to complete its measurements")
         print("  • We recommend 10 minutes per AS to avoid conflicts")
         print("  • Formula: Number of AS × 10 = Recommended frequency")
         print()
-        print("  📈 Examples:")
+        print("Examples:")
         print("    2 AS → 20 minutes frequency")
         print("    4 AS → 40 minutes frequency") 
         print("    6 AS → 60 minutes frequency")
@@ -91,10 +91,10 @@ class CronManager:
             print(f"  • Current frequency: {current} minutes")
             print(f"  • Recommended frequency: {recommended} minutes")
             print()
-            print_info("🚨 Why this matters:")
+            print_info("Why this matters:")
             print("  • Too frequent execution can cause resource conflicts")
             print("  • Each AS measurement needs time to complete properly")
-            print("  • Overlapping executions can produce unreliable results")
+            print("  • Overlapping executions can produce results without data")
             print()
             print_example(f"scionpathml -f {recommended}", "Update to recommended frequency")
 
@@ -172,7 +172,7 @@ class CronManager:
                 print_info(f"Try: chmod +x {full_path}")
                 return False
         
-        print_info(f"📍 Script location: {full_path}")
+        print_info(f"Script location: {full_path}")
         print()
         
         response = input("Execute pipeline script now? (y/N): ")
@@ -180,7 +180,7 @@ class CronManager:
             print_info("Execution cancelled")
             return False
         
-        print_success("🚀 Starting pipeline execution...")
+        print_success("Starting pipeline execution...")
         print("=" * 60)
         
         # Change to script directory for proper execution context
@@ -191,7 +191,7 @@ class CronManager:
             os.chdir(script_dir)      
             # Execute the script
             start_time = subprocess.run(['date'], capture_output=True, text=True).stdout.strip()
-            print_info(f"⏰ Started at: {start_time}")
+            print_info(f"Started at: {start_time}")
             print()
             
             # Run with real-time output
@@ -213,27 +213,27 @@ class CronManager:
             print()
             print("=" * 60)
             end_time = subprocess.run(['date'], capture_output=True, text=True).stdout.strip()
-            print_info(f"⏰ Finished at: {end_time}")
+            print_info(f"Finished at: {end_time}")
             
             if return_code == 0:
-                print_success("✅ Pipeline executed successfully!")
+                print_success("Pipeline executed successfully!")
                 print()
-                print_info("💡 Next steps:")
+                print_info("Next steps:")
                 print_example("scionpathml data-overview", "Check your measurement data")
                 print_example("scionpathml data-browse", "Browse data interactively")
                 print_example("scionpathml logs pipeline", "View pipeline logs")
                 return True
             else:
-                print_error(f"❌ Pipeline failed with exit code: {return_code}")
+                print_error(f"Pipeline failed with exit code: {return_code}")
                 print()
-                print_info("🔍 Troubleshooting:")
+                print_info("Troubleshooting:")
                 print_example("scionpathml logs pipeline --all", "Check pipeline logs for errors")
                 print_example("scionpathml show-cmds", "Verify enabled commands")
                 return False
                 
         except OSError as e:
             if e.errno == 8:  # Exec format error
-                print_error("❌ Script format error detected")
+                print_error("Script format error detected")
                 print_info("Attempting to fix common script issues...")
                 
                 if self._check_script_format(full_path):
@@ -246,12 +246,12 @@ class CronManager:
                             print(line.rstrip())
                         process.wait()
                         if process.returncode == 0:
-                            print_success("✅ Pipeline executed successfully after fixes!")
+                            print_success("Pipeline executed successfully after fixes!")
                             return True
                         else:
-                            print_error(f"❌ Still failed with exit code: {process.returncode}")
+                            print_error(f"Still failed with exit code: {process.returncode}")
                     except Exception as retry_error:
-                        print_error(f"❌ Still failed: {retry_error}")
+                        print_error(f"Still failed: {retry_error}")
                 else:
                     print_error("Could not fix script format issues")
                     print()
@@ -262,17 +262,17 @@ class CronManager:
                     
                 return False
             else:
-                print_error(f"❌ Error executing pipeline: {e}")
+                print_error(f"Error executing pipeline: {e}")
                 return False
                 
         except KeyboardInterrupt:
-            print_warning("\n⚠️  Pipeline execution interrupted by user")
+            print_warning("\nPipeline execution interrupted by user")
             if process.poll() is None:
                 process.terminate()
                 process.wait()
             return False
         except Exception as e:
-            print_error(f"❌ Error executing pipeline: {e}")
+            print_error(f"Error executing pipeline: {e}")
             return False
         finally:
             # Always return to original directory
@@ -317,12 +317,12 @@ class CronManager:
             recommended = num_ases * 10
             
             if frequency == recommended:
-                print_success("🎯 Perfect! This frequency matches our recommendation.")
+                print_success("Perfect! This frequency matches our recommendation.")
             elif frequency < recommended:
                 print_warning(f"Consider using {recommended} minutes for {num_ases} AS(es)")
                 self.explain_frequency_calculation()
             else:
-                print_info(f"📊 This is more conservative than our {recommended}-minute recommendation")
+                print_info(f"This is more conservative than our {recommended}-minute recommendation")
                 print("  • More conservative frequencies are generally safer")
                 print("  • You can always decrease it later if needed")
         
@@ -339,7 +339,7 @@ class CronManager:
         removed_count = len(original_lines) - len(remaining_lines)
         
         if removed_count == 0:
-            print_info("🔍 No active scionpathml cron jobs found")
+            print_info("No active scionpathml cron jobs found")
             print("  • The cron job might already be stopped")
             print("  • Or it was never configured")
             print()
@@ -348,7 +348,7 @@ class CronManager:
         
         self.write_crontab("\n".join(remaining_lines) + "\n" if remaining_lines else "")
         
-        print_success(f"🛑 Removed {removed_count} cron job(s)")
+        print_success(f"Removed {removed_count} cron job(s)")
         print("  • scionpathml is no longer scheduled to run automatically")
         print("  • You can still run it manually anytime")
         print()
