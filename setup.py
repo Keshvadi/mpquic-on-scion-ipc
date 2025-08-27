@@ -54,12 +54,12 @@ print_welcome()
 
 setup(
     name="scionpathml",
-    version="1.0.1",
-    packages=find_packages(),
-    install_requires=all_requirements,  # Using the combined requirements here
+    version="1.0.4",
+    packages=find_packages(include=["collector*", "runner*", "transformers*", "cli_tools*", "scionpathml*",]), 
+    install_requires=all_requirements,  
     entry_points={
         "console_scripts": [
-            "scionpathml=scionpathml.scionpathml:main",
+            "scionpathml=scionpathml.cli_tools.scionpathml:main",
         ],
     },
     author="ScionPathML Team",
@@ -117,32 +117,15 @@ For detailed documentation and examples, run: scionpathml help
     platforms=["Linux"],
     
     # Optional dependencies for different features
-    extras_require={
-        "dev": [
-            "pytest>=6.0",
-            "black>=21.0",
-            "flake8>=3.8",
-        ],
-        "analysis": [
-            "matplotlib>=3.3.0",
-            "seaborn>=0.11.0",
-            "numpy>=1.20.0",
-        ],
+        extras_require={
+        "dev": ["pytest>=6.0", "black>=21.0", "flake8>=3.8"],
+        "analysis": ["matplotlib>=3.3.0", "seaborn>=0.11.0", "numpy>=1.20.0"],
     },
     
-    # Include additional files
     include_package_data=True,
     package_data={
-        "scionpathml": [
-            "README.md",
-            "CHANGELOG.md",
-            "LICENSE"
-        ],
+        "runner": ["*.sh"], 
     },
-
-    data_files=[("runner", ["runner/pipeline.sh"])],
-
-    
     zip_safe=False,
 )
 

@@ -2,10 +2,10 @@
 *.json
 *.csv
 *.log
-Data/**/*.json
-Data/**/*.txt
+scionpathml/Data/**/*.json
+scionpathml/Data/**/*.txt
 # But don't ignore directories (needed for Git to track them)
 !Data/**/
 __pycache__/
-/transformers/datasets
+/scionpathml/transformers/datasets
 scionpathml.egg-info/
