@@ -2,17 +2,15 @@
 import os
 
 AS_FOLDER_MAP = {
-    "19-ffaa:1:11de": "Test33",
-    "19-ffaa:0:1310": "Test2",
+
 }
 
 AS_TARGETS = {
-    "19-ffaa:1:11de": ("127.0.0.1", "Test33"),
-    "19-ffaa:1:1310": ("127.0.0.1", "Test2"),
+
 }
 
 BWTEST_SERVERS = {
-    "19-ffaa:0:1303": ("141.44.25.144", "TestS"),
+
 }
 
 # Pipeline commands configuration
