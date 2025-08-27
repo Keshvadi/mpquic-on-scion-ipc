@@ -16,7 +16,7 @@ pip install scionpathml
 - SCION infrastructure access (SCIONLab and active AS)
 - SCION measurement tools for bandwidth: `sudo apt install scion-apps-bwtester`
 
-Example of installing your own ScionLab on your Linux machine:
+### Example of installing your own ScionLab on your Linux machine:
 ```bash
 sudo apt-get install apt-transport-https ca-certificates
 echo "deb [trusted=yes] https://packages.netsec.inf.ethz.ch/debian all main" | sudo tee /etc/apt/sources.list.d/scionlab.list
@@ -24,8 +24,9 @@ sudo apt-get update
 sudo apt-get install scionlab
 ```
 Once your configuration is saved, you can deploy it on your machine:
+```bash
 sudo scionlab-config --host-id=your_id --host-secret=your_secret
-
+```
 
 ## Network Configuration 
 
