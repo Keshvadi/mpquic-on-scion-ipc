@@ -21,8 +21,8 @@ PACKET_SIZE = 1000  # bytes
 # Directories
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "Data"))
-RESULT_DIR = os.path.join(BASE_DIR, "History", "")
-LOG_DIR = os.path.join(BASE_DIR, "Logs", "")
+RESULT_DIR = os.path.join(BASE_DIR, "History", "MP-Bandwidth")
+LOG_DIR = os.path.join(BASE_DIR, "Logs", "MP-Bandwidth")
 SELECTED_PATH_FILE = os.path.join(BASE_DIR, "selected_paths.json")
 os.makedirs(LOG_DIR, exist_ok=True)
 
