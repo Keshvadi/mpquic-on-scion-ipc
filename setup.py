@@ -54,7 +54,7 @@ print_welcome()
 
 setup(
     name="scionpathml",
-    version="1.0.6",
+    version="1.0.7",
     packages=find_packages(include=["collector*", "runner*", "transformers*", "cli_tools*", "scionpathml*",]), 
     install_requires=all_requirements,  
     entry_points={

@@ -2,7 +2,7 @@
 
 All notable changes to SCIONPATHML CLI.
 
-## [1.0.6]
+## [1.0.7]
 Pach bugs and problems 
 
 ## [1.0]

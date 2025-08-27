@@ -13,14 +13,13 @@ class TransformManager:
     def check_scripts_exist(self):
         """Check if transformation scripts exist"""
         standard_script = self.transformers_dir / "parse_json_to_csv.py"
-        multipath_script = self.transformers_dir / "mp-parse_json_to_csv.py"
-        print(multipath_script)
+        multipath_script = self.transformers_dir / "mp_parse_json_to_csv.py"
         
         missing = []
         if not standard_script.exists():
             missing.append("parse_json_to_csv.py")
         if not multipath_script.exists():
-            missing.append("mp-parse_json_to_csv.py")
+            missing.append("mp_parse_json_to_csv.py")
         
         return missing
     
@@ -104,7 +103,6 @@ class TransformManager:
             return False
 
     def run_multipath_transform(self, data_path, output_dir=None):
-        """Run multipath JSON to CSV transformation"""
         output_dir = output_dir or self.default_output_dir
         
         print_header("MULTIPATH DATA TRANSFORMATION")
@@ -114,8 +112,8 @@ class TransformManager:
         
         # Check if script exists
         missing_scripts = self.check_scripts_exist()
-        if "mp-parse_json_to_csv.py" in missing_scripts:
-            print_error("mp-parse_json_to_csv.py not found in transformers/ directory")
+        if "mp_parse_json_to_csv.py" in missing_scripts:
+            print_error("mp_parse_json_to_csv.py not found in transformers/ directory")
             return False
         
         # Validate inputs
@@ -131,18 +129,23 @@ class TransformManager:
             return False
         print_success(message)
 
-        
         try:
-            # Run the multipath transformation script
-            script_path = self.transformers_dir / "mp-parse_json_to_csv.py"
+            # Add the parent directory to sys.path temporarily
+            import sys
+            parent_dir = str(self.transformers_dir.parent)
+            if parent_dir not in sys.path:
+                sys.path.insert(0, parent_dir)
             
-            import importlib.util
-            spec = importlib.util.spec_from_file_location("mp_parse_json_to_csv", script_path)
-            transform_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(transform_module)
-            
-            # Call the transformation function with custom paths
-            transform_module.save_multipath_data(data_path, output_dir)
+            try:
+                # Import using the full module path
+                from scionpathml.transformers.mp_parse_json_to_csv  import save_multipath_data
+                
+                # Call the transformation function with custom paths
+                save_multipath_data(data_path, output_dir)
+            finally:
+                # Clean up sys.path
+                if parent_dir in sys.path:
+                    sys.path.remove(parent_dir)
             
             print()
             print_success("Multipath transformation completed!")
