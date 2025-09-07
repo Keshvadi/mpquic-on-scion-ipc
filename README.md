@@ -4,7 +4,12 @@ This project provides measurement scripts, analysis scripts as well as 4 weeks o
 
 ## Motivation and initial Idea
 
-To gather the needed data, we have set up 4 ASes in the SCIONLab environment. These will run as 4 separate oogle Cloud machines. The 4 chosen machines are the following:
+With this project, we aim to provide a comprehensive and modular testing and analysis suite that can be used to gather, analyze, and interpret data collected over long timeframes within a SCION network—whether in the SCIONLab testbed or a full production deployment such as SCIERA.
+
+The resulting data can help guide the implementation or migration of protocols into the SCION environment, ensuring that SCION’s novel attributes are fully leveraged. This is particularly relevant for multipath protocols such as MP-QUIC. Since SCION inherently supports multipath communication, protocols like MP-QUIC can utilize multiple available SCION paths—potentially diverse in capacity, latency, or reliability—to transmit data, rather than relying on a single path as is common in today’s Internet.
+
+
+To gather the needed data, we have set up 4 ASes in the SCIONLab environment. These will run as 4 separate Google Cloud machines. The 4 chosen machines are the following:
 
 - 19-ffaa:1:11de 	Lars Herschbach ScionLab 1 	EU 	Magdeburg AP 	VPN:50000
 - 17-ffaa:1:11e4 	Lars Herschbach ScionLab 2 	Switzerland 	ETHZ-AP 	VPN:50001
@@ -34,7 +39,7 @@ Each AS will run a suite of python scripts which will gather data to all 3 other
 
 Some of these scripts were not used for the 4 weeks testing period as they are deprecated. Used were pathdiscovery, comparer, prober, mp-prober, bw_alldiscover, bw_mltipath and tr_collector.
    
-This approach gives us both a compiled CSV (for some of the scripts) as well as all the raw data at the and. Through the structure of working and archive directories we are also able to access the already collected data at any point without interfering with the ongoing measurements. This may be used for backup needs.
+This approach gives us both a compiled CSV (for some of the scripts) as well as all the raw data at the end. Through the structure of working and archive directories we are also able to access the already collected data at any point without interfering with the ongoing measurements. This may be used for backup needs.
 
 For the analysis we provide one script each to compile and calculate the gathered statistics as well as to create representative graphs.
 These scripts are found in the AnalysisScripts directory. By simply changing the variable for the directory it can be run on any subset of data. Resulting graphs are output into subdirs while raw numbers are printed to the CLI and written to files.

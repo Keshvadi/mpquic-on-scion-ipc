@@ -14,6 +14,7 @@ All scripts follow the same workflow:
    - Place all raw data files to be analyzed in a single directory.  
    - No further sorting or subfolder structure is required.  
    - Each script will automatically detect and parse the relevant files based on filename prefixes.
+   - the prefix per data source are the following: (AS-* for the path data), (delta* for the comparer data), (BW_* for the Bandwidth data), (prober_* for the prober data), (BW_P* for the multipath Bandwidth data) and lastly (mp_prober* for the multipath prober data) 
 
 2. **Execution**  
    - Run the desired script directly with Python (e.g., `python3 analyze_prober.py`).  
