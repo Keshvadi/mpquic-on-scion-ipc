@@ -180,3 +180,9 @@ class HelpManager:
         print_example("scionpathml data-help", "Data management options")
         print_example("scionpathml log-help", "Log viewing guide")
         print_example("scionpathml transform-help", "Data transformation guide")
+
+        print_section("GITHUB")
+        print("For more details and documentation, visit our GitHub repository:")
+        print("→ https://github.com/Keshvadi/mpquic-on-scion-ipc/tree/ScionPathML")
+
+

@@ -2,7 +2,7 @@
 
 All notable changes to SCIONPATHML CLI.
 
-## [1.0.7]
+## [1.0.8]
 Pach bugs and problems 
 
 ## [1.0]
@@ -21,7 +21,7 @@ Pach bugs and problems
 #### Data Management Commands
 data-overview    # Show all data directories overview
 data-show        # Display specific directory details
-data-browse      # Browse files interactively (recommended)
+data-browse      # Browse files interactively
 data-move        # Move files between directories
 data-delete      # Delete data by category
 data-search      # Search files by pattern

@@ -54,7 +54,7 @@ print_welcome()
 
 setup(
     name="scionpathml",
-    version="1.0.7",
+    version="1.0.8",
     packages=find_packages(include=["collector*", "runner*", "transformers*", "cli_tools*", "scionpathml*",]), 
     install_requires=all_requirements,  
     entry_points={
@@ -92,7 +92,7 @@ For detailed documentation and examples, run: scionpathml help
     long_description_content_type="text/plain",
     url="https://github.com/Keshvadi/mpquic-on-scion-ipc/tree/ScionPathML",
     project_urls={
-        "Source": "https://github.com/Keshvadi/mpquic-on-scion-ipc",
+        "Source": "https://github.com/Keshvadi/mpquic-on-scion-ipc/tree/ScionPathML",
     },
 
     python_requires=">=3.8",
