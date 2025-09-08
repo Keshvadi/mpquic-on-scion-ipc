@@ -74,6 +74,7 @@ scionpathml transform multipath --output-dir /output/ #Custom output with defaul
 ```bash
 scionpathml data-overview                       #Check current data status
 scionpathml data-show Archive                   #Show detailed Archive contents
+scionpathml data-browse                         #Browse files interactively
 scionpathml data-show Archive --interractive    #Browse Archive interactively
 scionpathml data-move History Archive           #Move History to Archive
 ```
@@ -101,11 +102,6 @@ Data/
 ├── Currently/   # Current measurement data  
 ├── History/     # Preivous measurement data  
 └── Logs/        # Execution and error logs  
-
-
-## License
-MIT License
-
 
 ## CSV to DataFrame Guide
 
